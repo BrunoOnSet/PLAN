@@ -564,3 +564,32 @@ html,body{background:var(--bg)!important;color:var(--text)!important;font-family
   .stage-card .plan-scale{margin:8px 12px 12px auto!important}
   #inspectorBody,.camera-monitors{padding:12px!important}
 }
+
+
+/* V1.59 — alignements bulles + version bas de page */
+.plan-options-card .bos-section-heading,
+.stage-card .section-head,
+.inspector .inspector-head,
+.camera-preview .preview-head,
+.inline-library-card .inline-library-head{
+  min-height:74px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+}
+.plan-options-card .bos-section-heading{padding:16px 16px 12px!important}
+.stage-card .section-head,.inspector-head,.preview-head,.inline-library-head{padding:16px 16px 12px!important}
+.bos-inline-heading,.bos-inline-heading-tight,.bos-section-heading{align-items:flex-start!important}
+.bos-inline-heading .step,.bos-section-heading .step{margin-top:1px}
+.bos-inline-heading .heading-copy,.bos-section-heading .heading-copy{padding-top:1px}
+.inspector-head>div{display:flex;flex-direction:column;justify-content:flex-start;min-height:46px}
+.selection-model-row{margin-top:8px!important}
+.stage-head-side{padding-top:1px}
+.project-contact-bottom{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.app-bottom-version{font-family:'Montserrat',Arial,sans-serif;font-size:11px;font-weight:700;color:var(--muted)}
+@media (max-width:900px){
+  .plan-options-card .bos-section-heading,
+  .stage-card .section-head,
+  .inspector .inspector-head,
+  .camera-preview .preview-head,
+  .inline-library-card .inline-library-head{min-height:auto!important}
+}

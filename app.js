@@ -1,4 +1,4 @@
-const APP_VERSION='V1.58';
+const APP_VERSION='V1.59';
 const NS='http://www.w3.org/2000/svg';
 const stage=document.getElementById('stage');
 const beamsLayer=document.getElementById('beamsLayer');
@@ -1463,7 +1463,7 @@ function duplicateCurrentPlan(){
   setMainTab('plan');
   return true;
 }
-function projectPayload(planState=snapshotState()){return {format:'BOS_PLAN_FEU',version:'1.58',exportedAt:new Date().toISOString(),plan:deepClone(planState)}}
+function projectPayload(planState=snapshotState()){return {format:'BOS_PLAN_FEU',version:'1.59',exportedAt:new Date().toISOString(),plan:deepClone(planState)}}
 function projectFile(planState=snapshotState(),name=state.planName){const payload=projectPayload(planState),blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});return new File([blob],`${safeName(name)}.bosplan.json`,{type:'application/json'})}
 async function shareProjectState(planState=snapshotState(),name=state.planName){
   const file=projectFile(planState,name);
