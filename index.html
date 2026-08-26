@@ -11,25 +11,37 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>BRUNO ONSET / PLAN</title>
-  <link rel="manifest" href="manifest.webmanifest?v=1.54" />
-  <link rel="stylesheet" href="styles.css?v=1.55" />
+  <link rel="manifest" href="manifest.webmanifest?v=1.57" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1.57" />
 </head>
 <body>
   <div class="app-shell">
-    <header class="topbar bos-topbar">
-      <div class="top-inner">
-        <div class="top-title">
-          <a class="bos-brand-link" href="https://www.brunoguillard.com/" target="_blank" rel="noopener noreferrer" aria-label="Site de Bruno Guillard">
-            <img class="bos-brand-logo" src="brand-mark.png" alt="Logo PLAN" />
-            <span class="bos-brand-copy">
-              <span class="bos-brand-app">PLAN</span>
-              <span class="bos-brand-name">Bruno OnSet</span>
-            </span>
-          </a>
+    <header class="topbar cardlike">
+      <div class="top-inner bos-top-inner">
+        <div class="top-title bos-top-title">
+          <div class="bos-brand-lockup" aria-label="Bruno OnSet">
+            <img class="bos-header-logo" src="assets/logo-bos-header.jpg" alt="Logo Bruno OnSet">
+            <div class="bos-brand-text">
+              <span class="bos-header-name">Bruno OnSet<span class="bos-header-app">- PLAN</span></span>
+              <span class="bos-header-tagline">Avec vous, sur chaque tournage.</span>
+            </div>
+          </div>
         </div>
-        <button class="mode-btn" id="themeToggle" type="button" aria-label="Changer de thème">DARK</button>
+        <div class="top-actions bos-top-actions">
+          <button class="install-app-btn" id="installAppBtn" type="button">INSTALLER L’APPLICATION</button>
+          <button class="mode-btn" id="themeToggle" type="button" aria-label="Changer de thème">DARK</button>
+        </div>
       </div>
     </header>
+
+    <section class="project-contact project-contact-top" aria-label="Contact professionnel">
+      <button class="project-contact-btn" id="projectContactBtn" type="button">
+        Une question ? Un projet ? On en parle. <span aria-hidden="true">→</span>
+      </button>
+    </section>
 
     <section class="plan-commandbar panel-like" aria-label="Commandes du plan">
       <div class="plan-primary-actions">
@@ -107,6 +119,7 @@
     <main>
       <div id="planView" class="main-view">
       <section class="toolbar card plan-options-card">
+        <div class="bos-section-heading"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant, faisceaux, infos et grille</p></div></div>
         <button class="plan-options-toggle" id="planOptionsToggle" type="button" aria-expanded="true" aria-controls="planOptionsBody">
           <span>Options de plan</span>
           <span class="plan-options-toggle-right"><em id="planOptionsToggleText">MASQUER</em><i id="planOptionsToggleCaret">⌃</i></span>
@@ -147,10 +160,7 @@
       <section class="workspace-grid">
         <div class="stage-card card">
           <div class="section-head stage-head">
-            <div>
-              <h2>Plan</h2>
-              <p>Vue du dessus · déplacer et orienter directement les éléments</p>
-            </div>
+            <div class="bos-inline-heading"><span class="step">02</span><div class="heading-copy"><h2>PLAN</h2><p>Vue du dessus · déplacer et orienter directement les éléments</p></div></div>
             <div class="stage-head-side">
               <button class="add-main stage-add-btn" id="openAddBtn"><span class="plus">+</span> Ajouter</button>
               <div class="legend">
@@ -191,7 +201,7 @@
         <aside class="inspector card" id="inspector">
           <div class="inspector-head">
             <div>
-              <h2>Réglages</h2>
+              <div class="bos-inline-heading bos-inline-heading-tight"><span class="step">03</span><div class="heading-copy"><h2>RÉGLAGES</h2><p>Modifier précisément l’élément sélectionné</p></div></div>
               <div class="selection-model-row">
                 <p id="selectionHint">Sélectionne un élément</p>
                 <button id="changeFixtureHeader" class="header-model-change hidden" type="button" title="Changer de modèle" aria-label="Changer de modèle"></button>
@@ -214,10 +224,7 @@
 
       <section class="camera-preview card">
         <div class="section-head preview-head">
-          <div>
-            <h2>Vues caméra</h2>
-            <p id="cameraReadout">Chaque caméra utilise sa propre focale et son propre capteur.</p>
-          </div>
+          <div class="bos-inline-heading"><span class="step">04</span><div class="heading-copy"><h2>VUES CAMÉRA</h2><p id="cameraReadout">Chaque caméra utilise sa propre focale et son propre capteur.</p></div></div>
           <div class="preview-tabs hidden" id="previewTabs"></div>
         </div>
         <div class="camera-monitors" id="cameraMonitors"></div>
@@ -227,16 +234,19 @@
       <section id="plansView" class="main-view hidden">
         <div class="card inline-library-card">
           <div class="inline-library-head">
-            <div>
-              <h2>Mes plans</h2>
-              <p>Retrouve directement tous tes plans enregistrés.</p>
-            </div>
+            <div class="bos-inline-heading"><span class="step">05</span><div class="heading-copy"><h2>MES PLANS</h2><p>Retrouve directement tous tes plans enregistrés.</p></div></div>
           </div>
           <div id="inlinePlanLibraryList" class="plan-library-list inline-plan-library-list"></div>
         </div>
       </section>
     </main>
   </div>
+
+  <section class="project-contact project-contact-bottom" aria-label="Amélioration de l’application">
+      <button class="project-contact-btn" id="improveAppBtn" type="button">
+        Une idée pour améliorer l’application ? <span aria-hidden="true">→</span>
+      </button>
+    </section>
 
   <dialog id="addDialog" class="add-dialog">
     <div class="dialog-shell">
@@ -417,6 +427,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=1.55"></script>
+  <script src="app.js?v=1.57"></script>
 </body>
 </html>

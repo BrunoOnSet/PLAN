@@ -1,4 +1,4 @@
-const APP_VERSION='V1.53';
+const APP_VERSION='V1.57';
 const NS='http://www.w3.org/2000/svg';
 const stage=document.getElementById('stage');
 const beamsLayer=document.getElementById('beamsLayer');
@@ -1463,7 +1463,7 @@ function duplicateCurrentPlan(){
   setMainTab('plan');
   return true;
 }
-function projectPayload(planState=snapshotState()){return {format:'BOS_PLAN_FEU',version:'1.53',exportedAt:new Date().toISOString(),plan:deepClone(planState)}}
+function projectPayload(planState=snapshotState()){return {format:'BOS_PLAN_FEU',version:'1.57',exportedAt:new Date().toISOString(),plan:deepClone(planState)}}
 function projectFile(planState=snapshotState(),name=state.planName){const payload=projectPayload(planState),blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});return new File([blob],`${safeName(name)}.bosplan.json`,{type:'application/json'})}
 async function shareProjectState(planState=snapshotState(),name=state.planName){
   const file=projectFile(planState,name);
@@ -1534,6 +1534,24 @@ toggleBeamsBtn.onclick=()=>{state.beamsVisible=state.beamsVisible===false;update
 if(gridOpacityRange){gridOpacityRange.oninput=()=>{state.gridOpacity=clamp(Number(gridOpacityRange.value)/100,0,1);updateGridOpacity();scheduleAutosave()};gridOpacityRange.onchange=()=>persistCurrent()}
 if(planLengthRange){planLengthRange.oninput=()=>{setPlanLength(Number(planLengthRange.value),{keepViewport:true});updatePlanBadge()};planLengthRange.onchange=()=>persistCurrent()}
 if(zoomReadout)zoomReadout.addEventListener('click',()=>{resetStageViewport();persistCurrent()})
+
+const installAppBtn=document.getElementById('installAppBtn');
+const projectContactBtn=document.getElementById('projectContactBtn');
+const improveAppBtn=document.getElementById('improveAppBtn');
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e});
+if(installAppBtn)installAppBtn.addEventListener('click',async()=>{
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    try{await deferredInstallPrompt.userChoice}catch(e){}
+    deferredInstallPrompt=null;
+  }else{
+    alert('Pour installer l’application, utilise le menu de ton navigateur puis « Ajouter à l’écran d’accueil » ou « Installer l’application ».');
+  }
+});
+const BOS_CONTACT_URL='https://www.brunoguillard.com/';
+if(projectContactBtn)projectContactBtn.addEventListener('click',()=>window.open(BOS_CONTACT_URL,'_blank','noopener'));
+if(improveAppBtn)improveAppBtn.addEventListener('click',()=>window.open(BOS_CONTACT_URL,'_blank','noopener'));
 
 const themeToggle=document.getElementById('themeToggle'),themeColor=document.getElementById('themeColor');
 function applyTheme(theme){
