@@ -11,11 +11,11 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>PLAN</title>
-  <link rel="manifest" href="manifest.webmanifest?v=1.59" />
+  <link rel="manifest" href="manifest.webmanifest?v=1.60" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.59" />
+  <link rel="stylesheet" href="styles.css?v=1.60" />
 </head>
 <body>
   <div class="app-shell">
@@ -119,7 +119,7 @@
     <main>
       <div id="planView" class="main-view">
       <section class="toolbar card plan-options-card">
-        <div class="bos-section-heading"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant, faisceaux, infos et grille</p></div></div>
+        <div class="card-heading section-title-head"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant, faisceaux, infos et grille</p></div></div>
         <button class="plan-options-toggle" id="planOptionsToggle" type="button" aria-expanded="true" aria-controls="planOptionsBody">
           <span>Options de plan</span>
           <span class="plan-options-toggle-right"><em id="planOptionsToggleText">MASQUER</em><i id="planOptionsToggleCaret">⌃</i></span>
@@ -151,7 +151,7 @@
             </div>
           </div>
           <div class="toolbar-note">
-            <strong id="appVersionBadge">V1.59</strong>
+            <strong id="appVersionBadge">V1.60</strong>
             <span id="currentPlanBadge">Plan sans titre · autosauvegarde</span>
           </div>
         </div>
@@ -159,17 +159,18 @@
 
       <section class="workspace-grid">
         <div class="stage-card card">
-          <div class="section-head stage-head">
-            <div class="bos-inline-heading"><span class="step">02</span><div class="heading-copy"><h2>PLAN</h2><p>Vue du dessus · déplacer et orienter directement les éléments</p></div></div>
-            <div class="stage-head-side">
-              <button class="add-main stage-add-btn" id="openAddBtn"><span class="plus">+</span> Ajouter</button>
-              <div class="legend">
+          <div class="card-heading section-title-head stage-title-head">
+            <span class="step">02</span>
+            <div class="heading-copy"><h2>PLAN</h2><p>Vue du dessus · déplacer et orienter directement les éléments</p></div>
+          </div>
+          <div class="stage-toolbar-row">
+            <button class="add-main stage-add-btn" id="openAddBtn"><span class="plus">+</span> Ajouter</button>
+            <div class="legend">
               <span><i class="dot camera-dot"></i>caméra</span>
               <span><i class="dot subject-dot"></i>sujet</span>
               <span><i class="dot light-dot"></i>lumière</span>
               <span><i class="dot accessory-dot"></i>accessoire</span>
               <span><i class="dot decor-dot"></i>décor</span>
-              </div>
             </div>
           </div>
           <div class="stage-wrap" id="stageWrap">
@@ -199,18 +200,16 @@
         </div>
 
         <aside class="inspector card" id="inspector">
-          <div class="inspector-head">
-            <div>
-              <div class="bos-inline-heading bos-inline-heading-tight"><span class="step">03</span><div class="heading-copy"><h2>RÉGLAGES</h2><p>Modifier précisément l’élément sélectionné</p></div></div>
-              <div class="selection-model-row">
-                <p id="selectionHint">Sélectionne un élément</p>
-                <button id="changeFixtureHeader" class="header-model-change hidden" type="button" title="Changer de modèle" aria-label="Changer de modèle"></button>
-              </div>
-            </div>
+          <div class="card-heading section-title-head inspector-title-head">
+            <div class="bos-inline-heading bos-inline-heading-tight"><span class="step">03</span><div class="heading-copy"><h2>RÉGLAGES</h2><p>Modifier précisément l’élément sélectionné</p></div></div>
             <button class="inspector-collapse-btn" id="toggleInspectorBtn" type="button" aria-expanded="true" aria-controls="inspectorBody">
               <span class="inspector-toggle-label" id="inspectorToggleLabel">Masquer</span>
               <span class="inspector-chevron" aria-hidden="true">⌃</span>
             </button>
+          </div>
+          <div class="selection-model-row selection-model-row-header">
+            <p id="selectionHint">Sélectionne un élément</p>
+            <button id="changeFixtureHeader" class="header-model-change hidden" type="button" title="Changer de modèle" aria-label="Changer de modèle"></button>
           </div>
           <div id="inspectorBody">
             <div id="inspectorEmpty" class="empty-state">
@@ -223,7 +222,7 @@
       </section>
 
       <section class="camera-preview card">
-        <div class="section-head preview-head">
+        <div class="card-heading section-title-head preview-head">
           <div class="bos-inline-heading"><span class="step">04</span><div class="heading-copy"><h2>VUES CAMÉRA</h2><p id="cameraReadout">Chaque caméra utilise sa propre focale et son propre capteur.</p></div></div>
           <div class="preview-tabs hidden" id="previewTabs"></div>
         </div>
@@ -233,7 +232,7 @@
 
       <section id="plansView" class="main-view hidden">
         <div class="card inline-library-card">
-          <div class="inline-library-head">
+          <div class="card-heading section-title-head inline-library-head">
             <div class="bos-inline-heading"><span class="step">05</span><div class="heading-copy"><h2>MES PLANS</h2><p>Retrouve directement tous tes plans enregistrés.</p></div></div>
           </div>
           <div id="inlinePlanLibraryList" class="plan-library-list inline-plan-library-list"></div>
@@ -246,7 +245,7 @@
       <button class="project-contact-btn" id="improveAppBtn" type="button">
         Une idée pour améliorer l’application ? <span aria-hidden="true">→</span>
       </button>
-      <div class="app-bottom-version">V1.59</div>
+      <div class="app-bottom-version">V1.60</div>
     </section>
 
   <dialog id="addDialog" class="add-dialog">
@@ -428,6 +427,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=1.59"></script>
+  <script src="app.js?v=1.60"></script>
 </body>
 </html>

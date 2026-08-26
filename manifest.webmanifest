@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#F3F1EC",
   "theme_color": "#F3F1EC",
-  "description": "PLAN V1.59 — plan de tournage 2D, lumière, caméras, décor et liste matériel",
+  "description": "PLAN V1.60 — plan de tournage 2D, lumière, caméras, décor et liste matériel",
   "icons": [
     {
       "src": "icon-192.png",
@@ -18,5 +18,5 @@
       "type": "image/png"
     }
   ],
-  "version": "1.57"
+  "version": "1.60"
 }

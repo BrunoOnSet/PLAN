@@ -593,3 +593,51 @@ html,body{background:var(--bg)!important;color:var(--text)!important;font-family
   .camera-preview .preview-head,
   .inline-library-card .inline-library-head{min-height:auto!important}
 }
+
+
+/* V1.60 — reprise structure entêtes BOS_LIGHT_V0_62 */
+.app-shell{width:min(1240px,100%);margin:0 auto;padding:calc(22px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+.plan-options-card,.stage-card,.inspector,.camera-preview,.inline-library-card{padding:0!important;overflow:hidden!important;border:1px solid var(--header-border)!important;border-radius:22px!important;background:var(--panel)!important;box-shadow:none!important}
+.card-heading{
+  display:flex!important;
+  gap:11px!important;
+  align-items:center!important;
+  padding:15px 16px 14px!important;
+  border-bottom:1px solid var(--line)!important;
+  margin:0!important;
+}
+.card-heading .step{
+  width:32px!important;height:32px!important;min-width:32px!important;border-radius:10px!important;
+  display:grid!important;place-items:center!important;
+  background:var(--accent-soft)!important;border:1px solid rgba(47,91,102,.38)!important;
+  color:var(--accent)!important;font-family:'Montserrat',Arial,sans-serif!important;font-weight:800!important;font-size:12px!important;
+}
+.card-heading .heading-copy{display:flex!important;flex-direction:column!important;line-height:1!important;min-width:0!important}
+.card-heading h2{margin:0!important;font-family:'Montserrat',Arial,sans-serif!important;font-size:16px!important;font-weight:800!important;letter-spacing:0!important;color:var(--text)!important;line-height:1!important}
+.card-heading .heading-copy p{display:block!important;margin:2px 0 0!important;font-family:'Montserrat',Arial,sans-serif!important;font-size:10px!important;font-weight:400!important;letter-spacing:0!important;color:var(--muted)!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%}
+body.dark .card-heading h2,:root[data-theme='dark'] .card-heading h2{color:var(--text)!important}
+body.dark .card-heading .heading-copy p,:root[data-theme='dark'] .card-heading .heading-copy p{color:var(--muted)!important}
+.plan-options-card .card-heading,.stage-card .card-heading,.inspector .card-heading,.camera-preview .card-heading,.inline-library-card .card-heading{min-height:auto!important}
+.plan-options-toggle{width:calc(100% - 32px)!important;margin:12px 16px 14px!important}
+.plan-options-body{padding:0 16px 16px!important}
+.stage-toolbar-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px 0!important}
+.stage-head-side{display:contents}
+.stage-card .stage-wrap{margin:12px 16px 0!important}
+.stage-card .plan-scale{margin:8px 16px 14px auto!important}
+.selection-model-row-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 0!important;margin:0!important}
+#inspectorBody{padding:14px 16px 16px!important}
+.camera-monitors{padding:14px 16px 16px!important}
+.inline-plan-library-list{padding:14px 16px 16px!important}
+.preview-head{justify-content:space-between!important}
+.inline-library-head{justify-content:flex-start!important}
+.inspector-title-head{justify-content:space-between!important}
+.project-contact-bottom{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:8px!important;padding:34px 0 6px!important}
+.app-bottom-version{font-family:'Montserrat',Arial,sans-serif!important;font-size:11px!important;font-weight:700!important;color:var(--muted)!important}
+@media (max-width:900px){
+  .workspace-grid{grid-template-columns:1fr!important}
+  .stage-toolbar-row{flex-direction:column;align-items:flex-start!important}
+  .stage-card .stage-wrap{margin:12px 12px 0!important}
+  .stage-card .plan-scale{margin:8px 12px 12px auto!important}
+  #inspectorBody,.camera-monitors,.inline-plan-library-list{padding:12px!important}
+  .selection-model-row-header{padding:12px 12px 0!important}
+}
