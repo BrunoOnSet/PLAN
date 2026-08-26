@@ -1,11 +1,11 @@
 {
-  "name": "BRUNO ONSET / PLAN",
-  "short_name": "PLAN - BOS",
+  "name": "PLAN",
+  "short_name": "PLAN",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#F3F1EC",
   "theme_color": "#F3F1EC",
-  "description": "BOS PLAN V1.57 — plan de tournage 2D, lumière, caméras, décor et liste matériel",
+  "description": "PLAN V1.58 — plan de tournage 2D, lumière, caméras, décor et liste matériel",
   "icons": [
     {
       "src": "icon-192.png",

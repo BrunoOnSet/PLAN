@@ -1,4 +1,4 @@
-const APP_VERSION='V1.57';
+const APP_VERSION='V1.58';
 const NS='http://www.w3.org/2000/svg';
 const stage=document.getElementById('stage');
 const beamsLayer=document.getElementById('beamsLayer');
@@ -1463,12 +1463,12 @@ function duplicateCurrentPlan(){
   setMainTab('plan');
   return true;
 }
-function projectPayload(planState=snapshotState()){return {format:'BOS_PLAN_FEU',version:'1.57',exportedAt:new Date().toISOString(),plan:deepClone(planState)}}
+function projectPayload(planState=snapshotState()){return {format:'BOS_PLAN_FEU',version:'1.58',exportedAt:new Date().toISOString(),plan:deepClone(planState)}}
 function projectFile(planState=snapshotState(),name=state.planName){const payload=projectPayload(planState),blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});return new File([blob],`${safeName(name)}.bosplan.json`,{type:'application/json'})}
 async function shareProjectState(planState=snapshotState(),name=state.planName){
   const file=projectFile(planState,name);
   try{
-    if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:`BOS · PLAN — ${name}`,text:'Copie modifiable du plan BOS.',files:[file]});return}
+    if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:`PLAN — ${name}`,text:'Copie modifiable du plan.',files:[file]});return}
   }catch(e){if(e?.name==='AbortError')return;console.warn('Partage BOS',e)}
   downloadBlob(file, file.name);
   alert('Le partage direct de fichiers n’est pas disponible sur ce navigateur. La copie modifiable a été téléchargée : tu peux l’envoyer par AirDrop, Mail, Messages, etc.');
@@ -1481,7 +1481,7 @@ async function importProjectFile(file){
     resetStageViewport();state=deepClone(incoming);state.planId=null;state.planName=state.planName||file.name.replace(/\.bosplan\.json$|\.json$/i,'')||defaultPlanName();state.folderId=library.folders[0]?.id||'folder_general';
     ensureStateDefaults();state.objects.forEach(normalizeSceneObject);migrateOpeningBindings();state.selected=null;if(!state.activePreviewCamera)state.activePreviewCamera=state.objects.find(o=>o.kind==='camera')?.id||null;
     persistCurrent();render();closeLibraryDialog();flash('Projet importé');
-  }catch(e){console.warn(e);alert('Ce fichier ne semble pas être un projet BOS PLAN valide.')}
+  }catch(e){console.warn(e);alert('Ce fichier ne semble pas être un projet PLAN valide.')}
 }
 
 if(planTabBtn)planTabBtn.onclick=()=>setMainTab('plan');

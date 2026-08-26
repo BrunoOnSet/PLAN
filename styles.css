@@ -539,3 +539,28 @@ html,body{background:var(--bg)!important;color:var(--text)!important;font-family
 .dialog-shell,.equipment-shell,.library-shell{background:var(--panel)!important;border:1px solid var(--header-border)!important;border-radius:24px!important;color:var(--text)!important}.dialog-head,.library-list-head,.equipment-head,.equipment-section-head{border-bottom:1px solid var(--line)!important}.dialog-kicker,.choice-label,.equipment-kicker{font-family:'Montserrat',Arial,sans-serif!important;font-size:10px!important;letter-spacing:.12em!important;font-weight:800!important;color:var(--accent)!important}.dialog-close{width:40px;height:40px;display:grid;place-items:center;font-size:22px!important;line-height:1!important}.export-popover{background:var(--panel)!important;border:1px solid var(--header-border)!important;border-radius:18px!important;box-shadow:none!important}.export-option{font-family:'Montserrat',Arial,sans-serif!important}.export-option:hover{background:var(--panel-3)!important}
 @media (max-width:900px){.app-shell{padding-left:10px;padding-right:10px}.plan-primary-actions,.secondary-plan-actions{width:100%}}
 @media (max-width:700px){.bos-top-inner{flex-direction:column;align-items:stretch}.bos-top-actions{justify-content:space-between}.bos-header-logo{width:46px;height:46px;flex-basis:46px}.bos-header-name{font-size:15px!important}.bos-brand-text{gap:2px}.bos-header-tagline{font-size:9px!important}.top-tool .tool-label{font-size:9px!important}.project-contact-top{padding-top:2px}.project-contact-bottom{padding-top:28px}.project-contact-btn{font-size:11px!important}}
+
+
+/* V1.58 — corrections d’alignement DA BOS */
+.project-contact-top{margin:0 0 0!important;padding:2px 0 4px!important}
+.project-contact-top .project-contact-btn{padding-left:0!important}
+.workspace-grid{grid-template-columns:minmax(0,1fr) 330px!important;align-items:start!important}
+.stage-card,.inspector,.camera-preview,.inline-library-card{padding:0!important;overflow:hidden!important}
+.stage-card .section-head,.inspector-head,.preview-head,.inline-library-head{margin:0!important}
+.stage-card .section-head{padding:15px 16px 13px!important}
+.inspector-head{padding:15px 16px 13px!important}
+.preview-head,.inline-library-head{padding:15px 16px 13px!important}
+.stage-card .stage-wrap{margin:0 16px!important}
+.stage-card .plan-scale{margin:8px 16px 14px auto!important}
+#inspectorBody{padding:14px 16px 16px!important}
+.camera-monitors{padding:14px 16px 16px!important}
+.plan-options-card .bos-section-heading{padding:15px 16px 13px!important;border-bottom:1px solid var(--line)!important}
+.plan-options-toggle{width:calc(100% - 32px)!important;margin:12px 16px 14px!important}
+.plan-options-body{padding:0 16px 16px!important}
+.bos-section-heading .heading-copy,.bos-inline-heading .heading-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
+@media (max-width:900px){
+  .workspace-grid{grid-template-columns:1fr!important}
+  .stage-card .stage-wrap{margin:0 12px!important}
+  .stage-card .plan-scale{margin:8px 12px 12px auto!important}
+  #inspectorBody,.camera-monitors{padding:12px!important}
+}
