@@ -16,6 +16,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=1.60" />
+  <style id="bos-light-contact-exact">
+    .project-contact-top{
+      display:flex!important;
+      justify-content:flex-start!important;
+      padding:2px 0 2px!important;
+      margin:0 2px 0!important;
+    }
+    .project-contact-btn{
+      border:0!important;
+      background:transparent!important;
+      color:#2F5B66!important;
+      padding:8px 2px!important;
+      font-family:"Montserrat",Arial,sans-serif!important;
+      font-size:12px!important;
+      font-weight:700!important;
+      letter-spacing:.01em!important;
+      cursor:pointer!important;
+    }
+    .project-contact-btn span{display:inline-block!important;margin-left:5px!important;transition:transform .16s ease!important}
+    .project-contact-btn:hover span{transform:translateX(3px)!important}
+    .project-contact-btn:focus-visible{outline:2px solid #2F5B66!important;outline-offset:3px!important;border-radius:4px!important}
+    body.dark .project-contact-btn{color:#7FA7B0!important}
+    @media(max-width:520px){
+      .project-contact-top{padding-top:2px!important}
+      .project-contact-btn{font-size:11px!important}
+    }
+  </style>
 </head>
 <body>
   <div class="app-shell">
