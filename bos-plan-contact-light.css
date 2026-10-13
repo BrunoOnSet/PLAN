@@ -1,0 +1,115 @@
+/* PLAN — contact professionnel et suggestion calés sur la référence BOS LIGHT. */
+
+#projectDialog.project-sheet{
+  width:min(470px,calc(100% - 24px));
+  padding:0!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:22px!important;
+  background:var(--bos-panel)!important;
+  color:var(--bos-ink)!important;
+  box-shadow:0 28px 90px rgba(12,18,20,.24)!important;
+}
+#projectDialog::backdrop{
+  background:rgba(9,13,15,.42)!important;
+  backdrop-filter:blur(6px)!important;
+  -webkit-backdrop-filter:blur(6px)!important;
+}
+#projectDialog .project-sheet-inner{
+  margin:0!important;
+  padding:22px!important;
+  border:0!important;
+  background:transparent!important;
+}
+#projectDialog .project-sheet-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+#projectDialog .project-kicker{
+  display:block!important;
+  margin-bottom:7px!important;
+  color:var(--bos-accent)!important;
+  font-family:inherit!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.07em!important;
+}
+#projectDialog .project-close{
+  flex:0 0 38px!important;
+  width:38px!important;
+  height:38px!important;
+  padding:0!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:50%!important;
+  background:var(--bos-panel-soft)!important;
+  color:var(--bos-ink)!important;
+  font-family:inherit!important;
+  font-size:23px!important;
+  line-height:1!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+#projectDialog .project-actions{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:12px!important;
+  margin-top:18px!important;
+}
+#projectDialog .project-email-btn{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:40px!important;
+  padding:0 15px!important;
+  border:1px solid var(--bos-accent)!important;
+  border-radius:12px!important;
+  background:var(--bos-accent)!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  letter-spacing:.01em!important;
+}
+#projectDialog .project-email-btn span{
+  display:inline-block!important;
+  transition:transform .16s ease!important;
+}
+#projectDialog .project-email-btn:hover span{transform:translateX(3px)!important}
+#projectDialog .project-email-btn:focus-visible{
+  outline:2px solid var(--bos-accent)!important;
+  outline-offset:3px!important;
+}
+#projectDialog .project-secondary-links{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  color:var(--bos-muted)!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+}
+#projectDialog .project-secondary-link{
+  color:var(--bos-muted)!important;
+  text-decoration:none!important;
+  font-family:inherit!important;
+  font-weight:600!important;
+  letter-spacing:.01em!important;
+}
+#projectDialog .project-secondary-link:hover,
+#projectDialog .project-secondary-link:focus-visible{
+  color:var(--bos-accent)!important;
+  text-decoration:underline!important;
+}
+body.dark #projectDialog .project-email-btn{
+  background:#7FA7B0!important;
+  border-color:#7FA7B0!important;
+  color:#101315!important;
+}
+
+@media(max-width:520px){
+  #projectDialog .project-sheet-inner{padding:18px!important}
+}
