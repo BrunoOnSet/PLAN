@@ -130,6 +130,9 @@
 .stage-card.ui-collapsed .stage-head,
 .camera-preview.ui-collapsed .preview-head,
 .inline-library-card.ui-collapsed .inline-library-head{border-bottom-color:transparent!important}
+.stage-card.ui-collapsed .stage-head-side,
+.camera-preview.ui-collapsed .preview-tabs,
+.inspector.collapsed .inspector-object-action{display:none!important}
 
 .inspector.collapsed>#inspectorBody,
 .inspector.collapsed>.selection-model-row-header{display:none!important}
