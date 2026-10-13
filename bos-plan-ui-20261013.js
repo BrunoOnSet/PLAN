@@ -26,6 +26,25 @@
         group.append(step,copy);
       }
     }
+
+    /* Le bouton Ajouter + la légende appartiennent au contenu ouvert,
+       pas à l'entête. On les place donc juste sous la séparation. */
+    const side=head.querySelector(':scope > .stage-head-side');
+    if(side){
+      side.classList.add('stage-content-tools');
+      head.insertAdjacentElement('afterend',side);
+    }
+  }
+
+  function normalizeInspectorHeading(){
+    const head=bySel('.inspector-title-head, .inspector-head');
+    if(!head) return;
+    const first=head.querySelector(':scope > div:first-child');
+    const selection=first?.querySelector(':scope > .selection-model-row');
+    if(selection){
+      selection.classList.add('inspector-selection-row');
+      head.insertAdjacentElement('afterend',selection);
+    }
   }
 
   function makeCollapseButton(card,head,key){
@@ -128,6 +147,7 @@
 
   function init(){
     movePlanCommandbarIntoPlan();
+    normalizeInspectorHeading();
     installCollapsibles();
     installInspectorActions();
     normalizeInspectorCollapse();
