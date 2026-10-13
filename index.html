@@ -223,39 +223,48 @@
 
       <section class="camera-preview card">
         <div class="section-head preview-head">
-          <div class="bos-inline-heading"><span class="step">04</span><div class="heading-copy"><h2>VUES CAMÉRA</h2><p id="cameraReadout">Chaque caméra utilise sa propre focale et son propre capteur.</p></div></div>
-          <div class="preview-tabs hidden" id="previewTabs"></div>
+          <div class="bos-inline-heading"><span class="step">04</span><div class="heading-copy"><h2>VUES CAMÉRA</h2><p>Cadres indicatifs selon position, focale et sujet</p></div></div>
+          <div class="preview-tabs" id="previewTabs"></div>
         </div>
         <div class="camera-monitors" id="cameraMonitors"></div>
       </section>
-      </div>
 
-      <section id="plansView" class="main-view hidden">
-        <div class="card inline-library-card">
-          <div class="inline-library-head">
-            <div class="bos-inline-heading"><span class="step">05</span><div class="heading-copy"><h2>MES PLANS</h2><p>Retrouve directement tous tes plans enregistrés.</p></div></div>
-          </div>
-          <div id="inlinePlanLibraryList" class="plan-library-list inline-plan-library-list"></div>
+      <section class="inline-library-card card" aria-label="Mes plans">
+        <div class="section-head inline-library-head">
+          <div class="bos-inline-heading"><span class="step">05</span><div class="heading-copy"><h2>MES PLANS</h2><p>Enregistrer, ouvrir et organiser tes plans</p></div></div>
+        </div>
+        <div class="inline-library-body">
+          <div id="inlinePlanLibraryList" class="plan-library-list"></div>
         </div>
       </section>
+      </div>
+
+      <div id="plansView" class="main-view hidden" aria-label="Mes plans">
+        <section class="inline-library-card card inline-library-card-plans">
+          <div class="section-head inline-library-head">
+            <div class="bos-inline-heading"><span class="step">05</span><div class="heading-copy"><h2>MES PLANS</h2><p>Enregistrer, ouvrir et organiser tes plans</p></div></div>
+          </div>
+          <div class="inline-library-body">
+            <div id="inlinePlanLibraryListPlans" class="plan-library-list"></div>
+          </div>
+        </section>
+      </div>
     </main>
+
+    <footer class="footer">
+      <button class="footer-feedback" id="improveAppBtn" type="button">Une idée pour améliorer l’application ?</button>
+      <div>BOS – Bruno OnSet · PLAN · <span id="footerVersion">V1.60</span></div>
+    </footer>
   </div>
 
-  <section class="project-contact project-contact-bottom" aria-label="Amélioration de l’application">
-      <button class="project-contact-btn" id="improveAppBtn" type="button">
-        Une idée pour améliorer l’application ? <span aria-hidden="true">→</span>
-      </button>
-      <div class="app-bottom-version">V1.60</div>
-    </section>
-
-  <dialog id="addDialog" class="add-dialog">
-    <div class="dialog-shell">
+  <dialog id="addDialog">
+    <div class="dialog-card">
       <div class="dialog-head">
         <div>
-          <div class="dialog-kicker">Ajouter</div>
-          <h2 id="dialogTitle">Choisir un élément</h2>
+          <div class="dialog-kicker">PLAN</div>
+          <h2 id="dialogTitle">Ajouter un élément</h2>
         </div>
-        <button class="dialog-close" id="closeAddBtn" aria-label="Fermer">×</button>
+        <button class="dialog-close" id="closeDialogBtn" aria-label="Fermer">×</button>
       </div>
 
       <div id="addKinds" class="kind-grid">
@@ -428,5 +437,6 @@
 
   <script src="app.js?v=1.60"></script>
   <script src="bos-plan-ui-20261013.js?v=20261013-3"></script>
+  <script src="bos-plan-bubble-full-click.js?v=20261013-1"></script>
 </body>
 </html>
