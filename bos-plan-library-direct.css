@@ -1,0 +1,276 @@
+/* MES PLANS — vue directe, sans bulle repliable. */
+
+#plansView{
+  width:100%!important;
+}
+
+#plansView .inline-library-card{
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+
+/* On retire totalement le système de bulle 05. */
+#plansView .inline-library-head,
+#plansView .inline-library-card .bos-bubble-collapse{
+  display:none!important;
+}
+#plansView .inline-library-card.ui-collapsed{
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding:0!important;
+}
+#plansView .inline-library-card.ui-collapsed > .direct-library-toolbar{
+  display:flex!important;
+}
+#plansView .inline-library-card.ui-collapsed > .inline-plan-library-list{
+  display:flex!important;
+}
+
+.direct-library-toolbar{
+  width:100%;
+  margin:0 0 12px;
+  padding:0 2px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-sizing:border-box;
+}
+.direct-library-toolbar-copy{
+  min-width:0;
+}
+.direct-library-toolbar-copy strong{
+  display:block;
+  margin:0;
+  color:var(--bos-ink);
+  font-size:14px;
+  line-height:1.2;
+  font-weight:600;
+  letter-spacing:-.015em;
+}
+.direct-library-toolbar-copy span{
+  display:block;
+  margin-top:3px;
+  color:var(--bos-muted);
+  font-size:9.5px;
+  line-height:1.35;
+  font-weight:400;
+}
+.direct-library-new-folder{
+  flex:0 0 auto;
+  min-height:36px;
+  padding:0 13px;
+  border:1px solid var(--bos-line);
+  border-radius:11px;
+  background:var(--bos-panel);
+  color:var(--bos-accent);
+  font-family:inherit;
+  font-size:10px;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:none;
+}
+.direct-library-new-folder:hover{
+  border-color:var(--bos-line-strong);
+}
+
+#plansView .inline-plan-library-list{
+  width:100%;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* Dossiers */
+#plansView .direct-folder-block{
+  width:100%;
+  margin:0;
+  border:1px solid var(--bos-line);
+  border-radius:14px;
+  background:var(--bos-panel);
+  overflow:hidden;
+  box-sizing:border-box;
+  transition:border-color .16s ease, box-shadow .16s ease, opacity .16s ease;
+}
+#plansView .direct-folder-block.folder-drop-target{
+  border-color:var(--bos-accent);
+  box-shadow:0 0 0 3px var(--bos-accent-soft);
+}
+#plansView .direct-folder-block.folder-dragging{
+  opacity:.5;
+}
+
+.direct-folder-head{
+  min-height:46px;
+  padding:8px 10px 8px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border-bottom:1px solid var(--bos-line);
+  background:var(--bos-panel-soft);
+  box-sizing:border-box;
+  cursor:grab;
+}
+.direct-folder-head:active{cursor:grabbing}
+.direct-folder-title{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.direct-folder-drag{
+  flex:0 0 auto;
+  color:var(--bos-faint);
+  font-size:13px;
+  line-height:1;
+  letter-spacing:-2px;
+  user-select:none;
+}
+.direct-folder-name{
+  min-width:0;
+}
+.direct-folder-name strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--bos-ink);
+  font-size:11px;
+  line-height:1.2;
+  font-weight:600;
+}
+.direct-folder-name small{
+  display:block;
+  margin-top:2px;
+  color:var(--bos-muted);
+  font-size:8.5px;
+  line-height:1.2;
+  font-weight:400;
+}
+.direct-folder-actions{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.direct-folder-actions button{
+  width:30px;
+  min-width:30px;
+  height:30px;
+  min-height:30px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--bos-line);
+  border-radius:9px;
+  background:var(--bos-panel);
+  color:var(--bos-muted);
+  font-family:inherit;
+  font-size:13px;
+  line-height:1;
+  cursor:pointer;
+}
+.direct-folder-actions button:hover:not(:disabled){
+  border-color:var(--bos-line-strong);
+  color:var(--bos-accent);
+}
+.direct-folder-actions button:disabled{
+  opacity:.28;
+  cursor:default;
+}
+
+/* Plans */
+#plansView .plan-row{
+  position:relative;
+  cursor:grab;
+  background:var(--bos-panel);
+}
+#plansView .plan-row:active{cursor:grabbing}
+#plansView .plan-row.plan-dragging{
+  opacity:.42;
+}
+#plansView .plan-name-line{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+#plansView .plan-name-line strong{
+  min-width:0;
+  flex:1 1 auto;
+}
+#plansView .plan-drag-handle{
+  flex:0 0 auto;
+  width:18px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  color:var(--bos-faint);
+  font-size:13px;
+  line-height:1;
+  letter-spacing:-2px;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+#plansView .plan-drag-handle:active{cursor:grabbing}
+
+#plansView .folder-empty{
+  padding:14px 12px;
+  color:var(--bos-muted);
+  font-size:10px;
+  line-height:1.35;
+}
+
+.direct-library-empty{
+  padding:24px 4px;
+  color:var(--bos-muted);
+  font-size:11px;
+  text-align:center;
+}
+
+body.dark #plansView .direct-folder-block,
+body.dark .direct-library-new-folder,
+body.dark .direct-folder-actions button{
+  background:var(--bos-panel);
+}
+body.dark .direct-folder-head{
+  background:var(--bos-panel-soft);
+}
+
+@media(max-width:620px){
+  .direct-library-toolbar{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .direct-library-new-folder{
+    width:100%;
+  }
+  .direct-folder-head{
+    align-items:flex-start;
+  }
+  .direct-folder-actions{
+    gap:4px;
+  }
+  .direct-folder-actions button{
+    width:28px;
+    min-width:28px;
+    height:28px;
+    min-height:28px;
+  }
+}
