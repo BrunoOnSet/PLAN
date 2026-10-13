@@ -56,3 +56,14 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();
+
+/* Charge uniquement la zone cliquable complète des entêtes 02/03/04.
+   Aucun changement de structure, de style ou de contenu. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-bubble-full-click]'))return;
+  const s=document.createElement('script');
+  s.src='bos-plan-bubble-full-click.js?v=20261013-1';
+  s.async=false;
+  s.dataset.bosPlanBubbleFullClick='1';
+  document.body.appendChild(s);
+})();
