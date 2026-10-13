@@ -1,0 +1,77 @@
+/* PLAN — garde le bouton DARK compact, toujours en haut à droite du header. */
+.topbar.cardlike .bos-top-inner{
+  width:100%!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+
+.topbar.cardlike .bos-top-title,
+.topbar.cardlike .bos-brand-lockup{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+
+.topbar.cardlike .bos-top-actions{
+  width:auto!important;
+  min-width:0!important;
+  flex:0 0 auto!important;
+  margin:0 0 0 auto!important;
+  padding:0!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+}
+
+.topbar.cardlike #themeToggle,
+.topbar.cardlike .mode-btn{
+  width:auto!important;
+  min-width:42px!important;
+  max-width:none!important;
+  height:36px!important;
+  min-height:36px!important;
+  padding:0 10px!important;
+  flex:0 0 auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  margin:0!important;
+}
+
+/* Neutralise les anciennes règles mobiles qui plaçaient DARK sous le logo. */
+@media(max-width:700px){
+  .topbar.cardlike .bos-top-inner{
+    flex-direction:row!important;
+    align-items:center!important;
+  }
+  .topbar.cardlike .bos-top-actions{
+    width:auto!important;
+    flex:0 0 auto!important;
+    margin-left:auto!important;
+    justify-content:flex-end!important;
+  }
+  .topbar.cardlike #themeToggle,
+  .topbar.cardlike .mode-btn{
+    width:auto!important;
+    min-width:42px!important;
+    max-width:none!important;
+    flex:0 0 auto!important;
+  }
+}
+
+@media(max-width:390px){
+  .topbar.cardlike{padding:10px 11px!important}
+  .topbar.cardlike .bos-top-inner{gap:8px!important}
+  .topbar.cardlike #themeToggle,
+  .topbar.cardlike .mode-btn{
+    min-width:38px!important;
+    height:34px!important;
+    min-height:34px!important;
+    padding:0 8px!important;
+  }
+}
