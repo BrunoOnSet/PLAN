@@ -1,0 +1,282 @@
+/* PLAN — palette + typographie copiées directement de BOS-LIGHT/main/light-design.css
+   Aucun choix intermédiaire : mêmes valeurs, mêmes fontes, mêmes graisses. */
+
+:root{
+  --bos-bg:#F4F5F5;
+  --bos-panel:#FFFFFF;
+  --bos-panel-soft:#F8F9F9;
+  --bos-ink:#15191B;
+  --bos-muted:#737B7E;
+  --bos-faint:#98A0A3;
+  --bos-line:rgba(21,25,27,.085);
+  --bos-line-strong:rgba(21,25,27,.15);
+  --bos-accent:#2F5B66;
+  --bos-accent-2:#547984;
+  --bos-accent-soft:#E8EFF1;
+  --bos-shadow:0 10px 34px rgba(22,31,35,.055),0 2px 8px rgba(22,31,35,.035);
+  --bos-shadow-soft:0 5px 18px rgba(22,31,35,.045);
+  --bos-radius:18px;
+  --bos-radius-small:12px;
+  --bos-bubble-warm:#8B857F;
+  --bos-bubble-warm-soft:color-mix(in srgb,var(--bos-bubble-warm) 11%,var(--bos-panel));
+  --bos-bubble-warm-line:color-mix(in srgb,var(--bos-bubble-warm) 20%,transparent);
+
+  /* Alias historiques PLAN, reliés strictement à la palette LIGHT */
+  --bg:var(--bos-bg);
+  --panel:var(--bos-panel);
+  --panel-2:var(--bos-panel-soft);
+  --panel2:var(--bos-panel-soft);
+  --card:var(--bos-panel);
+  --text:var(--bos-ink);
+  --muted:var(--bos-muted);
+  --line:var(--bos-line);
+  --accent:var(--bos-accent);
+  --accent-soft:var(--bos-accent-soft);
+  --blue:var(--bos-accent);
+  --blue-soft:var(--bos-accent-soft);
+  --header-bg:var(--bos-panel);
+  --header-border:var(--bos-line);
+  --field-bg:var(--bos-panel-soft);
+  --card-border:var(--bos-line);
+  --chip-text:var(--bos-muted);
+  --chip-active-bg:var(--bos-panel);
+  --chip-active-text:var(--bos-accent);
+  --chip-bg:var(--bos-panel-soft);
+  --shadow:var(--bos-shadow);
+  --radius:var(--bos-radius);
+}
+
+html[data-theme="dark"],body.dark{
+  --bos-bg:#101315;
+  --bos-panel:#171B1D;
+  --bos-panel-soft:#1C2123;
+  --bos-ink:#F3F5F5;
+  --bos-muted:#A2ABAE;
+  --bos-faint:#7D878A;
+  --bos-line:rgba(255,255,255,.08);
+  --bos-line-strong:rgba(255,255,255,.14);
+  --bos-accent:#88AEB7;
+  --bos-accent-2:#AAC4CA;
+  --bos-accent-soft:rgba(136,174,183,.14);
+  --bos-shadow:0 12px 36px rgba(0,0,0,.22);
+  --bos-shadow-soft:0 5px 18px rgba(0,0,0,.16);
+  --bos-bubble-warm:#A49C96;
+  --bos-bubble-warm-soft:color-mix(in srgb,var(--bos-bubble-warm) 10%,var(--bos-panel));
+  --bos-bubble-warm-line:color-mix(in srgb,var(--bos-bubble-warm) 22%,transparent);
+}
+
+/* Fonte LIGHT exacte */
+html,body,
+button,input,select,textarea,
+.app-shell,.topbar,.plan-commandbar,.main-tabs,
+.card,.toolbar,.stage-card,.inspector,.camera-preview,.inline-library-card,
+.plan-options-card,.plan-options-toggle,.plan-options-body,
+.dialog-shell,.equipment-shell,.library-shell{
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+html,body{
+  background:var(--bos-bg)!important;
+  color:var(--bos-ink)!important;
+  font-weight:400!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:optimizeLegibility!important;
+}
+
+/* Header LIGHT exact */
+.bos-header-name{
+  color:var(--bos-accent)!important;
+  font-family:inherit!important;
+  font-size:10.5px!important;
+  line-height:1!important;
+  font-weight:500!important;
+  letter-spacing:.01em!important;
+}
+.bos-header-app,.bos-header-app::after{
+  color:var(--bos-ink)!important;
+  font-family:inherit!important;
+  font-size:25px!important;
+  line-height:.95!important;
+  font-weight:600!important;
+  letter-spacing:-.045em!important;
+}
+
+/* Boutons LIGHT exacts */
+#themeToggle,.mode-btn,.iconbtn{
+  border-color:var(--bos-line)!important;
+  background:var(--bos-panel-soft)!important;
+  color:var(--bos-muted)!important;
+  box-shadow:none!important;
+  font-family:inherit!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.04em!important;
+}
+#installAppBtn,.project-contact-btn{
+  background:var(--bos-panel)!important;
+  border-color:var(--bos-line)!important;
+  color:var(--bos-ink)!important;
+  box-shadow:var(--bos-shadow-soft)!important;
+  font-family:inherit!important;
+  font-size:11.5px!important;
+  font-weight:500!important;
+  letter-spacing:-.005em!important;
+  text-transform:none!important;
+}
+#projectContactBtn::after{
+  color:var(--bos-ink)!important;
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:11.5px!important;
+  font-weight:500!important;
+  letter-spacing:-.005em!important;
+}
+body.dark #projectContactBtn,
+body.dark #projectContactBtn::after{color:var(--bos-muted)!important}
+.project-contact-btn span,.install-app-btn span{color:var(--bos-accent)!important}
+
+/* Onglets LIGHT exacts */
+.main-tabs .main-tab{
+  color:var(--bos-muted)!important;
+  font-family:inherit!important;
+  font-size:9.5px!important;
+  font-weight:600!important;
+  letter-spacing:.055em!important;
+  text-transform:uppercase!important;
+}
+.main-tabs .main-tab.active{
+  background:var(--bos-panel)!important;
+  color:var(--bos-accent)!important;
+}
+
+/* Repères numériques LIGHT exacts */
+.step,
+.plan-options-card>.plan-options-toggle::before{
+  background:var(--bos-bubble-warm-soft)!important;
+  color:var(--bos-accent)!important;
+  border:1px solid var(--bos-bubble-warm-line)!important;
+  box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--bos-bubble-warm) 18%,transparent)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+/* Titres / sous-titres de bulles : valeurs LIGHT exactes */
+.heading-copy h2,
+.section-head h2,
+.inspector-head h2,
+.inline-library-head h2,
+.plan-options-card>.plan-options-toggle>span:first-child::before{
+  color:var(--bos-ink)!important;
+  font-family:inherit!important;
+  font-size:15px!important;
+  line-height:1.12!important;
+  font-weight:600!important;
+  letter-spacing:-.018em!important;
+  text-transform:none!important;
+}
+.heading-copy p,
+.section-head p,
+.inspector-head p,
+.inline-library-head p,
+.plan-options-card>.plan-options-toggle>span:first-child::after{
+  color:var(--bos-muted)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  font-weight:400!important;
+  letter-spacing:-.005em!important;
+  text-transform:none!important;
+}
+
+/* Libellés LIGHT exacts */
+.top-plan-name label,
+.plan-tools>label,
+.grid-opacity-control,
+.grid-opacity-head,
+.field label,
+.slider-head label,
+.choice-label,
+.dialog-kicker,
+.equipment-kicker,
+.control-label,
+.field-label{
+  color:var(--bos-muted)!important;
+  font-family:inherit!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.055em!important;
+  text-transform:uppercase!important;
+}
+
+/* Champs LIGHT exacts */
+select,
+input:not([type="range"]),
+textarea,
+.top-plan-name input,
+.plan-tools select,
+.field input,
+.field select,
+.field textarea,
+.model-picker-btn,
+.camera-db-select{
+  border-color:var(--bos-line)!important;
+  background:var(--bos-panel-soft)!important;
+  color:var(--bos-ink)!important;
+  box-shadow:none!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  letter-spacing:-.01em!important;
+  font-variant-numeric:tabular-nums!important;
+}
+select:focus,input:focus,textarea:focus{
+  border-color:color-mix(in srgb,var(--bos-accent) 55%,transparent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--bos-accent) 10%,transparent)!important;
+  outline:none!important;
+}
+input[type="range"]{accent-color:var(--bos-accent)!important}
+
+/* Contrôles / valeurs / texte secondaire */
+.beam-toggle,.top-tool,.stage-add-btn,.preview-tabs button,.plan-row-actions button,.small-btn,.ghost{
+  font-family:inherit!important;
+  font-weight:500!important;
+}
+.beam-toggle,.top-tool,.preview-tabs button,.plan-row-actions button,.small-btn,.ghost{
+  background:var(--bos-panel-soft)!important;
+  border-color:var(--bos-line)!important;
+  color:var(--bos-muted)!important;
+}
+.beam-toggle.active,.preview-tabs button.active,.plan-row-actions button.primary-mini{
+  background:var(--bos-accent-soft)!important;
+  color:var(--bos-accent)!important;
+}
+.grid-opacity-head output,.slider-head strong,.summary-value,.light-summary{
+  color:var(--bos-accent-2)!important;
+  font-family:inherit!important;
+  font-weight:500!important;
+}
+.toolbar-note strong{color:var(--bos-accent)!important;font-family:inherit!important;font-weight:600!important}
+.toolbar-note span,.selection-model-row p,.camera-monitor-head span,.plan-row-main small,.field-help,.unit{color:var(--bos-muted)!important;font-family:inherit!important;font-weight:400!important}
+.chevron,.inspector-chevron,.plan-options-toggle-right,#planOptionsToggleCaret{color:var(--bos-faint)!important}
+
+/* Coques : palette LIGHT exacte */
+.card,.toolbar,.stage-card,.inspector,.camera-preview,.inline-library-card,.plan-commandbar,.plan-options-card{
+  background:var(--bos-panel)!important;
+  border-color:var(--bos-line)!important;
+  box-shadow:var(--bos-shadow)!important;
+}
+.dialog-shell,.equipment-shell,.library-shell{
+  background:var(--bos-panel)!important;
+  border-color:var(--bos-line)!important;
+}
+.empty-icon,.camera-monitor-card,.equipment-info-card,.equipment-add-card,.library-current,.kind-card,.simple-card,.choice-btn,.camera-brand-chip{
+  background:var(--bos-panel-soft)!important;
+  border-color:var(--bos-line)!important;
+}
+
+@media(max-width:520px){
+  .bos-header-name{font-size:10px!important}
+  .bos-header-app,.bos-header-app::after{font-size:23px!important}
+}
