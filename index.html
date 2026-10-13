@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" id="themeColor" content="#F3F1EC" />
+  <meta name="theme-color" id="themeColor" content="#F4F5F5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="PLAN" />
@@ -14,35 +14,8 @@
   <link rel="manifest" href="manifest.webmanifest?v=1.60" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.60" />
-  <style id="bos-light-contact-exact">
-    .project-contact-top{
-      display:flex!important;
-      justify-content:flex-start!important;
-      padding:2px 0 2px!important;
-      margin:0 2px 0!important;
-    }
-    .project-contact-btn{
-      border:0!important;
-      background:transparent!important;
-      color:#2F5B66!important;
-      padding:8px 2px!important;
-      font-family:"Montserrat",Arial,sans-serif!important;
-      font-size:12px!important;
-      font-weight:700!important;
-      letter-spacing:.01em!important;
-      cursor:pointer!important;
-    }
-    .project-contact-btn span{display:inline-block!important;margin-left:5px!important;transition:transform .16s ease!important}
-    .project-contact-btn:hover span{transform:translateX(3px)!important}
-    .project-contact-btn:focus-visible{outline:2px solid #2F5B66!important;outline-offset:3px!important;border-radius:4px!important}
-    body.dark .project-contact-btn{color:#7FA7B0!important}
-    @media(max-width:520px){
-      .project-contact-top{padding-top:2px!important}
-      .project-contact-btn{font-size:11px!important}
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20261013-2" />
 </head>
 <body>
   <div class="app-shell">
@@ -127,7 +100,6 @@
           </div>
         </div>
 
-
         <button class="top-tool" id="saveBtn" type="button" title="Enregistrer le plan">
           <span class="tool-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h12l2 2v14H5z"/><path d="M8 4v5h8V4"/><path d="M8 18h8"/></svg>
@@ -146,7 +118,7 @@
     <main>
       <div id="planView" class="main-view">
       <section class="toolbar card plan-options-card">
-        <div class="card-heading section-title-head"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant, faisceaux, infos et grille</p></div></div>
+        <div class="bos-section-heading"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant, faisceaux, infos et grille</p></div></div>
         <button class="plan-options-toggle" id="planOptionsToggle" type="button" aria-expanded="true" aria-controls="planOptionsBody">
           <span>Options de plan</span>
           <span class="plan-options-toggle-right"><em id="planOptionsToggleText">MASQUER</em><i id="planOptionsToggleCaret">⌃</i></span>
@@ -186,18 +158,17 @@
 
       <section class="workspace-grid">
         <div class="stage-card card">
-          <div class="card-heading section-title-head stage-title-head">
-            <span class="step">02</span>
-            <div class="heading-copy"><h2>PLAN</h2><p>Vue du dessus · déplacer et orienter directement les éléments</p></div>
-          </div>
-          <div class="stage-toolbar-row">
-            <button class="add-main stage-add-btn" id="openAddBtn"><span class="plus">+</span> Ajouter</button>
-            <div class="legend">
+          <div class="section-head stage-head">
+            <div class="bos-inline-heading"><span class="step">02</span><div class="heading-copy"><h2>PLAN</h2><p>Vue du dessus · déplacer et orienter directement les éléments</p></div></div>
+            <div class="stage-head-side">
+              <button class="add-main stage-add-btn" id="openAddBtn"><span class="plus">+</span> Ajouter</button>
+              <div class="legend">
               <span><i class="dot camera-dot"></i>caméra</span>
               <span><i class="dot subject-dot"></i>sujet</span>
               <span><i class="dot light-dot"></i>lumière</span>
               <span><i class="dot accessory-dot"></i>accessoire</span>
               <span><i class="dot decor-dot"></i>décor</span>
+              </div>
             </div>
           </div>
           <div class="stage-wrap" id="stageWrap">
@@ -227,16 +198,18 @@
         </div>
 
         <aside class="inspector card" id="inspector">
-          <div class="card-heading section-title-head inspector-title-head">
-            <div class="bos-inline-heading bos-inline-heading-tight"><span class="step">03</span><div class="heading-copy"><h2>RÉGLAGES</h2><p>Modifier précisément l’élément sélectionné</p></div></div>
+          <div class="inspector-head">
+            <div>
+              <div class="bos-inline-heading bos-inline-heading-tight"><span class="step">03</span><div class="heading-copy"><h2>RÉGLAGES</h2><p>Modifier précisément l’élément sélectionné</p></div></div>
+              <div class="selection-model-row">
+                <p id="selectionHint">Sélectionne un élément</p>
+                <button id="changeFixtureHeader" class="header-model-change hidden" type="button" title="Changer de modèle" aria-label="Changer de modèle"></button>
+              </div>
+            </div>
             <button class="inspector-collapse-btn" id="toggleInspectorBtn" type="button" aria-expanded="true" aria-controls="inspectorBody">
               <span class="inspector-toggle-label" id="inspectorToggleLabel">Masquer</span>
               <span class="inspector-chevron" aria-hidden="true">⌃</span>
             </button>
-          </div>
-          <div class="selection-model-row selection-model-row-header">
-            <p id="selectionHint">Sélectionne un élément</p>
-            <button id="changeFixtureHeader" class="header-model-change hidden" type="button" title="Changer de modèle" aria-label="Changer de modèle"></button>
           </div>
           <div id="inspectorBody">
             <div id="inspectorEmpty" class="empty-state">
@@ -249,7 +222,7 @@
       </section>
 
       <section class="camera-preview card">
-        <div class="card-heading section-title-head preview-head">
+        <div class="section-head preview-head">
           <div class="bos-inline-heading"><span class="step">04</span><div class="heading-copy"><h2>VUES CAMÉRA</h2><p id="cameraReadout">Chaque caméra utilise sa propre focale et son propre capteur.</p></div></div>
           <div class="preview-tabs hidden" id="previewTabs"></div>
         </div>
@@ -259,7 +232,7 @@
 
       <section id="plansView" class="main-view hidden">
         <div class="card inline-library-card">
-          <div class="card-heading section-title-head inline-library-head">
+          <div class="inline-library-head">
             <div class="bos-inline-heading"><span class="step">05</span><div class="heading-copy"><h2>MES PLANS</h2><p>Retrouve directement tous tes plans enregistrés.</p></div></div>
           </div>
           <div id="inlinePlanLibraryList" class="plan-library-list inline-plan-library-list"></div>
@@ -272,7 +245,6 @@
       <button class="project-contact-btn" id="improveAppBtn" type="button">
         Une idée pour améliorer l’application ? <span aria-hidden="true">→</span>
       </button>
-      <div class="app-bottom-version">V1.60</div>
     </section>
 
   <dialog id="addDialog" class="add-dialog">
@@ -455,5 +427,6 @@
   </dialog>
 
   <script src="app.js?v=1.60"></script>
+  <script src="bos-plan-ui-20261013.js?v=20261013-2"></script>
 </body>
 </html>
