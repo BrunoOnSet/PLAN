@@ -1,0 +1,111 @@
+/* PLAN — correctifs d’actions d’entête
+   - PLAN : le bouton Ajouter ne chevauche jamais le chevron
+   - RÉGLAGES : Dupliquer + Corbeille restent visibles même replié
+   - Corbeille reprend le rouge du contrôle présent directement sur le plan */
+
+/* Bulle PLAN ouverte : on réserve physiquement la zone du chevron à droite. */
+.stage-card:not(.ui-collapsed) > .stage-title-head,
+.stage-card:not(.ui-collapsed) > .stage-head{
+  padding-right:56px!important;
+}
+.stage-card:not(.ui-collapsed) .stage-head-side{
+  max-width:calc(100% - 44px)!important;
+}
+
+/* RÉGLAGES — actions toujours visibles, ouvertes comme fermées. */
+.inspector .inspector-head,
+.inspector .inspector-title-head{
+  position:relative!important;
+}
+
+/* Le groupe n’ajoute jamais de hauteur : les boutons sont positionnés dans l’entête. */
+.inspector.collapsed .inspector-head-actions{
+  display:block!important;
+  position:static!important;
+  margin:0!important;
+  padding:0!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+}
+
+/* Réserve la place des 2 actions + du chevron sans changer la hauteur de la bulle. */
+.inspector.collapsed > .inspector-head,
+.inspector.collapsed > .inspector-title-head{
+  padding-right:132px!important;
+}
+
+/* On annule explicitement les anciennes règles qui cachaient les actions repliées. */
+.inspector.collapsed .inspector-head-actions .inspector-object-action:not(#toggleInspectorBtn){
+  display:grid!important;
+}
+
+/* Deux boutons parfaitement côte à côte, juste avant le chevron. */
+.inspector.collapsed .inspector-object-action.duplicate-selected,
+.inspector.collapsed .inspector-object-action.delete-selected{
+  position:absolute!important;
+  top:50%!important;
+  width:30px!important;
+  min-width:30px!important;
+  height:30px!important;
+  min-height:30px!important;
+  margin:0!important;
+  transform:translateY(-50%)!important;
+  z-index:6!important;
+}
+.inspector.collapsed .inspector-object-action.duplicate-selected{
+  right:83px!important;
+}
+.inspector.collapsed .inspector-object-action.delete-selected{
+  right:48px!important;
+}
+
+/* Ouvert : les 2 boutons restent côte à côte et laissent la place au chevron. */
+.inspector:not(.collapsed) .inspector-head-actions{
+  margin-left:auto!important;
+  padding-right:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+}
+
+/* Corbeille = rouge identique au contrôle rouge présent sur le plan. */
+.inspector-object-action.delete-selected{
+  border-color:#f26b6b!important;
+  color:#ff7a7a!important;
+  background:rgba(242,107,107,.08)!important;
+}
+.inspector-object-action.delete-selected svg{
+  stroke:#ff7a7a!important;
+}
+.inspector-object-action.delete-selected:hover:not(:disabled){
+  border-color:#f26b6b!important;
+  color:#ff7a7a!important;
+  background:rgba(242,107,107,.14)!important;
+}
+.inspector-object-action.delete-selected:disabled{
+  border-color:rgba(242,107,107,.45)!important;
+  color:rgba(255,122,122,.55)!important;
+  opacity:.55!important;
+}
+
+@media(max-width:560px){
+  .stage-card:not(.ui-collapsed) > .stage-title-head,
+  .stage-card:not(.ui-collapsed) > .stage-head{
+    padding-right:48px!important;
+  }
+  .inspector.collapsed > .inspector-head,
+  .inspector.collapsed > .inspector-title-head{
+    padding-right:122px!important;
+  }
+  .inspector.collapsed .inspector-object-action.duplicate-selected,
+  .inspector.collapsed .inspector-object-action.delete-selected{
+    width:28px!important;
+    min-width:28px!important;
+    height:28px!important;
+    min-height:28px!important;
+  }
+  .inspector.collapsed .inspector-object-action.duplicate-selected{right:78px!important}
+  .inspector.collapsed .inspector-object-action.delete-selected{right:45px!important}
+}
