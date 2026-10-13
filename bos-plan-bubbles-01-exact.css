@@ -1,0 +1,287 @@
+/* PLAN — système de bulle strictement copié sur la bulle 01 OPTIONS DE PLAN.
+   Cette feuille est chargée en dernier et devient l’unique référence pour 02/03/04/05.
+   Géométrie copiée de bos-plan-options-light.css : 80px, grille 31 / 1fr / 24,
+   gap 12, padding 14/15, mêmes badge, typo, couleurs et chevron. */
+
+.stage-card,
+.inspector,
+.camera-preview,
+.inline-library-card{
+  position:relative!important;
+}
+
+/* Les anciens entêtes restent dans le DOM pour ne casser aucune logique métier,
+   mais ne participent plus du tout au rendu. */
+.stage-card > .stage-title-head,
+.stage-card > .stage-head,
+.inspector > .inspector-title-head,
+.inspector > .inspector-head,
+.camera-preview > .preview-head,
+.inline-library-card > .inline-library-head{
+  display:none!important;
+}
+
+/* ---------- COPIE EXACTE DE LA TÊTE 01 ---------- */
+.bos-exact-toggle{
+  display:grid!important;
+  grid-template-columns:31px minmax(0,1fr) 24px!important;
+  align-items:center!important;
+  gap:12px!important;
+  width:100%!important;
+  height:80px!important;
+  min-height:80px!important;
+  max-height:80px!important;
+  margin:0!important;
+  padding:14px 15px!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--bos-ink)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  position:relative!important;
+  z-index:2!important;
+}
+
+.bos-exact-toggle .bos-exact-number{
+  grid-column:1!important;
+  width:31px!important;
+  min-width:31px!important;
+  height:31px!important;
+  min-height:31px!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--bos-bubble-warm-line)!important;
+  border-radius:9px!important;
+  background:var(--bos-bubble-warm-soft)!important;
+  color:var(--bos-accent)!important;
+  box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--bos-bubble-warm) 18%,transparent)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+.bos-exact-toggle .bos-exact-copy{
+  grid-column:2!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  gap:0!important;
+}
+.bos-exact-toggle .bos-exact-title{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  color:var(--bos-ink)!important;
+  font-family:inherit!important;
+  font-size:15px!important;
+  line-height:1.12!important;
+  font-weight:600!important;
+  letter-spacing:-.018em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+.bos-exact-toggle .bos-exact-subtitle{
+  display:block!important;
+  width:100%!important;
+  margin:3px 0 0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  color:var(--bos-muted)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  font-weight:400!important;
+  letter-spacing:-.005em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+.bos-exact-toggle .bos-exact-subtitle:empty{display:none!important}
+
+.bos-exact-toggle .bos-exact-caret{
+  grid-column:3!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  color:var(--bos-faint)!important;
+  font-size:0!important;
+  line-height:1!important;
+}
+.bos-exact-toggle .bos-exact-caret::before{
+  content:"⌄"!important;
+  display:block!important;
+  color:inherit!important;
+  font-family:inherit!important;
+  font-size:18px!important;
+  line-height:1!important;
+  font-weight:400!important;
+  transform:rotate(0deg)!important;
+  transform-origin:50% 50%!important;
+  transition:transform .18s ease!important;
+}
+.bos-exact-toggle[aria-expanded="true"] .bos-exact-caret::before{
+  transform:rotate(180deg)!important;
+}
+.bos-exact-toggle[aria-expanded="true"]{
+  border-bottom:1px solid var(--bos-line)!important;
+}
+
+/* Même coque fermée que 01 : 80px de tête + bordure de carte. */
+.stage-card.ui-collapsed,
+.inspector.collapsed,
+.camera-preview.ui-collapsed,
+.inline-library-card.ui-collapsed{
+  height:82px!important;
+  min-height:82px!important;
+  max-height:82px!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+
+.stage-card.ui-collapsed > :not(.bos-exact-toggle):not(.stage-title-head):not(.stage-head),
+.camera-preview.ui-collapsed > :not(.bos-exact-toggle):not(.preview-head),
+.inline-library-card.ui-collapsed > :not(.bos-exact-toggle):not(.inline-library-head),
+.inspector.collapsed > #inspectorBody,
+.inspector.collapsed > .inspector-selection-row,
+.inspector.collapsed > .selection-model-row.inspector-selection-row,
+.inspector.collapsed > .selection-model-row-header,
+.inspector.collapsed > .bos-exact-preview-tabs-row{
+  display:none!important;
+}
+
+/* PLAN : Ajouter puis légende restent dans le contenu ouvert, sous le trait. */
+.stage-card > .stage-content-tools,
+.stage-card > .stage-head-side{
+  width:100%!important;
+  margin:0!important;
+  padding:12px 15px 13px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  border:0!important;
+  background:transparent!important;
+}
+.stage-card.ui-collapsed > .stage-content-tools,
+.stage-card.ui-collapsed > .stage-head-side{display:none!important}
+.stage-card > .stage-content-tools .stage-add-btn,
+.stage-card > .stage-head-side .stage-add-btn{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:36px!important;
+  min-height:36px!important;
+  margin:0!important;
+}
+.stage-card > .stage-content-tools .legend,
+.stage-card > .stage-head-side .legend{
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:7px 10px!important;
+}
+
+/* VUES CAMÉRA : si plusieurs onglets sont nécessaires, ils restent fonctionnels
+   mais sont placés dans le contenu, jamais dans la tête de bulle. */
+.bos-exact-preview-tabs-row{
+  padding:10px 15px 0!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+}
+.camera-preview.ui-collapsed > .bos-exact-preview-tabs-row{display:none!important}
+
+/* RÉGLAGES : Dupliquer + Corbeille restent visibles ouvert/fermé, mais le chevron
+   appartient désormais à la copie exacte de 01 et ne peut plus sortir de la tête. */
+.inspector > .bos-exact-toggle .bos-exact-copy{
+  padding-right:78px!important;
+}
+.inspector .bos-exact-actions{
+  position:absolute!important;
+  top:40px!important;
+  right:49px!important;
+  height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  transform:translateY(-50%)!important;
+  z-index:8!important;
+}
+.inspector .bos-exact-actions .inspector-object-action{
+  position:static!important;
+  width:30px!important;
+  min-width:30px!important;
+  height:30px!important;
+  min-height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  flex:0 0 30px!important;
+}
+.inspector .bos-exact-actions .delete-selected{
+  border-color:#f26b6b!important;
+  color:#ff7a7a!important;
+  background:rgba(242,107,107,.08)!important;
+}
+.inspector .bos-exact-actions .delete-selected svg{stroke:#ff7a7a!important}
+
+/* Les anciens contrôles de repli sont conservés uniquement comme mécanisme interne. */
+.stage-card .bos-bubble-collapse,
+.camera-preview .bos-bubble-collapse,
+.inline-library-card .bos-bubble-collapse,
+.inspector #toggleInspectorBtn,
+.inspector .inspector-collapse-proxy,
+.inspector .inspector-head-actions{
+  display:none!important;
+}
+
+@media(max-width:520px){
+  .bos-exact-toggle{
+    grid-template-columns:31px minmax(0,1fr) 24px!important;
+    height:80px!important;
+    min-height:80px!important;
+    max-height:80px!important;
+    padding:14px 12px!important;
+    gap:10px!important;
+  }
+  .bos-exact-toggle .bos-exact-title{font-size:15px!important}
+  .bos-exact-toggle .bos-exact-subtitle{font-size:10px!important}
+  .inspector > .bos-exact-toggle .bos-exact-copy{padding-right:70px!important}
+  .inspector .bos-exact-actions{
+    right:46px!important;
+    height:28px!important;
+  }
+  .inspector .bos-exact-actions .inspector-object-action{
+    width:28px!important;
+    min-width:28px!important;
+    height:28px!important;
+    min-height:28px!important;
+    flex-basis:28px!important;
+  }
+}
