@@ -188,6 +188,8 @@
   position:static!important;
   top:auto!important;
   right:auto!important;
+  left:auto!important;
+  bottom:auto!important;
   transform:none!important;
   margin:0 0 0 2px!important;
   width:24px!important;
@@ -195,6 +197,27 @@
   height:24px!important;
   min-height:24px!important;
   flex:0 0 24px!important;
+}
+
+/* Sécurité : avant même que le JS place le chevron dans le groupe d'actions,
+   il reste ancré dans l'entête RÉGLAGES. Cette règle ne touche aucune autre bulle. */
+.inspector > .inspector-head > #toggleInspectorBtn,
+.inspector > .inspector-title-head > #toggleInspectorBtn{
+  position:absolute!important;
+  top:50%!important;
+  right:14px!important;
+  left:auto!important;
+  bottom:auto!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  transform:translateY(-50%)!important;
+  z-index:8!important;
 }
 
 @media(max-width:560px){
@@ -234,6 +257,10 @@
     padding-right:122px!important;
   }
   .inspector .inspector-head-actions{
+    right:12px!important;
+  }
+  .inspector > .inspector-head > #toggleInspectorBtn,
+  .inspector > .inspector-title-head > #toggleInspectorBtn{
     right:12px!important;
   }
   .inspector .inspector-head-actions .inspector-object-action{
