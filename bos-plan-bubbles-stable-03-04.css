@@ -1,8 +1,8 @@
 /* PLAN — stabilité stricte des entêtes 03 RÉGLAGES et 04 VUES CAMÉRA.
-   Objectif : aucun déplacement du numéro, du titre ou du sous-titre à l'ouverture/fermeture.
-   Ne touche pas au contenu rétractable ni aux fonctions. */
+   Le titre complet est ancré dans l'entête : aucune variation de structure
+   entre l'état ouvert et fermé, et aucun déplacement possible. */
 
-/* Les deux entêtes gardent exactement la même boîte ouverts ou fermés. */
+/* Les entêtes gardent exactement la même boîte dans les deux états. */
 .inspector > .inspector-head,
 .inspector > .inspector-title-head,
 .camera-preview > .preview-head{
@@ -13,47 +13,44 @@
   min-height:60px!important;
   max-height:60px!important;
   margin:0!important;
-  padding-top:14px!important;
-  padding-bottom:13px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
   overflow:hidden!important;
 }
 
-/* RÉGLAGES : l'ancien wrapper ne change plus de display selon l'état. */
+/* 03 : le wrapper historique ne participe plus à la géométrie de l'entête.
+   La ligne de sélection reste déplacée sous l'entête par le JS existant. */
 .inspector > .inspector-head > div:first-child,
 .inspector > .inspector-title-head > div:first-child,
 .inspector.collapsed > .inspector-head > div:first-child,
 .inspector.collapsed > .inspector-title-head > div:first-child{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  flex:1 1 auto!important;
-  min-width:0!important;
-  height:100%!important;
-  margin:0!important;
-  padding:0!important;
+  display:contents!important;
 }
 
-/* Structure interne identique en état ouvert et fermé. */
+/* 03 + 04 : le bloc numéro / titre / sous-titre est toujours placé
+   aux mêmes coordonnées, ouvert comme fermé. */
 .inspector .bos-inline-heading,
 .inspector.collapsed .bos-inline-heading,
 .camera-preview .bos-inline-heading,
 .camera-preview.ui-collapsed .bos-inline-heading{
+  position:absolute!important;
+  left:15px!important;
+  right:56px!important;
+  top:0!important;
+  bottom:0!important;
+  width:auto!important;
+  height:60px!important;
+  margin:0!important;
+  padding:0!important;
   display:flex!important;
   flex-direction:row!important;
   align-items:center!important;
   justify-content:flex-start!important;
   gap:12px!important;
-  flex:1 1 auto!important;
   min-width:0!important;
-  height:auto!important;
-  margin:0!important;
-  padding:0!important;
+  max-width:none!important;
+  z-index:3!important;
+  transform:none!important;
 }
 
-/* Numéros 03 / 04 : coordonnées et dimensions invariantes. */
 .inspector .step,
 .inspector.collapsed .step,
 .camera-preview .step,
@@ -65,10 +62,11 @@
   min-height:31px!important;
   flex:0 0 31px!important;
   margin:0!important;
+  padding:0!important;
   align-self:center!important;
+  transform:none!important;
 }
 
-/* Texte : même boîte et mêmes métriques quel que soit l'état. */
 .inspector .heading-copy,
 .inspector.collapsed .heading-copy,
 .camera-preview .heading-copy,
@@ -80,19 +78,34 @@
   align-items:flex-start!important;
   flex:1 1 auto!important;
   min-width:0!important;
+  width:auto!important;
   height:auto!important;
   margin:0!important;
   padding:0!important;
+  opacity:1!important;
+  visibility:visible!important;
   transform:none!important;
+  z-index:auto!important;
 }
 
 .inspector .heading-copy h2,
 .inspector.collapsed .heading-copy h2,
 .camera-preview .heading-copy h2,
 .camera-preview.ui-collapsed .heading-copy h2{
+  display:block!important;
+  width:100%!important;
   margin:0!important;
   padding:0!important;
+  color:var(--bos-ink)!important;
+  font-size:15px!important;
   line-height:1.12!important;
+  font-weight:600!important;
+  letter-spacing:-.018em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  opacity:1!important;
+  visibility:visible!important;
   transform:none!important;
 }
 
@@ -100,13 +113,24 @@
 .inspector.collapsed .heading-copy p,
 .camera-preview .heading-copy p,
 .camera-preview.ui-collapsed .heading-copy p{
+  display:block!important;
+  width:100%!important;
   margin:3px 0 0!important;
   padding:0!important;
+  color:var(--bos-muted)!important;
+  font-size:10px!important;
   line-height:1.35!important;
+  font-weight:400!important;
+  letter-spacing:-.005em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  opacity:1!important;
+  visibility:visible!important;
   transform:none!important;
 }
 
-/* Le chevron ne participe jamais au flux du titre. */
+/* Les chevrons restent hors flux et ne peuvent jamais pousser le texte. */
 .inspector .inspector-head-actions,
 .camera-preview .bos-bubble-collapse{
   position:absolute!important;
@@ -118,20 +142,19 @@
 }
 
 @media(max-width:560px){
-  .inspector > .inspector-head,
-  .inspector > .inspector-title-head,
-  .camera-preview > .preview-head{
-    height:60px!important;
-    min-height:60px!important;
-    max-height:60px!important;
-    padding-top:13px!important;
-    padding-bottom:12px!important;
-  }
   .inspector .bos-inline-heading,
   .inspector.collapsed .bos-inline-heading,
   .camera-preview .bos-inline-heading,
   .camera-preview.ui-collapsed .bos-inline-heading{
+    left:12px!important;
+    right:46px!important;
     gap:10px!important;
+  }
+  .inspector .heading-copy h2,
+  .inspector.collapsed .heading-copy h2,
+  .camera-preview .heading-copy h2,
+  .camera-preview.ui-collapsed .heading-copy h2{
+    font-size:14px!important;
   }
   .inspector .inspector-head-actions,
   .camera-preview .bos-bubble-collapse{
