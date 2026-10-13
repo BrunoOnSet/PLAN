@@ -1,9 +1,169 @@
-/* PLAN — stabilité 03 RÉGLAGES / 04 VUES CAMÉRA.
-   Même géométrie ouverte et fermée, sans positionnement absolu du bloc titre.
+/* PLAN — géométrie stable des entêtes 02 / 03 / 04.
+   Principe : l'entête garde EXACTEMENT la même boîte et la même structure
+   ouverte ou fermée. Seul le contenu situé sous l'entête apparaît/disparaît.
    Les images restent purement décoratives. */
 
-/* 03 : même entête dans les deux états. Le padding droit reste identique
-   pour éviter tout déplacement du texte à l'ouverture / fermeture. */
+/* --------------------------------------------------------------------------
+   02 PLAN + 04 VUES CAMÉRA
+   Même hauteur, même padding, même flex, même bordure réservée dans les 2 états.
+   Cela neutralise l'ancien passage flex <-> grid/display:contents qui faisait
+   déplacer le titre au pliage/dépliage.
+   -------------------------------------------------------------------------- */
+.stage-card > .stage-title-head,
+.stage-card > .stage-head,
+.stage-card.ui-collapsed > .stage-title-head,
+.stage-card.ui-collapsed > .stage-head,
+.camera-preview > .preview-head,
+.camera-preview.ui-collapsed > .preview-head{
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  margin:0!important;
+  padding:14px 56px 13px 15px!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-bottom:1px solid var(--bos-line)!important;
+  background:transparent!important;
+}
+
+/* Fermée : la ligne reste physiquement présente mais transparente.
+   Donc aucune variation d'un pixel dans la zone qui centre le titre. */
+.stage-card.ui-collapsed > .stage-title-head,
+.stage-card.ui-collapsed > .stage-head,
+.camera-preview.ui-collapsed > .preview-head{
+  border-bottom-color:transparent!important;
+}
+
+/* Le groupe numéro + textes reste un vrai flex dans les deux états. */
+.stage-card .bos-inline-heading,
+.stage-card.ui-collapsed .bos-inline-heading,
+.camera-preview .bos-inline-heading,
+.camera-preview.ui-collapsed .bos-inline-heading{
+  position:static!important;
+  inset:auto!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  z-index:2!important;
+}
+
+.stage-card .step,
+.stage-card.ui-collapsed .step,
+.camera-preview .step,
+.camera-preview.ui-collapsed .step{
+  position:static!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:31px!important;
+  min-width:31px!important;
+  height:31px!important;
+  min-height:31px!important;
+  flex:0 0 31px!important;
+  margin:0!important;
+  padding:0!important;
+  align-self:center!important;
+  justify-self:auto!important;
+  transform:none!important;
+}
+
+.stage-card .heading-copy,
+.stage-card.ui-collapsed .heading-copy,
+.camera-preview .heading-copy,
+.camera-preview.ui-collapsed .heading-copy{
+  position:static!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  transform:none!important;
+}
+
+.stage-card .heading-copy h2,
+.stage-card.ui-collapsed .heading-copy h2,
+.camera-preview .heading-copy h2,
+.camera-preview.ui-collapsed .heading-copy h2{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:15px!important;
+  line-height:1.12!important;
+  font-weight:600!important;
+  letter-spacing:-.018em!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  transform:none!important;
+}
+
+.stage-card .heading-copy p,
+.stage-card.ui-collapsed .heading-copy p,
+.camera-preview .heading-copy p,
+.camera-preview.ui-collapsed .heading-copy p{
+  display:block!important;
+  width:100%!important;
+  margin:3px 0 0!important;
+  padding:0!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  font-weight:400!important;
+  letter-spacing:-.005em!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  transform:none!important;
+}
+
+/* Les chevrons sont hors flux : ils ne peuvent jamais pousser le titre. */
+.stage-card .bos-bubble-collapse,
+.stage-card.ui-collapsed .bos-bubble-collapse,
+.camera-preview .bos-bubble-collapse,
+.camera-preview.ui-collapsed .bos-bubble-collapse{
+  position:absolute!important;
+  top:50%!important;
+  right:14px!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  margin:0!important;
+  padding:0!important;
+  transform:translateY(-50%)!important;
+  z-index:10!important;
+}
+
+/* --------------------------------------------------------------------------
+   03 RÉGLAGES — géométrie déjà validée, conservée telle quelle.
+   -------------------------------------------------------------------------- */
 .inspector > .inspector-head,
 .inspector > .inspector-title-head,
 .inspector.collapsed > .inspector-head,
@@ -21,28 +181,14 @@
   justify-content:flex-start!important;
   gap:12px!important;
   overflow:hidden!important;
+  border:0!important;
+  border-bottom:1px solid var(--bos-line)!important;
+}
+.inspector.collapsed > .inspector-head,
+.inspector.collapsed > .inspector-title-head{
+  border-bottom-color:transparent!important;
 }
 
-/* 04 : même entête dans les deux états, calé exactement sur la géométrie de 02. */
-.camera-preview > .preview-head,
-.camera-preview.ui-collapsed > .preview-head{
-  position:relative!important;
-  box-sizing:border-box!important;
-  width:100%!important;
-  height:60px!important;
-  min-height:60px!important;
-  max-height:60px!important;
-  margin:0!important;
-  padding:14px 56px 13px 15px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  gap:12px!important;
-  overflow:hidden!important;
-}
-
-/* Le wrapper historique de Réglages reste un vrai conteneur flex ouvert ET fermé.
-   On neutralise le display:contents de l'ancien style fermé. */
 .inspector > .inspector-head > div:first-child,
 .inspector > .inspector-title-head > div:first-child,
 .inspector.collapsed > .inspector-head > div:first-child,
@@ -60,14 +206,11 @@
   padding:0!important;
 }
 
-/* Numéro + titre + sous-titre : structure strictement identique dans les deux états. */
 .inspector .bos-inline-heading,
-.inspector.collapsed .bos-inline-heading,
-.camera-preview .bos-inline-heading,
-.camera-preview.ui-collapsed .bos-inline-heading{
+.inspector.collapsed .bos-inline-heading{
   position:relative!important;
   inset:auto!important;
-  width:auto!important;
+  width:100%!important;
   height:auto!important;
   margin:0!important;
   padding:0!important;
@@ -76,29 +219,14 @@
   align-items:center!important;
   justify-content:flex-start!important;
   gap:12px!important;
-  flex:1 1 auto!important;
+  flex:1 1 100%!important;
   min-width:0!important;
   max-width:none!important;
-  transform:none!important;
   z-index:2!important;
 }
 
-/* RÉGLAGES doit partir exactement du même bord gauche que 01 / 02 / 04.
-   Le bloc prend toute la largeur disponible du wrapper : aucune possibilité
-   de centrage résiduel quand la bulle change d'état. */
-.inspector .bos-inline-heading,
-.inspector.collapsed .bos-inline-heading{
-  width:100%!important;
-  flex:1 1 100%!important;
-  margin-left:0!important;
-  margin-right:0!important;
-  align-self:center!important;
-}
-
 .inspector .step,
-.inspector.collapsed .step,
-.camera-preview .step,
-.camera-preview.ui-collapsed .step{
+.inspector.collapsed .step{
   position:static!important;
   width:31px!important;
   min-width:31px!important;
@@ -108,13 +236,10 @@
   margin:0!important;
   padding:0!important;
   align-self:center!important;
-  transform:none!important;
 }
 
 .inspector .heading-copy,
-.inspector.collapsed .heading-copy,
-.camera-preview .heading-copy,
-.camera-preview.ui-collapsed .heading-copy{
+.inspector.collapsed .heading-copy{
   position:static!important;
   display:flex!important;
   flex-direction:column!important;
@@ -128,13 +253,10 @@
   padding:0!important;
   opacity:1!important;
   visibility:visible!important;
-  transform:none!important;
 }
 
 .inspector .heading-copy h2,
-.inspector.collapsed .heading-copy h2,
-.camera-preview .heading-copy h2,
-.camera-preview.ui-collapsed .heading-copy h2{
+.inspector.collapsed .heading-copy h2{
   display:block!important;
   width:100%!important;
   margin:0!important;
@@ -146,15 +268,10 @@
   white-space:nowrap!important;
   overflow:hidden!important;
   text-overflow:ellipsis!important;
-  opacity:1!important;
-  visibility:visible!important;
-  transform:none!important;
 }
 
 .inspector .heading-copy p,
-.inspector.collapsed .heading-copy p,
-.camera-preview .heading-copy p,
-.camera-preview.ui-collapsed .heading-copy p{
+.inspector.collapsed .heading-copy p{
   display:block!important;
   width:100%!important;
   margin:3px 0 0!important;
@@ -166,13 +283,8 @@
   white-space:nowrap!important;
   overflow:hidden!important;
   text-overflow:ellipsis!important;
-  opacity:1!important;
-  visibility:visible!important;
-  transform:none!important;
 }
 
-/* Réglages fermé : le groupe du chevron reste un vrai flex et ne devient jamais
-   une ligne supplémentaire dans la grille. */
 .inspector .inspector-head-actions,
 .inspector.collapsed .inspector-head-actions{
   position:absolute!important;
@@ -188,46 +300,53 @@
   align-items:center!important;
   gap:0!important;
   transform:translateY(-50%)!important;
-  z-index:6!important;
-}
-
-.camera-preview .bos-bubble-collapse,
-.camera-preview.ui-collapsed .bos-bubble-collapse{
-  position:absolute!important;
-  top:50%!important;
-  right:14px!important;
-  transform:translateY(-50%)!important;
-  margin:0!important;
-  z-index:6!important;
+  z-index:10!important;
 }
 
 @media(max-width:560px){
+  .stage-card > .stage-title-head,
+  .stage-card > .stage-head,
+  .stage-card.ui-collapsed > .stage-title-head,
+  .stage-card.ui-collapsed > .stage-head,
+  .camera-preview > .preview-head,
+  .camera-preview.ui-collapsed > .preview-head{
+    padding:13px 46px 12px 12px!important;
+  }
+  .stage-card .bos-inline-heading,
+  .stage-card.ui-collapsed .bos-inline-heading,
+  .camera-preview .bos-inline-heading,
+  .camera-preview.ui-collapsed .bos-inline-heading{
+    gap:10px!important;
+  }
+  .stage-card .heading-copy h2,
+  .stage-card.ui-collapsed .heading-copy h2,
+  .camera-preview .heading-copy h2,
+  .camera-preview.ui-collapsed .heading-copy h2{
+    font-size:14px!important;
+  }
+  .stage-card .bos-bubble-collapse,
+  .stage-card.ui-collapsed .bos-bubble-collapse,
+  .camera-preview .bos-bubble-collapse,
+  .camera-preview.ui-collapsed .bos-bubble-collapse{
+    right:12px!important;
+  }
+
   .inspector > .inspector-head,
   .inspector > .inspector-title-head,
   .inspector.collapsed > .inspector-head,
   .inspector.collapsed > .inspector-title-head{
     padding:13px 122px 12px 12px!important;
   }
-  .camera-preview > .preview-head,
-  .camera-preview.ui-collapsed > .preview-head{
-    padding:13px 46px 12px 12px!important;
-  }
   .inspector .bos-inline-heading,
-  .inspector.collapsed .bos-inline-heading,
-  .camera-preview .bos-inline-heading,
-  .camera-preview.ui-collapsed .bos-inline-heading{
+  .inspector.collapsed .bos-inline-heading{
     gap:10px!important;
   }
   .inspector .heading-copy h2,
-  .inspector.collapsed .heading-copy h2,
-  .camera-preview .heading-copy h2,
-  .camera-preview.ui-collapsed .heading-copy h2{
+  .inspector.collapsed .heading-copy h2{
     font-size:14px!important;
   }
   .inspector .inspector-head-actions,
-  .inspector.collapsed .inspector-head-actions,
-  .camera-preview .bos-bubble-collapse,
-  .camera-preview.ui-collapsed .bos-bubble-collapse{
+  .inspector.collapsed .inspector-head-actions{
     right:12px!important;
   }
 }
