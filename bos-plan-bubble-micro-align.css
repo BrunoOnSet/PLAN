@@ -1,6 +1,7 @@
 /* PLAN — micro-corrections finales des entêtes, sans toucher à la logique.
    01 : supprime le double espacement entre titre et sous-titre.
-   03 : recentre verticalement le bloc numéro + titre + sous-titre, identique ouvert/fermé. */
+   03 : recentre verticalement le bloc numéro + titre + sous-titre, identique ouvert/fermé.
+   04 : aligne strictement numéro + titre + sous-titre sur le bord gauche des autres bulles. */
 
 /* 01 : le style LIGHT ajoute déjà 3 px de marge au sous-titre.
    On retire donc le gap supplémentaire du conteneur pour éviter 6 px cumulés. */
@@ -13,4 +14,17 @@
 .inspector .bos-inline-heading,
 .inspector.collapsed .bos-inline-heading{
   transform:translateY(-7px)!important;
+}
+
+/* 04 : le bloc ne doit jamais se recentrer horizontalement selon la largeur
+   disponible ou l'état de la bulle. Il occupe toute la largeur utile et part
+   exactement du padding gauche de l'entête, comme 01 / 02 / 03. */
+.camera-preview .bos-inline-heading,
+.camera-preview.ui-collapsed .bos-inline-heading{
+  width:100%!important;
+  flex:1 1 100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  justify-self:stretch!important;
+  align-self:center!important;
 }
