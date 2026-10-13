@@ -14,3 +14,13 @@
 .inspector.collapsed .bos-inline-heading{
   transform:translateY(-7px)!important;
 }
+
+/* Chevron : fin liseré blanc uniquement, sans modifier taille ni position. */
+.plan-options-card #planOptionsToggleCaret::before,
+.stage-card .bos-bubble-collapse > span::before,
+.camera-preview .bos-bubble-collapse > span::before,
+.inline-library-card .bos-bubble-collapse > span::before,
+#toggleInspectorBtn .inspector-chevron::before{
+  -webkit-text-stroke:.6px rgba(255,255,255,.95)!important;
+  paint-order:stroke fill!important;
+}
