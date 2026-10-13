@@ -1,6 +1,10 @@
-/* PLAN — images photographiques des bulles, dans l'esprit de LIGHT.
-   Extension visuelle isolée : aucune logique PLAN n'est modifiée. */
+/* PLAN — images des bulles, couche strictement visuelle.
+   IMPORTANT : cette feuille ne modifie AUCUNE géométrie (hauteur, padding,
+   display, largeur du texte ou fonctionnement des bulles). Les dimensions et
+   l'ouverture restent donc exactement celles de PLAN avant l'ajout des images. */
 
+/* Les entêtes avaient déjà leur propre géométrie. On ajoute uniquement un
+   contexte pour placer l'image en absolu, sans participation au layout. */
 .plan-options-card > .plan-options-toggle,
 .stage-card > .stage-title-head,
 .stage-card > .stage-head,
@@ -9,9 +13,10 @@
 .camera-preview > .preview-head{
   position:relative!important;
   isolation:isolate!important;
-  overflow:hidden!important;
 }
 
+/* Image purement décorative : absolue, sans pointer-events, donc elle ne peut
+   ni agrandir la bulle ni bloquer le clic sur le chevron. */
 .plan-options-card > .plan-options-toggle::after,
 .stage-card > .stage-title-head::after,
 .stage-card > .stage-head::after,
@@ -19,21 +24,23 @@
 .inspector > .inspector-head::after,
 .camera-preview > .preview-head::after{
   content:"";
-  position:absolute;
-  z-index:0;
-  top:0;
-  right:0;
-  bottom:0;
-  width:43%;
-  pointer-events:none;
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:cover;
+  position:absolute!important;
+  z-index:0!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  width:43%!important;
+  height:auto!important;
+  pointer-events:none!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:cover!important;
   opacity:.98;
   -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 12%,rgba(0,0,0,.72) 42%,#000 68%);
   mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 12%,rgba(0,0,0,.72) 42%,#000 68%);
 }
 
+/* Le contenu normal reste au-dessus. Position:relative ne change pas sa place. */
 .plan-options-card > .plan-options-toggle::before,
 .plan-options-card > .plan-options-toggle > *,
 .stage-card > .stage-title-head > *,
@@ -41,21 +48,19 @@
 .inspector > .inspector-title-head > *,
 .inspector > .inspector-head > *,
 .camera-preview > .preview-head > *{
-  position:relative!important;
-  z-index:2!important;
+  position:relative;
+  z-index:2;
 }
 
-.stage-card > .stage-title-head .bos-inline-heading,
-.stage-card > .stage-head .bos-inline-heading,
-.inspector .bos-inline-heading,
-.camera-preview > .preview-head .bos-inline-heading{
-  max-width:70%!important;
-}
-
+/* Les contrôles doivent rester inconditionnellement cliquables. */
 .stage-card .bos-bubble-collapse,
 .inspector .inspector-head-actions,
+.inspector .inspector-collapse-proxy,
 .camera-preview .bos-bubble-collapse,
-.plan-options-card .plan-options-toggle-right{z-index:4!important}
+.plan-options-card .plan-options-toggle-right{
+  z-index:10!important;
+  pointer-events:auto!important;
+}
 
 @media(max-width:620px){
   .plan-options-card > .plan-options-toggle::after,
@@ -64,13 +69,9 @@
   .inspector > .inspector-title-head::after,
   .inspector > .inspector-head::after,
   .camera-preview > .preview-head::after{
-    width:40%;
+    width:40%!important;
     opacity:.94;
     -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 22%,#000 70%);
     mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 22%,#000 70%);
   }
-  .stage-card > .stage-title-head .bos-inline-heading,
-  .stage-card > .stage-head .bos-inline-heading,
-  .inspector .bos-inline-heading,
-  .camera-preview > .preview-head .bos-inline-heading{max-width:74%!important}
 }
