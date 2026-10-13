@@ -194,3 +194,13 @@
   s.dataset.bosPlanLibraryDirect='1';
   document.body.appendChild(s);
 })();
+
+/* Icônes des onglets + dossiers rétractables. Extension purement visuelle / bibliothèque. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-tabs-folders]'))return;
+  const s=document.createElement('script');
+  s.src='bos-plan-tabs-folder-collapse.js?v=20261013-1';
+  s.async=false;
+  s.dataset.bosPlanTabsFolders='1';
+  document.body.appendChild(s);
+})();
