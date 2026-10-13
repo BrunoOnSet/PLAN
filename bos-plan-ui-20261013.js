@@ -189,7 +189,7 @@
 (function(){
   if(document.querySelector('script[data-bos-plan-library-direct]'))return;
   const s=document.createElement('script');
-  s.src='bos-plan-library-direct.js?v=20261013-1';
+  s.src='bos-plan-library-direct.js?v=20261013-2';
   s.async=false;
   s.dataset.bosPlanLibraryDirect='1';
   document.body.appendChild(s);
