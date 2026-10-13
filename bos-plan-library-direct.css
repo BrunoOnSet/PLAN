@@ -193,6 +193,21 @@
   opacity:.28;
   cursor:default;
 }
+.direct-folder-actions .direct-folder-delete{
+  border-color:rgba(242,107,107,.45);
+  background:rgba(242,107,107,.07);
+  color:#ff7a7a;
+}
+.direct-folder-actions .direct-folder-delete:hover:not(:disabled){
+  border-color:#f26b6b;
+  background:rgba(242,107,107,.14);
+  color:#ff7a7a;
+}
+.direct-folder-actions .direct-folder-delete svg{
+  width:15px;
+  height:15px;
+  display:block;
+}
 
 /* Plans */
 #plansView .plan-row{
@@ -251,6 +266,9 @@ body.dark .direct-folder-actions button{
 }
 body.dark .direct-folder-head{
   background:var(--bos-panel-soft);
+}
+body.dark .direct-folder-actions .direct-folder-delete{
+  background:rgba(242,107,107,.08);
 }
 
 @media(max-width:620px){
