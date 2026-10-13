@@ -121,6 +121,8 @@
     const inspector=bySel('#inspector');
     const toggle=bySel('#toggleInspectorBtn');
     if(!inspector||!toggle) return;
+    const wanted=localStorage.getItem(STORAGE_PREFIX+'settings');
+    if(wanted==='1' && !inspector.classList.contains('collapsed')) toggle.click();
     const refresh=()=>{
       const collapsed=inspector.classList.contains('collapsed');
       toggle.setAttribute('aria-expanded',String(!collapsed));
