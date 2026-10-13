@@ -4,6 +4,7 @@
   function bindWholeHeader(head, toggle){
     if(!head || !toggle || head.dataset.wholeBubbleClick==='1') return;
     head.dataset.wholeBubbleClick='1';
+    head.style.cursor='pointer';
     head.addEventListener('click', function(e){
       if(e.target.closest('button,a,input,select,textarea,label')) return;
       toggle.click();
