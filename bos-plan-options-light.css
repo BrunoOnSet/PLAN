@@ -9,12 +9,13 @@
   overflow:hidden!important;
   background:var(--bos-panel)!important;
   border:1px solid var(--bos-line)!important;
-  border-radius:22px!important;
+  border-radius:var(--bos-radius)!important;
   box-shadow:var(--bos-shadow)!important;
 }
 
-/* L’ancien titre séparé disparaît : le bouton devient la vraie tête de bulle. */
-.plan-options-card > .card-heading{
+/* L’ancien titre séparé disparaît : le bouton natif devient la vraie tête de bulle. */
+.plan-options-card > .card-heading,
+.plan-options-card > .bos-section-heading{
   display:none!important;
 }
 
@@ -37,7 +38,6 @@
   cursor:pointer!important;
 }
 
-/* Numéro 01 — exactement la logique LIGHT */
 .plan-options-card > .plan-options-toggle::before{
   content:"01";
   width:31px;
@@ -45,11 +45,11 @@
   height:31px;
   display:grid;
   place-items:center;
-  border:0;
+  border:1px solid var(--bos-bubble-warm-line);
   border-radius:9px;
-  background:var(--bos-accent-soft);
+  background:var(--bos-bubble-warm-soft);
   color:var(--bos-accent);
-  box-shadow:none;
+  box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--bos-bubble-warm) 18%,transparent);
   font-family:inherit;
   font-size:10px;
   line-height:1;
@@ -58,7 +58,6 @@
   font-variant-numeric:tabular-nums;
 }
 
-/* On réutilise le premier span existant comme bloc titre/sous-titre. */
 .plan-options-card > .plan-options-toggle > span:first-child{
   min-width:0!important;
   display:flex!important;
@@ -106,9 +105,7 @@
   gap:0!important;
   color:var(--bos-faint)!important;
 }
-.plan-options-card .plan-options-toggle-right em{
-  display:none!important;
-}
+.plan-options-card .plan-options-toggle-right em{display:none!important}
 .plan-options-card #planOptionsToggleCaret{
   display:grid!important;
   place-items:center!important;
@@ -129,19 +126,12 @@
   transform-origin:50% 50%;
   transition:transform .18s ease;
 }
-.plan-options-card > .plan-options-toggle[aria-expanded="true"] #planOptionsToggleCaret::before{
-  transform:rotate(180deg);
-}
-.plan-options-card > .plan-options-toggle[aria-expanded="true"]{
-  border-bottom:1px solid var(--bos-line)!important;
-}
+.plan-options-card > .plan-options-toggle[aria-expanded="true"] #planOptionsToggleCaret::before{transform:rotate(180deg)}
+.plan-options-card > .plan-options-toggle[aria-expanded="true"]{border-bottom:1px solid var(--bos-line)!important}
 
-/* Correctif fonctionnel : les anciennes règles DA forçaient le corps à rester visible. */
-.plan-options-card .plan-options-body.hidden{
-  display:none!important;
-}
+.plan-options-card .plan-options-body.hidden{display:none!important}
+.plan-options-card .plan-options-body:not(.hidden){display:flex!important}
 
-/* Quand elle est fermée, la carte retrouve exactement la hauteur d’une bulle LIGHT. */
 .plan-options-card:has(> .plan-options-toggle[aria-expanded="false"]){
   height:82px!important;
   min-height:82px!important;
