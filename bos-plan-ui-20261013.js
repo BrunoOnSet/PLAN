@@ -20,7 +20,7 @@
   }
 
   function normalizeStageHeading(){
-    const head=bySel('.stage-title-head');
+    const head=bySel('.stage-title-head, .stage-head');
     if(!head) return;
     if(!head.querySelector(':scope > .bos-inline-heading')){
       const step=head.querySelector(':scope > .step');
@@ -59,7 +59,7 @@
 
   function installCollapsibles(){
     normalizeStageHeading();
-    makeCollapseButton(bySel('.stage-card'),bySel('.stage-title-head'),'plan');
+    makeCollapseButton(bySel('.stage-card'),bySel('.stage-title-head, .stage-head'),'plan');
     makeCollapseButton(bySel('.camera-preview'),bySel('.camera-preview .preview-head'),'camera');
     makeCollapseButton(bySel('.inline-library-card'),bySel('.inline-library-card .inline-library-head'),'library');
   }
@@ -75,7 +75,7 @@
   }
 
   function installInspectorActions(){
-    const head=bySel('.inspector-title-head');
+    const head=bySel('.inspector-title-head, .inspector-head');
     const toggle=bySel('#toggleInspectorBtn');
     if(!head||!toggle||head.querySelector('.inspector-head-actions')) return;
 
