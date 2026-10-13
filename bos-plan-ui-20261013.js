@@ -4,19 +4,13 @@
   const STORAGE_PREFIX='bos-plan-ui-collapse:';
   const bySel=(s,r=document)=>r.querySelector(s);
 
-  function movePlanNameIntoPlan(){
-    const topPlanName=bySel('.top-plan-name');
+  function movePlanCommandbarIntoPlan(){
+    const commandbar=bySel('.plan-commandbar');
     const planView=bySel('#planView');
-    if(!topPlanName||!planView||bySel('.plan-name-card')) return;
-
-    const card=document.createElement('section');
-    card.className='plan-name-card card';
-    card.setAttribute('aria-label','Nom du plan');
-    const inner=document.createElement('div');
-    inner.className='plan-name-card-inner';
-    card.appendChild(inner);
-    inner.appendChild(topPlanName);
-    planView.insertBefore(card,planView.firstElementChild);
+    if(!commandbar||!planView) return;
+    if(commandbar.parentElement===planView) return;
+    commandbar.classList.add('plan-commandbar-in-plan');
+    planView.insertBefore(commandbar,planView.firstElementChild);
   }
 
   function normalizeStageHeading(){
@@ -133,7 +127,7 @@
   }
 
   function init(){
-    movePlanNameIntoPlan();
+    movePlanCommandbarIntoPlan();
     installCollapsibles();
     installInspectorActions();
     normalizeInspectorCollapse();
