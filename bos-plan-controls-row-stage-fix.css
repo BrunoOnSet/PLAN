@@ -1,0 +1,246 @@
+/* PLAN — corrections structurelles :
+   1) 5 commandes du plan strictement égales sur une seule ligne.
+   2) Dans PLAN ouvert, Ajouter + légende passent SOUS la ligne de séparation de l'entête.
+   3) Les entêtes repliables gardent exactement la même hauteur ouverts ou fermés.
+   4) RÉGLAGES garde Dupliquer / Corbeille / chevron sur une seule ligne, sans changer de hauteur. */
+
+/* ---------- NOM DU PLAN + 5 COMMANDES ---------- */
+.plan-commandbar.panel-like{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:7px!important;
+  align-items:stretch!important;
+}
+.plan-commandbar .plan-primary-actions,
+.plan-commandbar .secondary-plan-actions{
+  display:contents!important;
+}
+.plan-commandbar .top-plan-name{
+  grid-column:1 / -1!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+}
+.plan-commandbar .top-tool-wrap{
+  width:100%!important;
+  min-width:0!important;
+  position:relative!important;
+}
+.plan-commandbar .top-tool,
+.plan-commandbar .top-tool-wrap > .top-tool{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:58px!important;
+  min-height:58px!important;
+  max-height:58px!important;
+  padding:7px 4px!important;
+  margin:0!important;
+  justify-content:center!important;
+}
+.plan-commandbar .top-tool .tool-label{
+  max-width:100%!important;
+  white-space:normal!important;
+  text-align:center!important;
+  line-height:1.05!important;
+}
+.plan-commandbar .export-wrap .export-popover{
+  left:0!important;
+  right:auto!important;
+}
+
+/* ---------- HAUTEUR COMMUNE DES ENTÊTES ---------- */
+.stage-card > .stage-title-head,
+.stage-card > .stage-head,
+.inspector > .inspector-title-head,
+.inspector > .inspector-head,
+.camera-preview > .preview-head,
+.inline-library-card > .inline-library-head{
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  padding:14px 56px 13px 15px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  border-bottom:1px solid var(--bos-line)!important;
+  overflow:hidden!important;
+}
+.stage-card.ui-collapsed > .stage-title-head,
+.stage-card.ui-collapsed > .stage-head,
+.inspector.collapsed > .inspector-title-head,
+.inspector.collapsed > .inspector-head,
+.camera-preview.ui-collapsed > .preview-head,
+.inline-library-card.ui-collapsed > .inline-library-head{
+  border-bottom-color:transparent!important;
+}
+
+/* ---------- PLAN : commandes sous la séparation ---------- */
+.stage-card{position:relative!important}
+.stage-card > .stage-content-tools,
+.stage-card > .stage-head-side{
+  width:100%!important;
+  margin:0!important;
+  padding:12px 15px 13px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  border:0!important;
+  background:transparent!important;
+}
+.stage-card > .stage-content-tools .stage-add-btn,
+.stage-card > .stage-head-side .stage-add-btn{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:36px!important;
+  min-height:36px!important;
+  margin:0!important;
+}
+.stage-card > .stage-content-tools .legend,
+.stage-card > .stage-head-side .legend{
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:7px 10px!important;
+}
+.stage-card.ui-collapsed > .stage-content-tools,
+.stage-card.ui-collapsed > .stage-head-side{
+  display:none!important;
+}
+
+/* Une fois la barre Ajouter/légende sortie de l'entête, la tête PLAN est identique
+   ouverte ou fermée. */
+.stage-card > .stage-title-head .bos-inline-heading,
+.stage-card > .stage-head .bos-inline-heading{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+
+/* ---------- RÉGLAGES : même hauteur ouvert / fermé ---------- */
+.inspector > .inspector-title-head,
+.inspector > .inspector-head{
+  padding-right:132px!important;
+}
+.inspector > .inspector-title-head > div:first-child,
+.inspector > .inspector-head > div:first-child{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  margin:0!important;
+  padding:0!important;
+}
+.inspector .bos-inline-heading{
+  width:100%!important;
+  min-width:0!important;
+}
+
+/* Le statut de sélection est contenu SOUS l'entête et ne peut plus changer sa hauteur. */
+.inspector > .inspector-selection-row,
+.inspector > .selection-model-row.inspector-selection-row{
+  margin:0!important;
+  padding:9px 15px 0!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+.inspector.collapsed > .inspector-selection-row,
+.inspector.collapsed > .selection-model-row.inspector-selection-row{
+  display:none!important;
+}
+
+/* Dupliquer + Corbeille + chevron restent toujours exactement au même endroit. */
+.inspector .inspector-head-actions{
+  position:absolute!important;
+  top:50%!important;
+  right:14px!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  transform:translateY(-50%)!important;
+  z-index:7!important;
+}
+.inspector .inspector-head-actions .inspector-object-action{
+  position:static!important;
+  transform:none!important;
+  margin:0!important;
+  flex:0 0 30px!important;
+}
+.inspector .inspector-head-actions #toggleInspectorBtn{
+  position:static!important;
+  top:auto!important;
+  right:auto!important;
+  transform:none!important;
+  margin:0 0 0 2px!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  flex:0 0 24px!important;
+}
+
+@media(max-width:560px){
+  .plan-commandbar.panel-like{
+    gap:5px!important;
+  }
+  .plan-commandbar .top-tool,
+  .plan-commandbar .top-tool-wrap > .top-tool{
+    height:56px!important;
+    min-height:56px!important;
+    max-height:56px!important;
+    padding:6px 2px!important;
+  }
+  .plan-commandbar .top-tool .tool-label{
+    font-size:7.4px!important;
+  }
+  .plan-commandbar .top-tool .tool-icon,
+  .plan-commandbar .top-tool .tool-icon svg{
+    width:17px!important;
+    height:17px!important;
+  }
+
+  .stage-card > .stage-title-head,
+  .stage-card > .stage-head,
+  .inspector > .inspector-title-head,
+  .inspector > .inspector-head,
+  .camera-preview > .preview-head,
+  .inline-library-card > .inline-library-head{
+    height:60px!important;
+    min-height:60px!important;
+    max-height:60px!important;
+    padding-top:13px!important;
+    padding-bottom:12px!important;
+  }
+  .inspector > .inspector-title-head,
+  .inspector > .inspector-head{
+    padding-right:122px!important;
+  }
+  .inspector .inspector-head-actions{
+    right:12px!important;
+  }
+  .inspector .inspector-head-actions .inspector-object-action{
+    flex-basis:28px!important;
+  }
+  .stage-card > .stage-content-tools,
+  .stage-card > .stage-head-side{
+    padding:10px 12px 12px!important;
+  }
+}
