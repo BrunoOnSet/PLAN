@@ -27,8 +27,6 @@
       }
     }
 
-    /* Le bouton Ajouter + la légende appartiennent au contenu ouvert,
-       pas à l'entête. On les place donc juste sous la séparation. */
     const side=head.querySelector(':scope > .stage-head-side');
     if(side){
       side.classList.add('stage-content-tools');
@@ -100,8 +98,30 @@
     const remove=makeIconButton('delete-selected','Supprimer l’élément sélectionné',
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>');
 
-    actions.append(duplicate,remove,toggle);
+    /* Le bouton natif conserve toute la logique métier de PLAN mais n'est plus
+       utilisé visuellement. Un chevron proxy, propre à l'entête, déclenche le natif. */
+    toggle.classList.add('inspector-native-toggle');
+
+    const collapseProxy=document.createElement('button');
+    collapseProxy.type='button';
+    collapseProxy.className='inspector-collapse-proxy';
+    collapseProxy.setAttribute('aria-label','Réduire ou développer la section');
+    collapseProxy.innerHTML='<span aria-hidden="true">⌄</span>';
+
+    const syncCollapseProxy=()=>{
+      const expanded=toggle.getAttribute('aria-expanded')!=='false';
+      collapseProxy.setAttribute('aria-expanded',String(expanded));
+    };
+    collapseProxy.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      toggle.click();
+      requestAnimationFrame(syncCollapseProxy);
+    });
+    new MutationObserver(syncCollapseProxy).observe(toggle,{attributes:true,attributeFilter:['aria-expanded']});
+
+    actions.append(duplicate,remove,collapseProxy);
     head.appendChild(actions);
+    syncCollapseProxy();
 
     function selectedId(){
       try{return state && state.selected ? state.selected : null}catch(_){return null}
