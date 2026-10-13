@@ -67,3 +67,13 @@
   s.dataset.bosPlanBubbleFullClick='1';
   document.body.appendChild(s);
 })();
+
+/* Correctifs isolés du canevas : bord bas, échelle, lisibilité faisceaux en LIGHT. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-stage-visual-fix]'))return;
+  const s=document.createElement('script');
+  s.src='bos-plan-stage-visual-fix.js?v=20261013-1';
+  s.async=false;
+  s.dataset.bosPlanStageVisualFix='1';
+  document.body.appendChild(s);
+})();
