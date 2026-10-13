@@ -1,11 +1,13 @@
-/* PLAN — stabilité stricte des entêtes 03 RÉGLAGES et 04 VUES CAMÉRA.
-   Le titre complet est ancré dans l'entête : aucune variation de structure
-   entre l'état ouvert et fermé, et aucun déplacement possible. */
+/* PLAN — stabilité 03 RÉGLAGES / 04 VUES CAMÉRA.
+   Même géométrie ouverte et fermée, sans positionnement absolu du bloc titre.
+   Les images restent purement décoratives. */
 
-/* Les entêtes gardent exactement la même boîte dans les deux états. */
+/* 03 : même entête dans les deux états. Le padding droit reste identique
+   pour éviter tout déplacement du texte à l'ouverture / fermeture. */
 .inspector > .inspector-head,
 .inspector > .inspector-title-head,
-.camera-preview > .preview-head{
+.inspector.collapsed > .inspector-head,
+.inspector.collapsed > .inspector-title-head{
   position:relative!important;
   box-sizing:border-box!important;
   width:100%!important;
@@ -13,31 +15,57 @@
   min-height:60px!important;
   max-height:60px!important;
   margin:0!important;
+  padding:14px 132px 13px 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
   overflow:hidden!important;
 }
 
-/* 03 : le wrapper historique ne participe plus à la géométrie de l'entête.
-   La ligne de sélection reste déplacée sous l'entête par le JS existant. */
+/* 04 : même entête dans les deux états, calé exactement sur la géométrie de 02. */
+.camera-preview > .preview-head,
+.camera-preview.ui-collapsed > .preview-head{
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  margin:0!important;
+  padding:14px 56px 13px 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  overflow:hidden!important;
+}
+
+/* Le wrapper historique de Réglages reste un vrai conteneur flex ouvert ET fermé.
+   On neutralise le display:contents de l'ancien style fermé. */
 .inspector > .inspector-head > div:first-child,
 .inspector > .inspector-title-head > div:first-child,
 .inspector.collapsed > .inspector-head > div:first-child,
 .inspector.collapsed > .inspector-title-head > div:first-child{
-  display:contents!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
 }
 
-/* 03 + 04 : le bloc numéro / titre / sous-titre est toujours placé
-   aux mêmes coordonnées, ouvert comme fermé. */
+/* Numéro + titre + sous-titre : structure strictement identique dans les deux états. */
 .inspector .bos-inline-heading,
 .inspector.collapsed .bos-inline-heading,
 .camera-preview .bos-inline-heading,
 .camera-preview.ui-collapsed .bos-inline-heading{
-  position:absolute!important;
-  left:15px!important;
-  right:56px!important;
-  top:0!important;
-  bottom:0!important;
+  position:relative!important;
+  inset:auto!important;
   width:auto!important;
-  height:60px!important;
+  height:auto!important;
   margin:0!important;
   padding:0!important;
   display:flex!important;
@@ -45,10 +73,11 @@
   align-items:center!important;
   justify-content:flex-start!important;
   gap:12px!important;
+  flex:1 1 auto!important;
   min-width:0!important;
   max-width:none!important;
-  z-index:3!important;
   transform:none!important;
+  z-index:2!important;
 }
 
 .inspector .step,
@@ -85,7 +114,6 @@
   opacity:1!important;
   visibility:visible!important;
   transform:none!important;
-  z-index:auto!important;
 }
 
 .inspector .heading-copy h2,
@@ -96,7 +124,6 @@
   width:100%!important;
   margin:0!important;
   padding:0!important;
-  color:var(--bos-ink)!important;
   font-size:15px!important;
   line-height:1.12!important;
   font-weight:600!important;
@@ -117,7 +144,6 @@
   width:100%!important;
   margin:3px 0 0!important;
   padding:0!important;
-  color:var(--bos-muted)!important;
   font-size:10px!important;
   line-height:1.35!important;
   font-weight:400!important;
@@ -130,9 +156,28 @@
   transform:none!important;
 }
 
-/* Les chevrons restent hors flux et ne peuvent jamais pousser le texte. */
+/* Réglages fermé : le groupe du chevron reste un vrai flex et ne devient jamais
+   une ligne supplémentaire dans la grille. */
 .inspector .inspector-head-actions,
-.camera-preview .bos-bubble-collapse{
+.inspector.collapsed .inspector-head-actions{
+  position:absolute!important;
+  top:50%!important;
+  right:14px!important;
+  width:auto!important;
+  height:24px!important;
+  min-width:24px!important;
+  min-height:24px!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  transform:translateY(-50%)!important;
+  z-index:6!important;
+}
+
+.camera-preview .bos-bubble-collapse,
+.camera-preview.ui-collapsed .bos-bubble-collapse{
   position:absolute!important;
   top:50%!important;
   right:14px!important;
@@ -142,12 +187,20 @@
 }
 
 @media(max-width:560px){
+  .inspector > .inspector-head,
+  .inspector > .inspector-title-head,
+  .inspector.collapsed > .inspector-head,
+  .inspector.collapsed > .inspector-title-head{
+    padding:13px 122px 12px 12px!important;
+  }
+  .camera-preview > .preview-head,
+  .camera-preview.ui-collapsed > .preview-head{
+    padding:13px 46px 12px 12px!important;
+  }
   .inspector .bos-inline-heading,
   .inspector.collapsed .bos-inline-heading,
   .camera-preview .bos-inline-heading,
   .camera-preview.ui-collapsed .bos-inline-heading{
-    left:12px!important;
-    right:46px!important;
     gap:10px!important;
   }
   .inspector .heading-copy h2,
@@ -157,7 +210,9 @@
     font-size:14px!important;
   }
   .inspector .inspector-head-actions,
-  .camera-preview .bos-bubble-collapse{
+  .inspector.collapsed .inspector-head-actions,
+  .camera-preview .bos-bubble-collapse,
+  .camera-preview.ui-collapsed .bos-bubble-collapse{
     right:12px!important;
   }
 }
