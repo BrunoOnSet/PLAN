@@ -204,3 +204,13 @@
   s.dataset.bosPlanTabsFolders='1';
   document.body.appendChild(s);
 })();
+
+/* Contact / suggestion : même comportement que la référence BOS LIGHT. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-contact-light]'))return;
+  const s=document.createElement('script');
+  s.src='bos-plan-contact-light.js?v=20261013-1';
+  s.async=false;
+  s.dataset.bosPlanContactLight='1';
+  document.body.appendChild(s);
+})();
