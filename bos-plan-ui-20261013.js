@@ -184,3 +184,13 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();
+
+/* Extension isolée MES PLANS : chargée après le cœur et sans toucher aux fonctions PLAN. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-library-direct]'))return;
+  const s=document.createElement('script');
+  s.src='bos-plan-library-direct.js?v=20261013-1';
+  s.async=false;
+  s.dataset.bosPlanLibraryDirect='1';
+  document.body.appendChild(s);
+})();
