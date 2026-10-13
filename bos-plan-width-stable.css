@@ -1,0 +1,35 @@
+/* PLAN — largeur stable lors de l'ouverture / fermeture des bulles.
+   Le changement perçu venait de l'apparition / disparition de la barre de défilement verticale.
+   On réserve donc en permanence sa gouttière : la largeur de l'application ne bouge plus. */
+
+html{
+  scrollbar-gutter:stable;
+  overflow-y:scroll;
+}
+
+body{
+  width:100%;
+  min-width:0;
+}
+
+.app-shell,
+main,
+#planView,
+#plansView,
+.plan-commandbar,
+.plan-name-card,
+.plan-options-card,
+.workspace-grid,
+.stage-card,
+.inspector,
+.camera-preview,
+.inline-library-card{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+
+@supports not (scrollbar-gutter:stable){
+  html{overflow-y:scroll;}
+}
