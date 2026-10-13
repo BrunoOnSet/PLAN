@@ -214,3 +214,13 @@
   s.dataset.bosPlanContactLight='1';
   document.body.appendChild(s);
 })();
+
+/* Correctif isolé : limite basse de déplacement liée à la hauteur réelle du plan. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-drag-bounds]'))return;
+  const s=document.createElement('script');
+  s.src='bos-plan-drag-bounds-fix.js?v=20261013-1';
+  s.async=false;
+  s.dataset.bosPlanDragBounds='1';
+  document.body.appendChild(s);
+})();
