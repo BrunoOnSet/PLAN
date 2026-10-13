@@ -1,0 +1,300 @@
+/* PLAN — bulles repliées : copie géométrique de la bulle 01 de BOS-LIGHT-main.
+   Source de référence : continuous.css + light-design.css + light-bubbles.css.
+   Objectif : une seule géométrie pour 01 / 02 / 03 / 04 / 05, sans approximation. */
+
+:root{
+  --plan-light-bubble-gap:12px;
+  --plan-light-bubble-radius:18px;
+  --plan-light-bubble-closed-height:82px;
+  --plan-light-bubble-head-height:80px;
+  --plan-light-bubble-grid-number:34px;
+  --plan-light-bubble-number:31px;
+  --plan-light-bubble-arrow:24px;
+}
+
+/* ---------- COQUE FERMÉE : même taille, même bordure, même rayon ---------- */
+.plan-options-card:has(> .plan-options-toggle[aria-expanded="false"]),
+.stage-card.ui-collapsed,
+.inspector.collapsed,
+.camera-preview.ui-collapsed,
+.inline-library-card.ui-collapsed{
+  width:100%!important;
+  height:var(--plan-light-bubble-closed-height)!important;
+  min-height:var(--plan-light-bubble-closed-height)!important;
+  max-height:var(--plan-light-bubble-closed-height)!important;
+  padding:0!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  background:var(--bos-panel)!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:var(--plan-light-bubble-radius)!important;
+  box-shadow:var(--bos-shadow)!important;
+}
+
+/* Espacement vertical LIGHT : 12 px. */
+.plan-options-card{margin-bottom:var(--plan-light-bubble-gap)!important}
+.workspace-grid{gap:var(--plan-light-bubble-gap)!important}
+.camera-preview{margin-top:var(--plan-light-bubble-gap)!important}
+
+/* ---------- TÊTE COMMUNE : copie de shared-camera-heading ---------- */
+.plan-options-card > .plan-options-toggle,
+.stage-card.ui-collapsed > .stage-title-head,
+.stage-card.ui-collapsed > .stage-head,
+.inspector.collapsed > .inspector-title-head,
+.inspector.collapsed > .inspector-head,
+.camera-preview.ui-collapsed > .preview-head,
+.inline-library-card.ui-collapsed > .inline-library-head{
+  width:100%!important;
+  height:var(--plan-light-bubble-head-height)!important;
+  min-height:var(--plan-light-bubble-head-height)!important;
+  max-height:var(--plan-light-bubble-head-height)!important;
+  margin:0!important;
+  padding:14px 15px!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:var(--plan-light-bubble-grid-number) minmax(0,1fr) var(--plan-light-bubble-arrow)!important;
+  align-items:center!important;
+  gap:12px!important;
+  border:0!important;
+  border-bottom-color:transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:left!important;
+}
+
+/* 02 / 04 / 05 : on aplati le wrapper pour que numéro, textes et flèche
+   occupent exactement les 3 colonnes de LIGHT. */
+.stage-card.ui-collapsed .bos-inline-heading,
+.camera-preview.ui-collapsed .bos-inline-heading,
+.inline-library-card.ui-collapsed .bos-inline-heading{
+  display:contents!important;
+}
+
+/* 03 : même principe malgré le wrapper historique de Réglages. */
+.inspector.collapsed > .inspector-head > div:first-child,
+.inspector.collapsed > .inspector-title-head > div:first-child,
+.inspector.collapsed .inspector-head-actions{
+  display:contents!important;
+}
+.inspector.collapsed .bos-inline-heading{
+  display:contents!important;
+}
+.inspector.collapsed .selection-model-row,
+.inspector.collapsed .selection-model-row-header,
+.inspector.collapsed .inspector-object-action:not(#toggleInspectorBtn){
+  display:none!important;
+}
+
+/* Les éléments propres aux bulles ouvertes ne participent jamais à la tête fermée. */
+.stage-card.ui-collapsed .stage-head-side,
+.camera-preview.ui-collapsed .preview-tabs{
+  display:none!important;
+}
+
+/* ---------- REPÈRE NUMÉRIQUE : copie LIGHT ---------- */
+.stage-card.ui-collapsed .step,
+.inspector.collapsed .step,
+.camera-preview.ui-collapsed .step,
+.inline-library-card.ui-collapsed .step,
+.plan-options-card > .plan-options-toggle::before{
+  grid-column:1!important;
+  grid-row:1!important;
+  width:var(--plan-light-bubble-number)!important;
+  min-width:var(--plan-light-bubble-number)!important;
+  height:var(--plan-light-bubble-number)!important;
+  min-height:var(--plan-light-bubble-number)!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  align-self:center!important;
+  justify-self:start!important;
+  border:1px solid var(--bos-bubble-warm-line)!important;
+  border-radius:9px!important;
+  background:var(--bos-bubble-warm-soft)!important;
+  color:var(--bos-accent)!important;
+  box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--bos-bubble-warm) 18%,transparent)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+/* ---------- TITRE / SOUS-TITRE : copie LIGHT ---------- */
+.stage-card.ui-collapsed .heading-copy,
+.inspector.collapsed .heading-copy,
+.camera-preview.ui-collapsed .heading-copy,
+.inline-library-card.ui-collapsed .heading-copy,
+.plan-options-card > .plan-options-toggle > span:first-child{
+  grid-column:2!important;
+  grid-row:1!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  gap:0!important;
+  text-align:left!important;
+}
+
+.stage-card.ui-collapsed .heading-copy h2,
+.inspector.collapsed .heading-copy h2,
+.camera-preview.ui-collapsed .heading-copy h2,
+.inline-library-card.ui-collapsed .heading-copy h2,
+.plan-options-card > .plan-options-toggle > span:first-child::before{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  color:var(--bos-ink)!important;
+  font-family:inherit!important;
+  font-size:15px!important;
+  line-height:1.12!important;
+  font-weight:600!important;
+  letter-spacing:-.018em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+
+.stage-card.ui-collapsed .heading-copy p,
+.inspector.collapsed .heading-copy p,
+.camera-preview.ui-collapsed .heading-copy p,
+.inline-library-card.ui-collapsed .heading-copy p,
+.plan-options-card > .plan-options-toggle > span:first-child::after{
+  display:block!important;
+  width:100%!important;
+  margin:4px 0 0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  color:var(--bos-muted)!important;
+  font-family:inherit!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+  font-weight:400!important;
+  letter-spacing:-.005em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+
+/* 01 garde son texte généré existant, mais avec exactement la même géométrie. */
+.plan-options-card > .plan-options-toggle > span:first-child{
+  font-size:0!important;
+  line-height:1!important;
+  color:transparent!important;
+}
+
+/* ---------- CHEVRON : même glyphe, même taille, même couleur, même position ---------- */
+.plan-options-card .plan-options-toggle-right,
+.stage-card .bos-bubble-collapse,
+.camera-preview .bos-bubble-collapse,
+.inline-library-card .bos-bubble-collapse,
+#toggleInspectorBtn{
+  grid-column:3!important;
+  grid-row:1!important;
+  width:var(--plan-light-bubble-arrow)!important;
+  min-width:var(--plan-light-bubble-arrow)!important;
+  height:var(--plan-light-bubble-arrow)!important;
+  min-height:var(--plan-light-bubble-arrow)!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  align-self:center!important;
+  justify-self:end!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--bos-faint)!important;
+  box-shadow:none!important;
+}
+
+.plan-options-card .plan-options-toggle-right em,
+#toggleInspectorBtn .inspector-toggle-label{
+  display:none!important;
+}
+
+/* On masque tous les glyphes historiques : un seul ⌄, celui de LIGHT. */
+.plan-options-card #planOptionsToggleCaret,
+.stage-card .bos-bubble-collapse > span,
+.camera-preview .bos-bubble-collapse > span,
+.inline-library-card .bos-bubble-collapse > span,
+#toggleInspectorBtn .inspector-chevron{
+  width:24px!important;
+  height:24px!important;
+  display:grid!important;
+  place-items:center!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--bos-faint)!important;
+  font-size:0!important;
+  line-height:1!important;
+  transform:none!important;
+}
+
+.plan-options-card #planOptionsToggleCaret::before,
+.stage-card .bos-bubble-collapse > span::before,
+.camera-preview .bos-bubble-collapse > span::before,
+.inline-library-card .bos-bubble-collapse > span::before,
+#toggleInspectorBtn .inspector-chevron::before{
+  content:"⌄"!important;
+  display:block!important;
+  color:inherit!important;
+  font-family:inherit!important;
+  font-size:18px!important;
+  line-height:1!important;
+  font-weight:400!important;
+  transform:rotate(0deg)!important;
+  transform-origin:50% 50%!important;
+  transition:transform .18s ease!important;
+}
+
+/* Ouvert = même ⌄ tourné de 180° que LIGHT. */
+.plan-options-card > .plan-options-toggle[aria-expanded="true"] #planOptionsToggleCaret::before,
+.stage-card .bos-bubble-collapse[aria-expanded="true"] > span::before,
+.camera-preview .bos-bubble-collapse[aria-expanded="true"] > span::before,
+.inline-library-card .bos-bubble-collapse[aria-expanded="true"] > span::before,
+#toggleInspectorBtn[aria-expanded="true"] .inspector-chevron::before{
+  transform:rotate(180deg)!important;
+}
+
+/* Fermé = aucune ligne sous la tête, comme LIGHT. */
+.plan-options-card > .plan-options-toggle[aria-expanded="false"],
+.stage-card.ui-collapsed > .stage-title-head,
+.stage-card.ui-collapsed > .stage-head,
+.inspector.collapsed > .inspector-title-head,
+.inspector.collapsed > .inspector-head,
+.camera-preview.ui-collapsed > .preview-head,
+.inline-library-card.ui-collapsed > .inline-library-head{
+  border-bottom:0!important;
+}
+
+/* Le contenu fermé ne doit laisser aucune hauteur résiduelle. */
+.stage-card.ui-collapsed > :not(.stage-title-head):not(.stage-head),
+.camera-preview.ui-collapsed > :not(.preview-head),
+.inline-library-card.ui-collapsed > :not(.inline-library-head),
+.inspector.collapsed > #inspectorBody,
+.inspector.collapsed > .selection-model-row-header{
+  display:none!important;
+}
+
+/* Mobile LIGHT : même tête, simplement 10 px de gap à très petite largeur. */
+@media(max-width:390px){
+  .plan-options-card > .plan-options-toggle,
+  .stage-card.ui-collapsed > .stage-title-head,
+  .stage-card.ui-collapsed > .stage-head,
+  .inspector.collapsed > .inspector-title-head,
+  .inspector.collapsed > .inspector-head,
+  .camera-preview.ui-collapsed > .preview-head,
+  .inline-library-card.ui-collapsed > .inline-library-head{
+    gap:10px!important;
+    padding:14px 15px!important;
+  }
+}
