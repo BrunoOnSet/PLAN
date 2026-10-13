@@ -1,42 +1,28 @@
-/* PLAN — bulles repliées : copie géométrique de la bulle 01 de BOS-LIGHT-main.
-   Source de référence : continuous.css + light-design.css + light-bubbles.css.
-   Objectif : une seule géométrie pour 01 / 02 / 03 / 04 / 05, sans approximation. */
+/* PLAN — bulles repliables copiées sur le composant APPLICATIONS de BOS-LIGHT-main.
+   Référence directe : modules/light/styles.css + light-design.css + light-bubbles.css.
+   Important : aucune hauteur PLAN inventée. La hauteur vient exactement du padding,
+   des typos et du repère numérique LIGHT. */
 
-:root{
-  --plan-light-bubble-gap:12px;
-  --plan-light-bubble-radius:18px;
-  --plan-light-bubble-closed-height:82px;
-  --plan-light-bubble-head-height:80px;
-  --plan-light-bubble-grid-number:34px;
-  --plan-light-bubble-number:31px;
-  --plan-light-bubble-arrow:24px;
-}
-
-/* ---------- COQUE FERMÉE : même taille, même bordure, même rayon ---------- */
-.plan-options-card:has(> .plan-options-toggle[aria-expanded="false"]),
-.stage-card.ui-collapsed,
-.inspector.collapsed,
-.camera-preview.ui-collapsed,
-.inline-library-card.ui-collapsed{
-  width:100%!important;
-  height:var(--plan-light-bubble-closed-height)!important;
-  min-height:var(--plan-light-bubble-closed-height)!important;
-  max-height:var(--plan-light-bubble-closed-height)!important;
-  padding:0!important;
-  overflow:hidden!important;
-  box-sizing:border-box!important;
+/* ---------- COQUE : exactement LIGHT ---------- */
+.plan-options-card,
+.stage-card,
+.inspector,
+.camera-preview,
+.inline-library-card{
   background:var(--bos-panel)!important;
   border:1px solid var(--bos-line)!important;
-  border-radius:var(--plan-light-bubble-radius)!important;
+  border-radius:18px!important;
   box-shadow:var(--bos-shadow)!important;
+  overflow:hidden!important;
 }
 
-/* Espacement vertical LIGHT : 12 px. */
-.plan-options-card{margin-bottom:var(--plan-light-bubble-gap)!important}
-.workspace-grid{gap:var(--plan-light-bubble-gap)!important}
-.camera-preview{margin-top:var(--plan-light-bubble-gap)!important}
+.plan-options-card{margin-bottom:12px!important}
+.workspace-grid{gap:12px!important}
+.camera-preview{margin-top:12px!important}
 
-/* ---------- TÊTE COMMUNE : copie de shared-camera-heading ---------- */
+/* ---------- TÊTES FERMÉES : géométrie APPLICATIONS LIGHT ----------
+   LIGHT n'utilise pas une tête de 80 px : sa hauteur est calculée naturellement
+   avec 15 px / 14 px de padding, le badge 31 px et les mêmes textes. */
 .plan-options-card > .plan-options-toggle,
 .stage-card.ui-collapsed > .stage-title-head,
 .stage-card.ui-collapsed > .stage-head,
@@ -44,55 +30,67 @@
 .inspector.collapsed > .inspector-head,
 .camera-preview.ui-collapsed > .preview-head,
 .inline-library-card.ui-collapsed > .inline-library-head{
+  position:relative!important;
   width:100%!important;
-  height:var(--plan-light-bubble-head-height)!important;
-  min-height:var(--plan-light-bubble-head-height)!important;
-  max-height:var(--plan-light-bubble-head-height)!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
   margin:0!important;
-  padding:14px 15px!important;
+  padding:15px 56px 14px 16px!important;
   box-sizing:border-box!important;
   display:grid!important;
-  grid-template-columns:var(--plan-light-bubble-grid-number) minmax(0,1fr) var(--plan-light-bubble-arrow)!important;
+  grid-template-columns:31px minmax(0,1fr)!important;
   align-items:center!important;
-  gap:12px!important;
+  column-gap:12px!important;
   border:0!important;
-  border-bottom-color:transparent!important;
+  border-bottom:0!important;
   border-radius:0!important;
   background:transparent!important;
   box-shadow:none!important;
   text-align:left!important;
+  overflow:hidden!important;
 }
 
-/* 02 / 04 / 05 : on aplati le wrapper pour que numéro, textes et flèche
-   occupent exactement les 3 colonnes de LIGHT. */
+/* On supprime définitivement les anciennes hauteurs PLAN 80 / 82 px. */
+.plan-options-card:has(> .plan-options-toggle[aria-expanded="false"]),
+.stage-card.ui-collapsed,
+.inspector.collapsed,
+.camera-preview.ui-collapsed,
+.inline-library-card.ui-collapsed{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+}
+
+/* ---------- STRUCTURE INTERNE FERMÉE ---------- */
 .stage-card.ui-collapsed .bos-inline-heading,
 .camera-preview.ui-collapsed .bos-inline-heading,
-.inline-library-card.ui-collapsed .bos-inline-heading{
+.inline-library-card.ui-collapsed .bos-inline-heading,
+.inspector.collapsed .bos-inline-heading,
+.inspector.collapsed > .inspector-head > div:first-child,
+.inspector.collapsed > .inspector-title-head > div:first-child{
   display:contents!important;
 }
 
-/* 03 : même principe malgré le wrapper historique de Réglages. */
-.inspector.collapsed > .inspector-head > div:first-child,
-.inspector.collapsed > .inspector-title-head > div:first-child,
-.inspector.collapsed .inspector-head-actions{
-  display:contents!important;
-}
-.inspector.collapsed .bos-inline-heading{
-  display:contents!important;
-}
+.stage-card.ui-collapsed .stage-head-side,
+.camera-preview.ui-collapsed .preview-tabs,
 .inspector.collapsed .selection-model-row,
 .inspector.collapsed .selection-model-row-header,
 .inspector.collapsed .inspector-object-action:not(#toggleInspectorBtn){
   display:none!important;
 }
 
-/* Les éléments propres aux bulles ouvertes ne participent jamais à la tête fermée. */
-.stage-card.ui-collapsed .stage-head-side,
-.camera-preview.ui-collapsed .preview-tabs{
+.stage-card.ui-collapsed > :not(.stage-title-head):not(.stage-head),
+.camera-preview.ui-collapsed > :not(.preview-head),
+.inline-library-card.ui-collapsed > :not(.inline-library-head),
+.inspector.collapsed > #inspectorBody,
+.inspector.collapsed > .selection-model-row-header{
   display:none!important;
 }
 
-/* ---------- REPÈRE NUMÉRIQUE : copie LIGHT ---------- */
+/* ---------- NUMÉRO : LIGHT exact ---------- */
 .stage-card.ui-collapsed .step,
 .inspector.collapsed .step,
 .camera-preview.ui-collapsed .step,
@@ -100,10 +98,10 @@
 .plan-options-card > .plan-options-toggle::before{
   grid-column:1!important;
   grid-row:1!important;
-  width:var(--plan-light-bubble-number)!important;
-  min-width:var(--plan-light-bubble-number)!important;
-  height:var(--plan-light-bubble-number)!important;
-  min-height:var(--plan-light-bubble-number)!important;
+  width:31px!important;
+  min-width:31px!important;
+  height:31px!important;
+  min-height:31px!important;
   margin:0!important;
   padding:0!important;
   display:grid!important;
@@ -123,7 +121,7 @@
   font-variant-numeric:tabular-nums!important;
 }
 
-/* ---------- TITRE / SOUS-TITRE : copie LIGHT ---------- */
+/* ---------- TITRE / SOUS-TITRE : LIGHT exact ---------- */
 .stage-card.ui-collapsed .heading-copy,
 .inspector.collapsed .heading-copy,
 .camera-preview.ui-collapsed .heading-copy,
@@ -138,7 +136,6 @@
   flex-direction:column!important;
   justify-content:center!important;
   align-items:flex-start!important;
-  gap:0!important;
   text-align:left!important;
 }
 
@@ -170,13 +167,13 @@
 .plan-options-card > .plan-options-toggle > span:first-child::after{
   display:block!important;
   width:100%!important;
-  margin:4px 0 0!important;
+  margin:3px 0 0!important;
   padding:0!important;
   overflow:hidden!important;
   color:var(--bos-muted)!important;
   font-family:inherit!important;
   font-size:10px!important;
-  line-height:1.3!important;
+  line-height:1.35!important;
   font-weight:400!important;
   letter-spacing:-.005em!important;
   text-transform:none!important;
@@ -184,44 +181,48 @@
   text-overflow:ellipsis!important;
 }
 
-/* 01 garde son texte généré existant, mais avec exactement la même géométrie. */
 .plan-options-card > .plan-options-toggle > span:first-child{
   font-size:0!important;
   line-height:1!important;
   color:transparent!important;
 }
 
-/* ---------- CHEVRON : même glyphe, même taille, même couleur, même position ---------- */
+/* ---------- CHEVRON : position et mouvement copiés de LIGHT ---------- */
+.plan-options-card > .plan-options-toggle,
+.stage-title-head,.stage-head,
+.inspector-title-head,.inspector-head,
+.preview-head,.inline-library-head{
+  position:relative!important;
+}
+
 .plan-options-card .plan-options-toggle-right,
 .stage-card .bos-bubble-collapse,
 .camera-preview .bos-bubble-collapse,
 .inline-library-card .bos-bubble-collapse,
 #toggleInspectorBtn{
-  grid-column:3!important;
-  grid-row:1!important;
-  width:var(--plan-light-bubble-arrow)!important;
-  min-width:var(--plan-light-bubble-arrow)!important;
-  height:var(--plan-light-bubble-arrow)!important;
-  min-height:var(--plan-light-bubble-arrow)!important;
+  position:absolute!important;
+  right:14px!important;
+  top:50%!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
   margin:0!important;
   padding:0!important;
   display:grid!important;
   place-items:center!important;
-  align-self:center!important;
-  justify-self:end!important;
   border:0!important;
   border-radius:0!important;
   background:transparent!important;
-  color:var(--bos-faint)!important;
+  color:var(--bos-accent)!important;
   box-shadow:none!important;
+  transform:translateY(-50%)!important;
+  z-index:5!important;
 }
 
 .plan-options-card .plan-options-toggle-right em,
-#toggleInspectorBtn .inspector-toggle-label{
-  display:none!important;
-}
+#toggleInspectorBtn .inspector-toggle-label{display:none!important}
 
-/* On masque tous les glyphes historiques : un seul ⌄, celui de LIGHT. */
 .plan-options-card #planOptionsToggleCaret,
 .stage-card .bos-bubble-collapse > span,
 .camera-preview .bos-bubble-collapse > span,
@@ -233,7 +234,7 @@
   place-items:center!important;
   margin:0!important;
   padding:0!important;
-  color:var(--bos-faint)!important;
+  color:inherit!important;
   font-size:0!important;
   line-height:1!important;
   transform:none!important;
@@ -253,10 +254,10 @@
   font-weight:400!important;
   transform:rotate(0deg)!important;
   transform-origin:50% 50%!important;
-  transition:transform .18s ease!important;
+  transition:transform .2s ease!important;
 }
 
-/* Ouvert = même ⌄ tourné de 180° que LIGHT. */
+/* Ouvert : le même ⌄ pivote à 180°, sans jamais changer de glyphe. */
 .plan-options-card > .plan-options-toggle[aria-expanded="true"] #planOptionsToggleCaret::before,
 .stage-card .bos-bubble-collapse[aria-expanded="true"] > span::before,
 .camera-preview .bos-bubble-collapse[aria-expanded="true"] > span::before,
@@ -265,28 +266,40 @@
   transform:rotate(180deg)!important;
 }
 
-/* Fermé = aucune ligne sous la tête, comme LIGHT. */
-.plan-options-card > .plan-options-toggle[aria-expanded="false"],
-.stage-card.ui-collapsed > .stage-title-head,
-.stage-card.ui-collapsed > .stage-head,
-.inspector.collapsed > .inspector-title-head,
-.inspector.collapsed > .inspector-head,
-.camera-preview.ui-collapsed > .preview-head,
-.inline-library-card.ui-collapsed > .inline-library-head{
-  border-bottom:0!important;
+/* Neutralise les anciennes rotations propres à Réglages. */
+.inspector.collapsed .inspector-chevron,
+.inspector:not(.collapsed) .inspector-chevron,
+#toggleInspectorBtn[aria-expanded="true"] .inspector-chevron,
+#toggleInspectorBtn[aria-expanded="false"] .inspector-chevron{
+  transform:none!important;
 }
 
-/* Le contenu fermé ne doit laisser aucune hauteur résiduelle. */
-.stage-card.ui-collapsed > :not(.stage-title-head):not(.stage-head),
-.camera-preview.ui-collapsed > :not(.preview-head),
-.inline-library-card.ui-collapsed > :not(.inline-library-head),
-.inspector.collapsed > #inspectorBody,
-.inspector.collapsed > .selection-model-row-header{
-  display:none!important;
+/* ---------- OUVERT : même séparation fine que LIGHT ---------- */
+.plan-options-card > .plan-options-toggle[aria-expanded="true"],
+.stage-card:not(.ui-collapsed) > .stage-title-head,
+.stage-card:not(.ui-collapsed) > .stage-head,
+.inspector:not(.collapsed) > .inspector-title-head,
+.inspector:not(.collapsed) > .inspector-head,
+.camera-preview:not(.ui-collapsed) > .preview-head,
+.inline-library-card:not(.ui-collapsed) > .inline-library-head{
+  border-bottom:1px solid var(--bos-line)!important;
 }
 
-/* Mobile LIGHT : même tête, simplement 10 px de gap à très petite largeur. */
-@media(max-width:390px){
+/* Réglages ouvert : les actions restent disponibles mais la flèche garde exactement
+   la position LIGHT, indépendante du groupe Dupliquer / Supprimer. */
+.inspector:not(.collapsed) .inspector-head-actions{
+  margin-left:auto!important;
+  padding-right:34px!important;
+}
+
+/* ---------- MOBILE LIGHT exact ---------- */
+@media(max-width:520px){
+  .plan-options-card,
+  .stage-card,
+  .inspector,
+  .camera-preview,
+  .inline-library-card{border-radius:16px!important}
+
   .plan-options-card > .plan-options-toggle,
   .stage-card.ui-collapsed > .stage-title-head,
   .stage-card.ui-collapsed > .stage-head,
@@ -294,7 +307,28 @@
   .inspector.collapsed > .inspector-head,
   .camera-preview.ui-collapsed > .preview-head,
   .inline-library-card.ui-collapsed > .inline-library-head{
-    gap:10px!important;
-    padding:14px 15px!important;
+    padding-left:12px!important;
+    padding-right:46px!important;
+    column-gap:10px!important;
+  }
+
+  .stage-card.ui-collapsed .heading-copy h2,
+  .inspector.collapsed .heading-copy h2,
+  .camera-preview.ui-collapsed .heading-copy h2,
+  .inline-library-card.ui-collapsed .heading-copy h2,
+  .plan-options-card > .plan-options-toggle > span:first-child::before{
+    font-size:14px!important;
+  }
+
+  .plan-options-card .plan-options-toggle-right,
+  .stage-card .bos-bubble-collapse,
+  .camera-preview .bos-bubble-collapse,
+  .inline-library-card .bos-bubble-collapse,
+  #toggleInspectorBtn{
+    right:12px!important;
+    width:22px!important;
+    min-width:22px!important;
+    height:22px!important;
+    min-height:22px!important;
   }
 }
