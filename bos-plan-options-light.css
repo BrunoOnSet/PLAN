@@ -1,0 +1,160 @@
+/* PLAN — Options de plan : coque fermée calée sur les bulles LIGHT */
+
+.plan-options-card{
+  display:block!important;
+  width:100%!important;
+  margin:0 0 12px!important;
+  padding:0!important;
+  gap:0!important;
+  overflow:hidden!important;
+  background:var(--bos-panel)!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:22px!important;
+  box-shadow:var(--bos-shadow)!important;
+}
+
+/* L’ancien titre séparé disparaît : le bouton devient la vraie tête de bulle. */
+.plan-options-card > .card-heading{
+  display:none!important;
+}
+
+.plan-options-card > .plan-options-toggle{
+  display:grid!important;
+  grid-template-columns:31px minmax(0,1fr) 24px!important;
+  align-items:center!important;
+  gap:12px!important;
+  width:100%!important;
+  height:80px!important;
+  min-height:80px!important;
+  margin:0!important;
+  padding:14px 15px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--bos-ink)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+
+/* Numéro 01 — exactement la logique LIGHT */
+.plan-options-card > .plan-options-toggle::before{
+  content:"01";
+  width:31px;
+  min-width:31px;
+  height:31px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:9px;
+  background:var(--bos-accent-soft);
+  color:var(--bos-accent);
+  box-shadow:none;
+  font-family:inherit;
+  font-size:10px;
+  line-height:1;
+  font-weight:600;
+  letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;
+}
+
+/* On réutilise le premier span existant comme bloc titre/sous-titre. */
+.plan-options-card > .plan-options-toggle > span:first-child{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:3px!important;
+  font-size:0!important;
+  line-height:1!important;
+  color:transparent!important;
+}
+.plan-options-card > .plan-options-toggle > span:first-child::before{
+  content:"OPTIONS DE PLAN";
+  display:block;
+  overflow:hidden;
+  color:var(--bos-ink);
+  font-family:inherit;
+  font-size:15px;
+  line-height:1.12;
+  font-weight:600;
+  letter-spacing:-.018em;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.plan-options-card > .plan-options-toggle > span:first-child::after{
+  content:"Aimant, faisceaux, infos et grille";
+  display:block;
+  overflow:hidden;
+  color:var(--bos-muted);
+  font-family:inherit;
+  font-size:10px;
+  line-height:1.35;
+  font-weight:400;
+  letter-spacing:-.005em;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.plan-options-card .plan-options-toggle-right{
+  display:grid!important;
+  place-items:center!important;
+  width:24px!important;
+  height:24px!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+  color:var(--bos-faint)!important;
+}
+.plan-options-card .plan-options-toggle-right em{
+  display:none!important;
+}
+.plan-options-card #planOptionsToggleCaret{
+  display:grid!important;
+  place-items:center!important;
+  width:24px!important;
+  height:24px!important;
+  font-size:0!important;
+  line-height:1!important;
+  font-style:normal!important;
+  color:var(--bos-faint)!important;
+}
+.plan-options-card #planOptionsToggleCaret::before{
+  content:"⌄";
+  display:block;
+  font-size:18px;
+  line-height:1;
+  font-weight:400;
+  transform:rotate(0deg);
+  transform-origin:50% 50%;
+  transition:transform .18s ease;
+}
+.plan-options-card > .plan-options-toggle[aria-expanded="true"] #planOptionsToggleCaret::before{
+  transform:rotate(180deg);
+}
+.plan-options-card > .plan-options-toggle[aria-expanded="true"]{
+  border-bottom:1px solid var(--bos-line)!important;
+}
+
+/* Correctif fonctionnel : les anciennes règles DA forçaient le corps à rester visible. */
+.plan-options-card .plan-options-body.hidden{
+  display:none!important;
+}
+
+/* Quand elle est fermée, la carte retrouve exactement la hauteur d’une bulle LIGHT. */
+.plan-options-card:has(> .plan-options-toggle[aria-expanded="false"]){
+  height:82px!important;
+  min-height:82px!important;
+  max-height:82px!important;
+}
+
+@media(max-width:700px){
+  .plan-options-card > .plan-options-toggle{
+    grid-template-columns:31px minmax(0,1fr) 24px!important;
+    height:80px!important;
+    min-height:80px!important;
+    padding:14px 15px!important;
+  }
+  .plan-options-card > .plan-options-toggle > span:first-child::before{font-size:15px!important}
+  .plan-options-card > .plan-options-toggle > span:first-child::after{font-size:10px!important}
+}
