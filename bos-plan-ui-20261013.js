@@ -86,20 +86,15 @@
   }
 
   function installInspectorActions(){
+    const inspector=bySel('#inspector');
     const head=bySel('.inspector-title-head, .inspector-head');
     const toggle=bySel('#toggleInspectorBtn');
-    if(!head||!toggle||head.querySelector('.inspector-head-actions')) return;
+    if(!inspector||!head||!toggle||head.querySelector('.inspector-head-actions')||inspector.querySelector(':scope > .inspector-content-actions')) return;
 
-    const actions=document.createElement('div');
-    actions.className='inspector-head-actions';
+    /* Le chevron reste exactement dans l'entête. */
+    const headActions=document.createElement('div');
+    headActions.className='inspector-head-actions';
 
-    const duplicate=makeIconButton('duplicate-selected','Dupliquer l’élément sélectionné',
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="10" height="10" rx="2"/><path d="M15 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></svg>');
-    const remove=makeIconButton('delete-selected','Supprimer l’élément sélectionné',
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>');
-
-    /* Le bouton natif conserve toute la logique métier de PLAN mais n'est plus
-       utilisé visuellement. Un chevron proxy, propre à l'entête, déclenche le natif. */
     toggle.classList.add('inspector-native-toggle');
 
     const collapseProxy=document.createElement('button');
@@ -119,9 +114,22 @@
     });
     new MutationObserver(syncCollapseProxy).observe(toggle,{attributes:true,attributeFilter:['aria-expanded']});
 
-    actions.append(duplicate,remove,collapseProxy);
-    head.appendChild(actions);
+    headActions.append(collapseProxy);
+    head.appendChild(headActions);
     syncCollapseProxy();
+
+    /* Dupliquer + Corbeille appartiennent au contenu rétractable :
+       première ligne juste sous le trait de séparation. */
+    const contentActions=document.createElement('div');
+    contentActions.className='inspector-content-actions';
+
+    const duplicate=makeIconButton('duplicate-selected','Dupliquer l’élément sélectionné',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="10" height="10" rx="2"/><path d="M15 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></svg>');
+    const remove=makeIconButton('delete-selected','Supprimer l’élément sélectionné',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>');
+
+    contentActions.append(duplicate,remove);
+    head.insertAdjacentElement('afterend',contentActions);
 
     function selectedId(){
       try{return state && state.selected ? state.selected : null}catch(_){return null}
