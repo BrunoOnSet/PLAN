@@ -1,6 +1,6 @@
 /* PLAN — largeur stable lors de l'ouverture / fermeture des bulles.
-   Le changement perçu venait de l'apparition / disparition de la barre de défilement verticale.
-   On réserve donc en permanence sa gouttière : la largeur de l'application ne bouge plus. */
+   La gouttière de scrollbar reste réservée pour éviter tout décalage horizontal.
+   IMPORTANT : on conserve la largeur maximale de la DA BOS/LIGHT : 760 px. */
 
 html{
   scrollbar-gutter:stable;
@@ -12,7 +12,17 @@ body{
   min-width:0;
 }
 
-.app-shell,
+/* Coque globale : largeur responsive, mais jamais au-delà de 760 px. */
+.app-shell{
+  width:min(760px,100%)!important;
+  max-width:760px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box!important;
+}
+
+/* Les éléments internes remplissent la coque, sans modifier sa largeur. */
 main,
 #planView,
 #plansView,
