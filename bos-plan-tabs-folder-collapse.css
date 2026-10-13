@@ -1,0 +1,101 @@
+/* PLAN — icônes des onglets + dossiers rétractables de Mes plans.
+   Extension isolée : ne modifie ni le plan 2D ni les fonctions de sauvegarde. */
+
+/* ---------- ONGLETS PLAN / MES PLANS ---------- */
+.main-tabs .main-tab{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+.main-tab-icon{
+  width:18px;
+  height:18px;
+  flex:0 0 18px;
+  display:grid;
+  place-items:center;
+  color:currentColor;
+}
+.main-tab-icon svg{
+  width:18px;
+  height:18px;
+  display:block;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.main-tab-label{
+  display:inline-block;
+  line-height:1;
+}
+
+/* ---------- DOSSIERS RÉTRACTABLES ---------- */
+#plansView .direct-folder-block.folder-collapsed > :not(.direct-folder-head){
+  display:none!important;
+}
+#plansView .direct-folder-block.folder-collapsed .direct-folder-head{
+  border-bottom-color:transparent!important;
+}
+
+/* Même logique de chevron que les bulles BOS : discret, sans cadre,
+   vers le bas fermé / vers le haut ouvert. */
+.direct-folder-actions .direct-folder-collapse{
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  margin-left:2px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--bos-accent)!important;
+  box-shadow:none!important;
+}
+.direct-folder-actions .direct-folder-collapse:hover:not(:disabled){
+  border:0!important;
+  background:transparent!important;
+  color:var(--bos-accent)!important;
+}
+.direct-folder-collapse > span{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  font-size:0;
+  line-height:1;
+}
+.direct-folder-collapse > span::before{
+  content:"⌄";
+  display:block;
+  font-family:inherit;
+  font-size:18px;
+  line-height:1;
+  font-weight:400;
+  color:inherit;
+  transform:rotate(0deg);
+  transform-origin:50% 50%;
+  transition:transform .18s ease;
+}
+.direct-folder-collapse[aria-expanded="true"] > span::before{
+  transform:rotate(180deg);
+}
+
+@media(max-width:620px){
+  .main-tabs .main-tab{gap:6px!important}
+  .main-tab-icon,
+  .main-tab-icon svg{
+    width:17px;
+    height:17px;
+  }
+  .direct-folder-actions .direct-folder-collapse{
+    width:24px!important;
+    min-width:24px!important;
+    height:24px!important;
+    min-height:24px!important;
+  }
+}
