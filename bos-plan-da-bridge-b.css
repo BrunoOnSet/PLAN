@@ -19,6 +19,7 @@ body .project-contact-top .project-contact-btn{
   align-items:center!important;
   justify-content:center!important;
   gap:10px!important;
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
   font-size:0!important;
   font-weight:500!important;
   letter-spacing:-.005em!important;
@@ -42,7 +43,7 @@ body .project-contact-top .project-contact-btn::before{
 body .project-contact-top .project-contact-btn::after{
   content:"Parler de votre tournage  →"!important;
   color:var(--bos-ink)!important;
-  font-family:inherit!important;
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
   font-size:11.5px!important;
   font-weight:500!important;
   letter-spacing:-.005em!important;
@@ -51,13 +52,20 @@ body .project-contact-top .project-contact-btn>span{display:none!important}
 body.dark .project-contact-top .project-contact-btn,
 body.dark .project-contact-top .project-contact-btn::after{color:var(--bos-muted)!important}
 
+/* Le bouton d'installation reprend aussi le rendu LIGHT, flèche comprise. */
+body #installAppBtn{font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+body #installAppBtn::after{content:"→"!important;color:var(--bos-accent)!important;font-size:14px!important;line-height:1!important;font-weight:500!important}
+
 /* L'ancien CTA amélioration devient exactement le lien discret de LIGHT */
 body>.project-contact-bottom{
   width:min(760px,100%)!important;
   margin:0 auto!important;
   padding:4px 12px 0!important;
   display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
   justify-content:center!important;
+  gap:0!important;
 }
 body>.project-contact-bottom .project-contact-btn{
   width:auto!important;
@@ -68,12 +76,14 @@ body>.project-contact-bottom .project-contact-btn{
   box-shadow:none!important;
   color:var(--bos-muted)!important;
   padding:6px 2px!important;
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
   font-size:10.5px!important;
   font-weight:400!important;
   letter-spacing:-.005em!important;
 }
 body>.project-contact-bottom .project-contact-btn::before{display:none!important}
 body>.project-contact-bottom .project-contact-btn span{display:inline-block!important;color:var(--bos-accent)!important;font-size:10.5px!important;margin-left:4px!important}
+body>.project-contact-bottom .app-bottom-version{display:none!important}
 
 /* Footer LIGHT transposé à PLAN sans toucher au JS */
 body::after{
