@@ -229,6 +229,30 @@
   transform:rotate(180deg)!important;
 }
 
+/* Compatibilité immédiate si l'ancien JS est encore en cache : dans ce cas,
+   le bouton natif est dans .inspector-head-actions. On le force lui aussi à rester
+   exactement dans le groupe à droite, sans modifier aucune autre bulle. */
+.inspector .inspector-head-actions #toggleInspectorBtn:not(.inspector-native-toggle){
+  position:static!important;
+  top:auto!important;
+  right:auto!important;
+  left:auto!important;
+  bottom:auto!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  min-height:24px!important;
+  margin:0 0 0 2px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 24px!important;
+  transform:none!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
 @media(max-width:560px){
   .plan-commandbar.panel-like{
     gap:5px!important;
