@@ -90,6 +90,20 @@
   display:none!important;
 }
 
+/* RÉGLAGES : quand la bulle est fermée, le wrapper créé pour les boutons
+   Dupliquer / Supprimer / chevron ne doit PAS devenir une deuxième ligne de grille.
+   On l'aplatit exactement comme le wrapper titre afin que 03 ait la même hauteur
+   et le même placement de chevron que 01 / 02 / 04. */
+.inspector.collapsed .inspector-head-actions{
+  display:contents!important;
+  margin:0!important;
+  padding:0!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+}
+
 /* ---------- NUMÉRO : LIGHT exact ---------- */
 .stage-card.ui-collapsed .step,
 .inspector.collapsed .step,
