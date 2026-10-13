@@ -1,0 +1,43 @@
+/* PLAN — verrouille la taille des bulles repliées après ajout des images.
+   Visuel uniquement : aucune logique PLAN modifiée. */
+
+/* Taille fermée identique à celle d'avant les images : entête 60 px. */
+.plan-options-card:has(> .plan-options-toggle[aria-expanded="false"]),
+.stage-card.ui-collapsed,
+.inspector.collapsed,
+.camera-preview.ui-collapsed{
+  height:62px!important;
+  min-height:62px!important;
+  max-height:62px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+
+.plan-options-card > .plan-options-toggle[aria-expanded="false"],
+.stage-card.ui-collapsed > .stage-title-head,
+.stage-card.ui-collapsed > .stage-head,
+.inspector.collapsed > .inspector-title-head,
+.inspector.collapsed > .inspector-head,
+.camera-preview.ui-collapsed > .preview-head{
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+
+/* L'image reste strictement contenue dans l'entête et ne peut jamais
+   participer à sa hauteur. */
+.plan-options-card > .plan-options-toggle::after,
+.stage-card > .stage-title-head::after,
+.stage-card > .stage-head::after,
+.inspector > .inspector-title-head::after,
+.inspector > .inspector-head::after,
+.camera-preview > .preview-head::after{
+  top:0!important;
+  right:0!important;
+  bottom:auto!important;
+  height:100%!important;
+  max-height:100%!important;
+}
