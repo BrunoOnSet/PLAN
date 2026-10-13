@@ -50,6 +50,32 @@
     persistAndRender();
   }
 
+  function deleteFolder(id){
+    const index=library.folders.findIndex(f=>f.id===id);
+    if(index<0)return;
+    if(library.folders.length<=1){
+      alert('Il faut conserver au moins un dossier dans Mes plans.');
+      return;
+    }
+
+    const folder=library.folders[index];
+    const destination=library.folders[index+1]||library.folders[index-1];
+    const plans=library.plans.filter(p=>p.folderId===id);
+    const message=plans.length
+      ? `Supprimer le dossier « ${folder.name} » ?\n\nLes ${plans.length} plan${plans.length>1?'s':''} qu’il contient seront déplacés dans « ${destination.name} ». Aucun plan ne sera supprimé.`
+      : `Supprimer le dossier « ${folder.name} » ?`;
+    if(!confirm(message))return;
+
+    plans.forEach(plan=>{plan.folderId=destination.id});
+    if(state.folderId===id){
+      state.folderId=destination.id;
+      try{if(typeof persistCurrent==='function')persistCurrent()}catch(_){ }
+    }
+    library.folders.splice(index,1);
+    persistAndRender();
+    try{if(typeof flash==='function')flash(`Dossier « ${folder.name} » supprimé`)}catch(_){ }
+  }
+
   function moveFolderBy(id,delta){
     const index=library.folders.findIndex(f=>f.id===id);
     if(index<0)return;
@@ -184,12 +210,13 @@
       const head=document.createElement('div');
       head.className='folder-title direct-folder-head';
       head.draggable=true;
-      head.innerHTML=`<div class="direct-folder-title"><span class="direct-folder-drag" aria-hidden="true">⋮⋮</span><div class="direct-folder-name"><strong>${escapeHtml(folder.name)}</strong><small>${plans.length} plan${plans.length>1?'s':''}</small></div></div><div class="direct-folder-actions"><button type="button" data-folder-act="up" title="Monter le dossier" aria-label="Monter le dossier" ${index===0?'disabled':''}>↑</button><button type="button" data-folder-act="down" title="Descendre le dossier" aria-label="Descendre le dossier" ${index===library.folders.length-1?'disabled':''}>↓</button><button type="button" data-folder-act="rename" title="Renommer le dossier" aria-label="Renommer le dossier">✎</button></div>`;
+      head.innerHTML=`<div class="direct-folder-title"><span class="direct-folder-drag" aria-hidden="true">⋮⋮</span><div class="direct-folder-name"><strong>${escapeHtml(folder.name)}</strong><small>${plans.length} plan${plans.length>1?'s':''}</small></div></div><div class="direct-folder-actions"><button type="button" data-folder-act="up" title="Monter le dossier" aria-label="Monter le dossier" ${index===0?'disabled':''}>↑</button><button type="button" data-folder-act="down" title="Descendre le dossier" aria-label="Descendre le dossier" ${index===library.folders.length-1?'disabled':''}>↓</button><button type="button" data-folder-act="rename" title="Renommer le dossier" aria-label="Renommer le dossier">✎</button><button type="button" class="direct-folder-delete" data-folder-act="delete" title="Supprimer le dossier" aria-label="Supprimer le dossier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg></button></div>`;
       box.appendChild(head);
 
       head.querySelector('[data-folder-act="up"]').onclick=e=>{e.stopPropagation();moveFolderBy(folder.id,-1)};
       head.querySelector('[data-folder-act="down"]').onclick=e=>{e.stopPropagation();moveFolderBy(folder.id,1)};
       head.querySelector('[data-folder-act="rename"]').onclick=e=>{e.stopPropagation();renameFolder(folder.id)};
+      head.querySelector('[data-folder-act="delete"]').onclick=e=>{e.stopPropagation();deleteFolder(folder.id)};
 
       head.addEventListener('dragstart',e=>{
         if(e.target.closest('button')){e.preventDefault();return}
