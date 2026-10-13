@@ -31,6 +31,20 @@
   line-height:1;
 }
 
+/* PLAN : option 01 validée — quatre angles de cadre très discrets. */
+#planTabBtn .main-tab-icon svg{
+  display:none!important;
+}
+#planTabBtn .main-tab-icon::before{
+  content:"";
+  width:17px;
+  height:17px;
+  display:block;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 5H5v4M15 5h4v4M19 15v4h-4M9 19H5v-4' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 5H5v4M15 5h4v4M19 15v4h-4M9 19H5v-4' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
 /* ---------- DOSSIERS RÉTRACTABLES ---------- */
 #plansView .direct-folder-block.folder-collapsed > :not(.direct-folder-head){
   display:none!important;
@@ -91,6 +105,10 @@
   .main-tab-icon svg{
     width:17px;
     height:17px;
+  }
+  #planTabBtn .main-tab-icon::before{
+    width:16px;
+    height:16px;
   }
   .direct-folder-actions .direct-folder-collapse{
     width:24px!important;
