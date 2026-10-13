@@ -1,0 +1,16 @@
+/* PLAN — micro-corrections finales des entêtes, sans toucher à la logique.
+   01 : supprime le double espacement entre titre et sous-titre.
+   03 : recentre verticalement le bloc numéro + titre + sous-titre, identique ouvert/fermé. */
+
+/* 01 : le style LIGHT ajoute déjà 3 px de marge au sous-titre.
+   On retire donc le gap supplémentaire du conteneur pour éviter 6 px cumulés. */
+.plan-options-card > .plan-options-toggle > span:first-child{
+  gap:0!important;
+}
+
+/* 03 : sur le rendu actuel, tout le bloc est décalé d'environ 7 px vers le bas.
+   Même correction dans les deux états pour qu'il ne bouge jamais à l'ouverture. */
+.inspector .bos-inline-heading,
+.inspector.collapsed .bos-inline-heading{
+  transform:translateY(-7px)!important;
+}
