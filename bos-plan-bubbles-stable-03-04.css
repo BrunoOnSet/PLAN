@@ -1,0 +1,140 @@
+/* PLAN — stabilité stricte des entêtes 03 RÉGLAGES et 04 VUES CAMÉRA.
+   Objectif : aucun déplacement du numéro, du titre ou du sous-titre à l'ouverture/fermeture.
+   Ne touche pas au contenu rétractable ni aux fonctions. */
+
+/* Les deux entêtes gardent exactement la même boîte ouverts ou fermés. */
+.inspector > .inspector-head,
+.inspector > .inspector-title-head,
+.camera-preview > .preview-head{
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  margin:0!important;
+  padding-top:14px!important;
+  padding-bottom:13px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  overflow:hidden!important;
+}
+
+/* RÉGLAGES : l'ancien wrapper ne change plus de display selon l'état. */
+.inspector > .inspector-head > div:first-child,
+.inspector > .inspector-title-head > div:first-child,
+.inspector.collapsed > .inspector-head > div:first-child,
+.inspector.collapsed > .inspector-title-head > div:first-child{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+/* Structure interne identique en état ouvert et fermé. */
+.inspector .bos-inline-heading,
+.inspector.collapsed .bos-inline-heading,
+.camera-preview .bos-inline-heading,
+.camera-preview.ui-collapsed .bos-inline-heading{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+/* Numéros 03 / 04 : coordonnées et dimensions invariantes. */
+.inspector .step,
+.inspector.collapsed .step,
+.camera-preview .step,
+.camera-preview.ui-collapsed .step{
+  position:static!important;
+  width:31px!important;
+  min-width:31px!important;
+  height:31px!important;
+  min-height:31px!important;
+  flex:0 0 31px!important;
+  margin:0!important;
+  align-self:center!important;
+}
+
+/* Texte : même boîte et mêmes métriques quel que soit l'état. */
+.inspector .heading-copy,
+.inspector.collapsed .heading-copy,
+.camera-preview .heading-copy,
+.camera-preview.ui-collapsed .heading-copy{
+  position:static!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+}
+
+.inspector .heading-copy h2,
+.inspector.collapsed .heading-copy h2,
+.camera-preview .heading-copy h2,
+.camera-preview.ui-collapsed .heading-copy h2{
+  margin:0!important;
+  padding:0!important;
+  line-height:1.12!important;
+  transform:none!important;
+}
+
+.inspector .heading-copy p,
+.inspector.collapsed .heading-copy p,
+.camera-preview .heading-copy p,
+.camera-preview.ui-collapsed .heading-copy p{
+  margin:3px 0 0!important;
+  padding:0!important;
+  line-height:1.35!important;
+  transform:none!important;
+}
+
+/* Le chevron ne participe jamais au flux du titre. */
+.inspector .inspector-head-actions,
+.camera-preview .bos-bubble-collapse{
+  position:absolute!important;
+  top:50%!important;
+  right:14px!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+  z-index:6!important;
+}
+
+@media(max-width:560px){
+  .inspector > .inspector-head,
+  .inspector > .inspector-title-head,
+  .camera-preview > .preview-head{
+    height:60px!important;
+    min-height:60px!important;
+    max-height:60px!important;
+    padding-top:13px!important;
+    padding-bottom:12px!important;
+  }
+  .inspector .bos-inline-heading,
+  .inspector.collapsed .bos-inline-heading,
+  .camera-preview .bos-inline-heading,
+  .camera-preview.ui-collapsed .bos-inline-heading{
+    gap:10px!important;
+  }
+  .inspector .inspector-head-actions,
+  .camera-preview .bos-bubble-collapse{
+    right:12px!important;
+  }
+}
