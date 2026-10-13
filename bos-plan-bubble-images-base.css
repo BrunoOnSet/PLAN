@@ -1,0 +1,76 @@
+/* PLAN — images photographiques des bulles, dans l'esprit de LIGHT.
+   Extension visuelle isolée : aucune logique PLAN n'est modifiée. */
+
+.plan-options-card > .plan-options-toggle,
+.stage-card > .stage-title-head,
+.stage-card > .stage-head,
+.inspector > .inspector-title-head,
+.inspector > .inspector-head,
+.camera-preview > .preview-head{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+}
+
+.plan-options-card > .plan-options-toggle::after,
+.stage-card > .stage-title-head::after,
+.stage-card > .stage-head::after,
+.inspector > .inspector-title-head::after,
+.inspector > .inspector-head::after,
+.camera-preview > .preview-head::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:0;
+  right:0;
+  bottom:0;
+  width:43%;
+  pointer-events:none;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:cover;
+  opacity:.98;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 12%,rgba(0,0,0,.72) 42%,#000 68%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 12%,rgba(0,0,0,.72) 42%,#000 68%);
+}
+
+.plan-options-card > .plan-options-toggle::before,
+.plan-options-card > .plan-options-toggle > *,
+.stage-card > .stage-title-head > *,
+.stage-card > .stage-head > *,
+.inspector > .inspector-title-head > *,
+.inspector > .inspector-head > *,
+.camera-preview > .preview-head > *{
+  position:relative!important;
+  z-index:2!important;
+}
+
+.stage-card > .stage-title-head .bos-inline-heading,
+.stage-card > .stage-head .bos-inline-heading,
+.inspector .bos-inline-heading,
+.camera-preview > .preview-head .bos-inline-heading{
+  max-width:70%!important;
+}
+
+.stage-card .bos-bubble-collapse,
+.inspector .inspector-head-actions,
+.camera-preview .bos-bubble-collapse,
+.plan-options-card .plan-options-toggle-right{z-index:4!important}
+
+@media(max-width:620px){
+  .plan-options-card > .plan-options-toggle::after,
+  .stage-card > .stage-title-head::after,
+  .stage-card > .stage-head::after,
+  .inspector > .inspector-title-head::after,
+  .inspector > .inspector-head::after,
+  .camera-preview > .preview-head::after{
+    width:40%;
+    opacity:.94;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 22%,#000 70%);
+    mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 22%,#000 70%);
+  }
+  .stage-card > .stage-title-head .bos-inline-heading,
+  .stage-card > .stage-head .bos-inline-heading,
+  .inspector .bos-inline-heading,
+  .camera-preview > .preview-head .bos-inline-heading{max-width:74%!important}
+}
