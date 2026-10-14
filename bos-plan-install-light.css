@@ -1,0 +1,130 @@
+/* PLAN — bouton d'installation copié de BOS-LIGHT.
+   Isolé volontairement : aucune autre partie de PLAN n'est modifiée. */
+
+body .install-app-row{
+  order:1!important;
+  width:100%!important;
+  display:flex!important;
+  justify-content:flex-start!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+}
+body .install-app-row[hidden]{display:none!important}
+
+/* PLAN réservait auparavant artificiellement la place du bouton au-dessus du header.
+   Le vrai composant LIGHT occupe maintenant cette place dans le flux. */
+body .topbar{margin-top:0!important}
+
+body #installAppBtn{
+  position:static!important;
+  inset:auto!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  z-index:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:44px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0 16px!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:14px!important;
+  background:var(--bos-panel)!important;
+  color:var(--bos-ink)!important;
+  box-shadow:var(--bos-shadow-soft)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:11.5px!important;
+  line-height:1.3!important;
+  font-weight:500!important;
+  letter-spacing:-.005em!important;
+  text-transform:none!important;
+  cursor:pointer!important;
+  transform:none!important;
+}
+
+body #installAppBtn::before{
+  content:""!important;
+  display:block!important;
+  width:19px!important;
+  height:19px!important;
+  flex:0 0 19px!important;
+  background-color:currentColor!important;
+  -webkit-mask-repeat:no-repeat!important;
+  -webkit-mask-position:center!important;
+  -webkit-mask-size:contain!important;
+  mask-repeat:no-repeat!important;
+  mask-position:center!important;
+  mask-size:contain!important;
+  opacity:.96!important;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v11'/%3E%3Cpath d='m8 10 4 4 4-4'/%3E%3Cpath d='M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4'/%3E%3C/g%3E%3C/svg%3E")!important;
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v11'/%3E%3Cpath d='m8 10 4 4 4-4'/%3E%3Cpath d='M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4'/%3E%3C/g%3E%3C/svg%3E")!important;
+}
+
+/* L'ancien PLAN dessinait sa propre flèche en ::after. LIGHT utilise le span. */
+body #installAppBtn::after{content:none!important;display:none!important}
+body #installAppBtn > span{
+  display:inline-block!important;
+  margin-left:4px!important;
+  color:var(--bos-accent)!important;
+  font-size:14px!important;
+  line-height:1!important;
+  transition:transform .16s ease!important;
+}
+body #installAppBtn:hover > span{transform:translateX(3px)!important}
+body #installAppBtn:focus-visible{
+  outline:2px solid var(--bos-accent)!important;
+  outline-offset:4px!important;
+}
+
+/* Même sécurité que LIGHT : jamais de CTA d'installation dans la PWA ouverte. */
+@media (display-mode:standalone){
+  body .install-app-row{display:none!important}
+}
+
+@media(max-width:520px){
+  body #installAppBtn::before{
+    width:17px!important;
+    height:17px!important;
+    flex-basis:17px!important;
+  }
+}
+
+/* Aide d'installation : équivalent du dialogue LIGHT, uniquement utilisé quand
+   le navigateur ne fournit pas beforeinstallprompt (notamment iOS). */
+#bosPlanInstallDialog{
+  width:min(540px,calc(100% - 20px));
+  border:1px solid var(--bos-line);
+  padding:0;
+  border-radius:22px;
+  background:var(--bos-panel);
+  color:var(--bos-ink);
+  box-shadow:0 25px 90px rgba(0,0,0,.25);
+}
+#bosPlanInstallDialog::backdrop{background:rgba(0,0,0,.5);backdrop-filter:blur(3px)}
+#bosPlanInstallDialog .bos-install-inner{padding:20px}
+#bosPlanInstallDialog .bos-install-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#bosPlanInstallDialog .bos-install-head>div{display:flex;flex-direction:column}
+#bosPlanInstallDialog .bos-install-head strong{font-size:18px;font-weight:600}
+#bosPlanInstallDialog .bos-install-head small{font-size:11px;color:var(--bos-muted);margin-top:3px}
+#bosPlanInstallDialog .bos-install-close{
+  width:38px;height:38px;padding:0;display:grid;place-items:center;
+  border:1px solid var(--bos-line);border-radius:11px;background:var(--bos-panel-soft);color:var(--bos-muted);
+}
+#bosPlanInstallDialog .bos-install-help{
+  margin-top:16px;padding:14px;border:1px solid var(--bos-line);border-radius:14px;
+  background:var(--bos-panel-soft);font-size:12px;line-height:1.5;color:var(--bos-muted);
+}
+#bosPlanInstallDialog .bos-install-help p{margin:0}
+#bosPlanInstallDialog .bos-install-actions{display:flex;margin-top:14px}
+#bosPlanInstallDialog .bos-install-actions button{
+  width:100%;min-height:43px;border:1px solid var(--bos-accent);border-radius:13px;
+  background:var(--bos-accent);color:#fff;font-weight:500;
+}
