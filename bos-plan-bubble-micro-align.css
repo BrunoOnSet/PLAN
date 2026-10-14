@@ -24,3 +24,8 @@
   -webkit-text-stroke:.6px rgba(255,255,255,.95)!important;
   paint-order:stroke fill!important;
 }
+
+/* 01 : masque uniquement le badge de version affiché. */
+#appVersionBadge{
+  display:none!important;
+}
