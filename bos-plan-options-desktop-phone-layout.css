@@ -58,6 +58,14 @@
     max-width:none!important;
   }
 
+  /* Les deux sliders utilisent toute la largeur disponible, comme sur téléphone. */
+  .plan-options-card .grid-opacity-control input[type="range"]{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    display:block!important;
+  }
+
   /* L'autosauvegarde reste sous les réglages, comme sur la version téléphone. */
   .plan-options-card .toolbar-note{
     width:100%!important;
