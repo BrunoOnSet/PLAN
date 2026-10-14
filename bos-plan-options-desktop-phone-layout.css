@@ -1,0 +1,68 @@
+/* PLAN — Options de plan : sur ordinateur, conserver exactement la logique de disposition téléphone.
+   Aucun impact sous 701 px. La bulle utilise simplement la largeur disponible en restant plus large. */
+
+/* Le badge de version dans la bulle 01 reste masqué sur toutes les tailles. */
+#appVersionBadge{
+  display:none!important;
+}
+
+@media (min-width:701px){
+  .plan-options-card .plan-options-body:not(.hidden){
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:12px!important;
+  }
+
+  .plan-options-card .plan-tools{
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:auto auto auto auto!important;
+    gap:12px 14px!important;
+    align-items:stretch!important;
+  }
+
+  /* Ligne 1 : Faisceau à gauche, Aimant à droite — comme sur téléphone. */
+  .plan-options-card .plan-tools > .beam-global-control:nth-child(4){
+    grid-column:1!important;
+    grid-row:1!important;
+  }
+  .plan-options-card .plan-tools > .beam-global-control:nth-child(1){
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+
+  /* Puis les trois réglages pleine largeur, dans le même ordre que sur téléphone. */
+  .plan-options-card .plan-tools > label:nth-child(2){
+    grid-column:1 / -1!important;
+    grid-row:2!important;
+  }
+  .plan-options-card .plan-tools > .grid-opacity-control:nth-child(3){
+    grid-column:1 / -1!important;
+    grid-row:3!important;
+  }
+  .plan-options-card .plan-tools > .plan-length-control:nth-child(5){
+    grid-column:1 / -1!important;
+    grid-row:4!important;
+  }
+
+  .plan-options-card .beam-global-control,
+  .plan-options-card .beam-toggle,
+  .plan-options-card .plan-tools > label,
+  .plan-options-card .plan-tools select,
+  .plan-options-card .grid-opacity-control{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+
+  /* L'autosauvegarde reste sous les réglages, comme sur la version téléphone. */
+  .plan-options-card .toolbar-note{
+    width:100%!important;
+    margin:0!important;
+    align-items:flex-start!important;
+    text-align:left!important;
+  }
+}
