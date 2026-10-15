@@ -91,10 +91,8 @@
     const toggle=bySel('#toggleInspectorBtn');
     if(!inspector||!head||!toggle||head.querySelector('.inspector-head-actions')||inspector.querySelector(':scope > .inspector-content-actions')) return;
 
-    /* Le chevron reste exactement dans l'entête. */
     const headActions=document.createElement('div');
     headActions.className='inspector-head-actions';
-
     toggle.classList.add('inspector-native-toggle');
 
     const collapseProxy=document.createElement('button');
@@ -118,8 +116,6 @@
     head.appendChild(headActions);
     syncCollapseProxy();
 
-    /* Dupliquer + Corbeille appartiennent au contenu rétractable :
-       première ligne juste sous le trait de séparation. */
     const contentActions=document.createElement('div');
     contentActions.className='inspector-content-actions';
 
@@ -185,7 +181,6 @@
   else init();
 })();
 
-/* Extension isolée MES PLANS : chargée après le cœur et sans toucher aux fonctions PLAN. */
 (function(){
   if(document.querySelector('script[data-bos-plan-library-direct]'))return;
   const s=document.createElement('script');
@@ -195,7 +190,6 @@
   document.body.appendChild(s);
 })();
 
-/* Icônes des onglets + dossiers rétractables. Extension purement visuelle / bibliothèque. */
 (function(){
   if(document.querySelector('script[data-bos-plan-tabs-folders]'))return;
   const s=document.createElement('script');
@@ -205,7 +199,6 @@
   document.body.appendChild(s);
 })();
 
-/* Contact / suggestion : même comportement que la référence BOS LIGHT. */
 (function(){
   if(document.querySelector('script[data-bos-plan-contact-light]'))return;
   const s=document.createElement('script');
@@ -215,7 +208,6 @@
   document.body.appendChild(s);
 })();
 
-/* Correctif isolé : limite basse de déplacement liée à la hauteur réelle du plan. */
 (function(){
   if(document.querySelector('script[data-bos-plan-drag-bounds]'))return;
   const s=document.createElement('script');
@@ -225,12 +217,21 @@
   document.body.appendChild(s);
 })();
 
-/* Installation PWA : copie isolée du comportement de BOS-LIGHT. */
 (function(){
   if(document.querySelector('script[data-bos-plan-install-light]'))return;
   const s=document.createElement('script');
   s.src='bos-plan-install-light.js?v=20261014-1';
   s.async=false;
   s.dataset.bosPlanInstallLight='1';
+  document.body.appendChild(s);
+})();
+
+/* BOS Access : configuration centrale, invisible en mode FREE. */
+(function(){
+  if(document.querySelector('script[data-bos-plan-access]'))return;
+  const s=document.createElement('script');
+  s.src='bos-access.js?v=1.0.0';
+  s.async=false;
+  s.dataset.bosPlanAccess='1';
   document.body.appendChild(s);
 })();
