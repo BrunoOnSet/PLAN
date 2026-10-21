@@ -610,3 +610,11 @@ body.dark .stage-plan-size-readout{
 body.dark .softbox-grid-line{stroke:#AEB8C0}
 body.dark .fresnel-shape{fill:rgba(205,212,218,.76);stroke:#9AA5AE}
 body.dark .fresnel-lens{stroke:#B5BEC5}
+
+
+/* PLAN — Lantern. */
+.lantern-shape{fill:rgba(240,243,245,.72);stroke:#87939C;stroke-width:2}
+.lantern-rib,.lantern-neck{fill:none;stroke:#87939C;stroke-width:1.5;stroke-linecap:round}
+.lantern-beam{stroke-dasharray:4 3}
+body.dark .lantern-shape{fill:rgba(220,225,230,.22);stroke:#A9B2B9}
+body.dark .lantern-rib,body.dark .lantern-neck{stroke:#A9B2B9}
