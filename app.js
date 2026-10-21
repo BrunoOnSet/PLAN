@@ -713,6 +713,12 @@ function applyCameraChoice(){
 function addLightModifier(g,o){
   if(!o.modifier||o.modifier==='none')return;
   const size=Math.max(.3,Number(o.modifierSize)||.9),px=size*SCALE;
+  if(o.modifier==='hyper-reflector'){
+    const x0=15,x1=35,half=14;
+    g.appendChild(svgEl('path',{d:`M ${x0} -6 L ${x1} -${half} Q ${x1+8} 0 ${x1} ${half} L ${x0} 6 Z`,class:'hyper-reflector-shape'}));
+    g.appendChild(svgEl('line',{x1:x0,y1:-5,x2:x0,y2:5,class:'hyper-reflector-neck'}));
+    return;
+  }
   if(o.modifier==='softbox'){
     const linear=['ray','panel','panel-wide','nova','nova-narrow'].includes(o.form);
     if(linear){
@@ -892,7 +898,7 @@ function drawObject(o){
     if(pos==='top'){ly=-hitH/2-18}else if(pos==='left'){lx=-hitW/2-12;ly=0;anchor='end'}else if(pos==='right'){lx=hitW/2+12;ly=0;anchor='start'}else if(pos==='bottom'){ly=hitH/2+24}
     const label=svgEl('g',{transform:`rotate(${-o.rot}) translate(${lx} ${ly})`}),t=svgEl('text',{class:'object-label','text-anchor':anchor});t.textContent=o.name;label.appendChild(t);
     if(objectInfoMode==='full'){
-      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='softbox'?'Softbox':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
+      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
       else if(o.kind==='camera'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${cameraModelShortName(o.cameraModel)} · ${Math.round(o.focal||50)} mm · H ${Number(o.height||1.55).toFixed(2)} m`;label.appendChild(st)}
       else if(o.kind==='accessory'||o.kind==='decor'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${(o.width||0).toFixed(1)} × ${(o.height||0).toFixed(1)} m${o.locked?' · verrouillé':''}`;label.appendChild(st)}
     }
@@ -942,7 +948,7 @@ function selected(){return state.objects.find(o=>o.id===state.selected)}
 
 function quickModifierOptions(o){
   return supportsSoftbox(o)
-    ?[['none','Nu'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
+    ?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
     :[['none','Nu']];
 }
 function renderQuickControls(){
@@ -1076,8 +1082,8 @@ function renderInspector(){
     if(o.kind==='accessory'||o.type==='window')html+=`<div class="field slider-field"><div class="slider-head"><label>Hauteur au sol</label><strong data-slider-out="elevation">${Number(o.elevation||0).toFixed(2)} m</strong></div><input data-k="elevation" type="range" min="0" max="5" step="0.05" value="${o.elevation}"></div>`;
   }
   if(o.kind==='light'){
-    html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
-    if(o.modifier&&o.modifier!=='none'){
+    html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
+    if(['softbox','umbrella-reflect','umbrella-diffusion'].includes(o.modifier)){
       const cm=Math.round((Number(o.modifierSize)||.9)*100),label=o.modifier.startsWith('umbrella')?'Diamètre parapluie':'Taille accessoire';
       html+=`<div class="field slider-field"><div class="slider-head"><label>${label}</label><strong data-slider-out="modifierSize">${cm} cm</strong></div><input data-k="modifierSize" data-convert="cm" type="range" min="30" max="300" step="5" value="${cm}"></div>`;
     }
@@ -1425,6 +1431,7 @@ function ensureEquipmentSheet(){
 }
 function equipmentModifierText(o){
   const cm=Math.round((Number(o.modifierSize)||.9)*100);
+  if(o.modifier==='hyper-reflector')return 'Bol / Hyper Reflector';
   if(o.modifier==='softbox')return `Softbox ${cm} cm`;
   if(o.modifier==='umbrella-reflect')return `Parapluie réflexion ${cm} cm`;
   if(o.modifier==='umbrella-diffusion')return `Parapluie diffusion ${cm} cm`;
