@@ -220,7 +220,7 @@
 (function(){
   if(document.querySelector('script[data-bos-plan-install-light]'))return;
   const s=document.createElement('script');
-  s.src='bos-plan-install-light.js?v=20261021-1';
+  s.src='bos-plan-install-light.js?v=20261021-2';
   s.async=false;
   s.dataset.bosPlanInstallLight='1';
   document.body.appendChild(s);
