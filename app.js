@@ -647,6 +647,13 @@ function normalizeLightObject(o){
   o.height=clamp(Number(o.height)||2,.2,6);
   if(o.shower===undefined)o.shower=false;
   else o.shower=!!o.shower;
+  if(o.modifier==='lantern'){
+    if(!Number.isFinite(Number(o.beamBeforeLantern))){
+      const current=Number(o.beam);
+      o.beamBeforeLantern=Number.isFinite(current)&&current!==180?current:55;
+    }
+    o.beam=180;
+  }
   const capability=lightCapability(o);
   if(capability!=='color')o.colorMode='cct';
   else if(!['cct','hsi'].includes(o.colorMode))o.colorMode='cct';
@@ -734,6 +741,13 @@ function drawLightBeam(o){
   normalizeLightObject(o);
   const beam=displayBeamAngle(o),c=lightColor(o,.13);
 
+  if(o.modifier==='lantern'&&!o.shower){
+    const radius=fixtureEmitterBase(o).len;
+    const beamRot=o.rot+fixtureBeamOffset(o);
+    const d=`M 0 0 L 0 ${-radius} A ${radius} ${radius} 0 0 1 0 ${radius} Z`;
+    beamsLayer.appendChild(svgEl('path',{d,class:'beam lantern-beam',style:`fill:${c.fill};stroke:${c.stroke}`,transform:`translate(${o.x} ${o.y}) rotate(${beamRot})`}));
+    return;
+  }
   if(o.shower){
     const showerAngle=Math.min(120,Math.max(4,beam));
     const physicalRadius=Math.tan(rad(showerAngle/2))*Number(o.height||2)*SCALE;
@@ -844,6 +858,14 @@ function addLightModifier(g,o){
     const x0=15,x1=35,half=14;
     g.appendChild(svgEl('path',{d:`M ${x0} -6 L ${x1} -${half} Q ${x1+8} 0 ${x1} ${half} L ${x0} 6 Z`,class:'hyper-reflector-shape'}));
     g.appendChild(svgEl('line',{x1:x0,y1:-5,x2:x0,y2:5,class:'hyper-reflector-neck'}));
+    return;
+  }
+  if(o.modifier==='lantern'){
+    const cx=28,r=18;
+    g.appendChild(svgEl('line',{x1:15,y1:0,x2:cx-r+2,y2:0,class:'lantern-neck'}));
+    g.appendChild(svgEl('circle',{cx,cy:0,r,class:'lantern-shape'}));
+    g.appendChild(svgEl('line',{x1:cx-r*.72,y1:-r*.72,x2:cx+r*.72,y2:r*.72,class:'lantern-rib'}));
+    g.appendChild(svgEl('line',{x1:cx-r*.72,y1:r*.72,x2:cx+r*.72,y2:-r*.72,class:'lantern-rib'}));
     return;
   }
   if(o.modifier==='fresnel'){
@@ -993,6 +1015,7 @@ function duplicateObjectById(id){
 }
 function beamSliderMax(o){
   if(!o||o.kind!=='light')return 179;
+  if(o.modifier==='lantern')return 180;
   if(o.form==='nova-narrow')return 60;
   if(['strip','tube','pixel-bar','mat','panel','panel-wide','nova'].includes(o.form))return 120;
   return 179;
@@ -1034,7 +1057,7 @@ function drawObject(o){
     if(pos==='top'){ly=-hitH/2-18}else if(pos==='left'){lx=-hitW/2-12;ly=0;anchor='end'}else if(pos==='right'){lx=hitW/2+12;ly=0;anchor='start'}else if(pos==='bottom'){ly=hitH/2+24}
     const label=svgEl('g',{transform:`rotate(${-o.rot}) translate(${lx} ${ly})`}),t=svgEl('text',{class:'object-label','text-anchor':anchor});t.textContent=o.name;label.appendChild(t);
     if(objectInfoMode==='full'){
-      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='softbox-grid'?'Softbox + Grid':o.modifier==='fresnel'?'Fresnel':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}${o.shower?' · Douche':''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
+      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='softbox-grid'?'Softbox + Grid':o.modifier==='fresnel'?'Fresnel':o.modifier==='lantern'?'Lantern':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}${o.shower?' · Douche':''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
       else if(o.kind==='camera'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${cameraModelShortName(o.cameraModel)} · ${Math.round(o.focal||50)} mm · H ${Number(o.height||1.55).toFixed(2)} m`;label.appendChild(st)}
       else if(o.kind==='accessory'||o.kind==='decor'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${(o.width||0).toFixed(1)} × ${(o.height||0).toFixed(1)} m${o.locked?' · verrouillé':''}`;label.appendChild(st)}
     }
@@ -1082,9 +1105,25 @@ updateInspectorCollapse();
 
 function selected(){return state.objects.find(o=>o.id===state.selected)}
 
+function setLightModifier(o,value){
+  if(!o||o.kind!=='light')return;
+  const prev=o.modifier||'none';
+  if(value==='lantern'&&prev!=='lantern'){
+    const current=Number(o.beam);
+    o.beamBeforeLantern=Number.isFinite(current)?current:55;
+    o.beam=180;
+  }else if(prev==='lantern'&&value!=='lantern'){
+    const restored=Number(o.beamBeforeLantern);
+    o.beam=Number.isFinite(restored)?restored:55;
+    delete o.beamBeforeLantern;
+  }
+  o.modifier=value;
+  if((o.modifier==='softbox'||o.modifier==='softbox-grid')&&!o.modifierSize)o.modifierSize=.9;
+  if(o.modifier?.startsWith('umbrella'))o.modifierSize=Number(o.modifierSize)||1.05;
+}
 function quickModifierOptions(o){
   return supportsSoftbox(o)
-    ?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['softbox-grid','Softbox + Grid'],['fresnel','Fresnel'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
+    ?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['softbox-grid','Softbox + Grid'],['fresnel','Fresnel'],['lantern','Lantern'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
     :[['none','Nu']];
 }
 function renderQuickControls(){
@@ -1167,11 +1206,10 @@ function renderQuickControls(){
   modifier?.addEventListener('change',()=>{
     const obj=selected();
     if(!obj||obj.id!==o.id)return;
-    obj.modifier=modifier.value;
-    if((obj.modifier==='softbox'||obj.modifier==='softbox-grid')&&!obj.modifierSize)obj.modifierSize=.9;
-    if(obj.modifier?.startsWith('umbrella'))obj.modifierSize=Number(obj.modifierSize)||1.05;
+    setLightModifier(obj,modifier.value);
     renderCanvas();
     renderInspector();
+    renderQuickControls();
   });
 
   intensity?.addEventListener('input',()=>{
@@ -1196,8 +1234,14 @@ function renderQuickControls(){
   beam?.addEventListener('input',()=>{
     const obj=selected();
     if(!obj||obj.id!==o.id)return;
-    obj.beam=Number(beam.value);
-    if(beamValue)beamValue.textContent=`${Math.round(obj.beam)}°`;
+    if(obj.modifier==='lantern'){
+      obj.beam=180;
+      beam.value='180';
+      if(beamValue)beamValue.textContent='180°';
+    }else{
+      obj.beam=Number(beam.value);
+      if(beamValue)beamValue.textContent=`${Math.round(obj.beam)}°`;
+    }
     renderCanvas();
     renderInspector();
   });
@@ -1235,7 +1279,7 @@ function renderInspector(){
   if(o.kind==='light'){
     normalizeLightObject(o);
     html+=`<div class="field slider-field light-height-field"><div class="slider-head light-height-head"><div class="light-height-label"><label>Hauteur projecteur</label><button id="lightShowerBtn" class="light-shower-btn ${o.shower?'active':''}" type="button" aria-pressed="${String(!!o.shower)}">Douche</button></div><strong data-slider-out="height">${Number(o.height||2).toFixed(2)} m</strong></div><input data-k="height" type="range" min="0.2" max="6" step="0.05" value="${Number(o.height||2)}"></div>`;
-    html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['softbox-grid','Softbox + Grid'],['fresnel','Fresnel'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
+    html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['softbox-grid','Softbox + Grid'],['fresnel','Fresnel'],['lantern','Lantern'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
     if(['softbox','softbox-grid','umbrella-reflect','umbrella-diffusion'].includes(o.modifier)){
       const cm=Math.round((Number(o.modifierSize)||.9)*100),label=o.modifier.startsWith('umbrella')?'Diamètre parapluie':'Taille accessoire';
       html+=`<div class="field slider-field"><div class="slider-head"><label>${label}</label><strong data-slider-out="modifierSize">${cm} cm</strong></div><input data-k="modifierSize" data-convert="cm" type="range" min="30" max="300" step="5" value="${cm}"></div>`;
@@ -1264,7 +1308,7 @@ function renderInspector(){
   inspectorFields.querySelectorAll('[data-focal-preset]').forEach(btn=>btn.onclick=()=>{const obj=selected();if(!obj||obj.kind!=='camera')return;obj.focal=clamp(Number(btn.dataset.focalPreset)||50,12,300);state.activePreviewCamera=obj.id;renderInspector();renderCanvas()});
   const changeLightModelBtn=document.getElementById('changeLightModelBtn');if(changeLightModelBtn)changeLightModelBtn.onclick=()=>{const obj=selected();if(obj?.kind==='light')openLightChooser(obj.id)};
   const lightShowerBtn=document.getElementById('lightShowerBtn');if(lightShowerBtn)lightShowerBtn.onclick=()=>{const obj=selected();if(!obj||obj.kind!=='light')return;obj.shower=!obj.shower;render()};
-  inspectorFields.querySelectorAll('[data-choice] button').forEach(btn=>btn.onclick=()=>{const obj=selected();if(!obj)return;const key=btn.parentElement.dataset.choice;obj[key]=btn.dataset.value;if(key==='modifier'){if(obj.modifier==='softbox'&&!obj.modifierSize)obj.modifierSize=.9;if(obj.modifier?.startsWith('umbrella'))obj.modifierSize=Number(obj.modifierSize)||1.05}render()});
+  inspectorFields.querySelectorAll('[data-choice] button').forEach(btn=>btn.onclick=()=>{const obj=selected();if(!obj)return;const key=btn.parentElement.dataset.choice;if(key==='modifier')setLightModifier(obj,btn.dataset.value);else obj[key]=btn.dataset.value;render()});
   const lock=document.getElementById('lockSelected');if(lock)lock.onchange=()=>{o.locked=lock.checked;render()};
 }
 function nearestSubjectDistance(o){const ss=state.objects.filter(x=>x.kind==='subject');if(!ss.length)return 0;return Math.min(...ss.map(s=>dist(o,s)))}
@@ -1464,7 +1508,7 @@ function makeMonitorCard(cam,compact=false){
   const guides=svgNode('g',{class:'preview-guides'});guides.appendChild(svgNode('rect',{x:80,y:45,width:1440,height:810,class:'preview-safe'}));[1600/3,3200/3].forEach(x=>guides.appendChild(svgNode('line',{x1:x,y1:0,x2:x,y2:900,class:'preview-third'})));[300,600].forEach(y=>guides.appendChild(svgNode('line',{x1:0,y1:y,x2:1600,y2:y,class:'preview-third'})));svg.appendChild(guides);monitor.appendChild(svg);
   const label=document.createElement('div');label.className='preview-label';if(visibleSubjects.length){const main=visibleSubjects.sort((a,b)=>Math.abs((a.bbox.x0+a.bbox.x1)/2-800)-Math.abs((b.bbox.x0+b.bbox.x1)/2-800))[0];const framing=shotLabel(main);label.textContent=`${framing?framing+' · ':''}${visibleSubjects.length} sujet${visibleSubjects.length>1?'s':''} visible${visibleSubjects.length>1?'s':''}`}else label.textContent='Aucun sujet dans le cadre';monitor.appendChild(label);
   if(visibleWindows.length){const info=document.createElement('div');info.className='preview-scene-info';info.textContent=`Fenêtre${visibleWindows.length>1?'s':''} visible${visibleWindows.length>1?'s':''} : ${visibleWindows.map(o=>o.name).slice(0,2).join(' · ')}${visibleWindows.length>2?` +${visibleWindows.length-2}`:''}`;monitor.appendChild(info)}
-  if(technical.length){const alert=document.createElement('div');alert.className='preview-warning';const names=[...new Set(technical.map(o=>o.kind==='light'?(o.modifier==='softbox'?`${o.short||o.name} + softbox`:o.modifier==='softbox-grid'?`${o.short||o.name} + softbox + grid`:o.modifier==='fresnel'?`${o.short||o.name} + fresnel`:o.modifier==='umbrella-reflect'?`${o.short||o.name} + parapluie réflexion`:o.modifier==='umbrella-diffusion'?`${o.short||o.name} + parapluie diffusion`:(o.short||o.name)):o.name))];alert.textContent=`⚠ Dans le champ : ${names.slice(0,3).join(' · ')}${names.length>3?` +${names.length-3}`:''}`;monitor.appendChild(alert)}
+  if(technical.length){const alert=document.createElement('div');alert.className='preview-warning';const names=[...new Set(technical.map(o=>o.kind==='light'?(o.modifier==='softbox'?`${o.short||o.name} + softbox`:o.modifier==='softbox-grid'?`${o.short||o.name} + softbox + grid`:o.modifier==='fresnel'?`${o.short||o.name} + fresnel`:o.modifier==='lantern'?`${o.short||o.name} + lantern`:o.modifier==='umbrella-reflect'?`${o.short||o.name} + parapluie réflexion`:o.modifier==='umbrella-diffusion'?`${o.short||o.name} + parapluie diffusion`:(o.short||o.name)):o.name))];alert.textContent=`⚠ Dans le champ : ${names.slice(0,3).join(' · ')}${names.length>3?` +${names.length-3}`:''}`;monitor.appendChild(alert)}
   shell.appendChild(monitor);card.appendChild(shell);return card;
 }
 function renderPreview(){
@@ -1589,6 +1633,7 @@ function equipmentModifierText(o){
   if(o.modifier==='softbox')return `Softbox ${cm} cm`;
   if(o.modifier==='softbox-grid')return `Softbox + Grid ${cm} cm`;
   if(o.modifier==='fresnel')return 'Fresnel';
+  if(o.modifier==='lantern')return 'Lantern';
   if(o.modifier==='umbrella-reflect')return `Parapluie réflexion ${cm} cm`;
   if(o.modifier==='umbrella-diffusion')return `Parapluie diffusion ${cm} cm`;
   return '';
