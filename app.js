@@ -67,6 +67,7 @@ const stageWrap=document.getElementById('stageWrap');
 const zoomReadout=document.getElementById('zoomReadout');
 const zoomOutBtn=document.getElementById('zoomOutBtn');
 const zoomInBtn=document.getElementById('zoomInBtn');
+const quickControls=document.getElementById('quickControls');
 
 const CAMERA_DB_URL="https://raw.githubusercontent.com/BrunoSetTools/BOS-CAMERA-DB/main/cameras.json";
 const CAMERA_DB_CACHE_KEY="bos-camera-db-cache-v2";
@@ -570,7 +571,7 @@ function renderCanvas(){
   updatePlanBadge();
   scheduleAutosave();
 }
-function render(){renderCanvas();renderInspector()}
+function render(){renderCanvas();renderInspector();renderQuickControls()}
 function drawCameraFov(o){
   const {sensor,focal}=cameraSettings(o),hfov=2*Math.atan(sensor.w/(2*focal)),len=stageH()*.74,half=Math.tan(hfov/2)*len;
   beamsLayer.appendChild(svgEl('polygon',{points:`0,0 ${len},${-half} ${len},${half}`,class:'camera-fov',transform:`translate(${o.x} ${o.y}) rotate(${o.rot})`}));
@@ -907,7 +908,7 @@ function pointerToStage(e){const pt=stage.createSVGPoint();pt.x=e.clientX;pt.y=e
 function startDrag(e){
   if(e.pointerType==='touch'&&activeTouchPointers.size>1)return;
   e.preventDefault();e.stopPropagation();const id=e.currentTarget.dataset.id,o=state.objects.find(x=>x.id===id);if(!o)return;
-  if(state.selected!==id){state.selected=id;renderInspector()}
+  if(state.selected!==id){state.selected=id;renderInspector();renderQuickControls()}
   if(o.kind==='camera'){state.activePreviewCamera=o.id;renderPreview()}
   if(o.locked){renderInspector();return}
   const p=pointerToStage(e);drag={mode:'move',id,dx:p.x-o.x,dy:p.y-o.y,pointerId:e.pointerId};stage.setPointerCapture?.(e.pointerId);
@@ -938,6 +939,113 @@ if(toggleInspectorBtn)toggleInspectorBtn.addEventListener('click',()=>{inspector
 updateInspectorCollapse();
 
 function selected(){return state.objects.find(o=>o.id===state.selected)}
+
+function quickModifierOptions(o){
+  return supportsSoftbox(o)
+    ?[['none','Nu'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
+    :[['none','Nu']];
+}
+function renderQuickControls(){
+  if(!quickControls)return;
+  const o=selected();
+
+  if(!o || !(o.kind==='light' || (o.kind==='decor'&&o.type==='wall'))){
+    quickControls.hidden=true;
+    quickControls.innerHTML='';
+    delete quickControls.dataset.objectId;
+    return;
+  }
+
+  quickControls.hidden=false;
+  quickControls.dataset.objectId=o.id;
+
+  if(o.kind==='decor'&&o.type==='wall'){
+    quickControls.innerHTML=`
+      <div class="quick-control-head">
+        <strong>Mur</strong>
+        <span>Réglage rapide</span>
+      </div>
+      <label class="quick-control-field">
+        <span><em>Longueur</em><b id="quickWallWidthValue">${Number(o.width||3).toFixed(1)} m</b></span>
+        <input id="quickWallWidth" type="range" min="0.1" max="20" step="0.1" value="${Number(o.width||3)}">
+      </label>`;
+
+    const widthInput=quickControls.querySelector('#quickWallWidth');
+    const widthValue=quickControls.querySelector('#quickWallWidthValue');
+    widthInput?.addEventListener('input',()=>{
+      const obj=selected();
+      if(!obj||obj.id!==o.id)return;
+      obj.width=Number(widthInput.value);
+      if(widthValue)widthValue.textContent=`${obj.width.toFixed(1)} m`;
+      renderCanvas();
+      renderInspector();
+    });
+    return;
+  }
+
+  normalizeLightObject(o);
+  const capability=lightCapability(o);
+  const options=quickModifierOptions(o);
+  const tempControl=capability==='fixed'
+    ?`<div class="quick-control-static"><span>Température</span><strong>${Math.round(o.cct||5600)} K</strong></div>`
+    :`<label class="quick-control-field">
+        <span><em>Température</em><b id="quickLightCctValue">${Math.round(o.cct||5600)} K</b></span>
+        <input id="quickLightCct" type="range" min="2000" max="10000" step="100" value="${Math.round(o.cct||5600)}">
+      </label>`;
+
+  quickControls.innerHTML=`
+    <div class="quick-control-head">
+      <strong>${esc(modelDisplayName(o))}</strong>
+      <span>Réglages rapides</span>
+    </div>
+    <label class="quick-control-select">
+      <span>Accessoire</span>
+      <select id="quickLightModifier">
+        ${options.map(([value,label])=>`<option value="${value}" ${(o.modifier||'none')===value?'selected':''}>${label}</option>`).join('')}
+      </select>
+    </label>
+    <label class="quick-control-field">
+      <span><em>Intensité</em><b id="quickLightIntensityValue">${Math.round(o.intensity||0)} %</b></span>
+      <input id="quickLightIntensity" type="range" min="0" max="100" step="1" value="${Math.round(o.intensity||0)}">
+    </label>
+    ${tempControl}`;
+
+  const modifier=quickControls.querySelector('#quickLightModifier');
+  const intensity=quickControls.querySelector('#quickLightIntensity');
+  const intensityValue=quickControls.querySelector('#quickLightIntensityValue');
+  const cct=quickControls.querySelector('#quickLightCct');
+  const cctValue=quickControls.querySelector('#quickLightCctValue');
+
+  modifier?.addEventListener('change',()=>{
+    const obj=selected();
+    if(!obj||obj.id!==o.id)return;
+    obj.modifier=modifier.value;
+    if(obj.modifier==='softbox'&&!obj.modifierSize)obj.modifierSize=.9;
+    if(obj.modifier?.startsWith('umbrella'))obj.modifierSize=Number(obj.modifierSize)||1.05;
+    renderCanvas();
+    renderInspector();
+  });
+
+  intensity?.addEventListener('input',()=>{
+    const obj=selected();
+    if(!obj||obj.id!==o.id)return;
+    obj.intensity=Number(intensity.value);
+    if(intensityValue)intensityValue.textContent=`${Math.round(obj.intensity)} %`;
+    renderCanvas();
+    renderInspector();
+  });
+
+  cct?.addEventListener('input',()=>{
+    const obj=selected();
+    if(!obj||obj.id!==o.id)return;
+    obj.cct=Number(cct.value);
+    if(obj.colorMode==='hsi')obj.colorMode='cct';
+    if(cctValue)cctValue.textContent=`${Math.round(obj.cct)} K`;
+    renderCanvas();
+    renderInspector();
+  });
+}
+
 function kindLabel(o){return o.kind==='camera'?(o.name||'Caméra'):o.kind==='subject'?(o.name||'Personnage'):o.kind==='light'?(o.name||'Projecteur'):o.kind==='accessory'?(o.name||'Accessoire'):(o.name||'Décor')}
 function toggleButtons(key,current,options){return `<div class="inspector-choice" data-choice="${key}">${options.map(([value,label])=>`<button data-value="${esc(value)}" class="${current===value?'active':''}">${esc(label)}</button>`).join('')}</div>`}
 function renderInspector(){
@@ -992,7 +1100,7 @@ function renderInspector(){
   }
   if(o.kind==='accessory'||o.kind==='decor')html+=`<label class="lock-row"><input id="lockSelected" type="checkbox" ${o.locked?'checked':''}> <span>Verrouiller la position</span></label>`;
   inspectorFields.innerHTML=html;
-  inspectorFields.querySelectorAll('[data-k]').forEach(inp=>inp.addEventListener('input',()=>{const obj=selected();if(!obj)return;const key=inp.dataset.k;let val=inp.value;if(['height','width','zHeight','elevation','intensity','beam','focal','modifierSize','cct','hue','saturation'].includes(key))val=Number(val);if(inp.dataset.convert==='cm')val=val/100;if(key==='focal')val=clamp(Number.isFinite(val)?val:Number(inp.value)||obj.focal||50,12,300);obj[key]=val;const out=inp.parentElement?.querySelector(`[data-slider-out="${key}"]`)||inp.closest('.field')?.querySelector(`[data-slider-out="${key}"]`);if(out){const num=Number(inp.value);const shown=inp.dataset.convert==='cm'?Math.round(num):(key==='cct'||key==='beam'||key==='focal'?Math.round(num):num);out.textContent=key==='cct'?`${shown} K`:key==='beam'?`${shown}°`:key==='focal'?`${shown} mm`:['height','width','zHeight','elevation'].includes(key)?`${num.toFixed(key==='width'?1:2)} m`:inp.dataset.convert==='cm'?`${shown} cm`:`${Math.round(num)} %`}if(key==='focal'){const numVal=Math.round(obj.focal||50);const focalInput=document.getElementById('cameraFocalInput');if(focalInput&&document.activeElement!==focalInput)focalInput.value=String(numVal);inspectorFields.querySelectorAll('[data-focal-preset]').forEach(btn=>btn.classList.toggle('active',Number(btn.dataset.focalPreset)===numVal))}if(obj.kind==='camera')state.activePreviewCamera=obj.id;renderCanvas()}));
+  inspectorFields.querySelectorAll('[data-k]').forEach(inp=>inp.addEventListener('input',()=>{const obj=selected();if(!obj)return;const key=inp.dataset.k;let val=inp.value;if(['height','width','zHeight','elevation','intensity','beam','focal','modifierSize','cct','hue','saturation'].includes(key))val=Number(val);if(inp.dataset.convert==='cm')val=val/100;if(key==='focal')val=clamp(Number.isFinite(val)?val:Number(inp.value)||obj.focal||50,12,300);obj[key]=val;const out=inp.parentElement?.querySelector(`[data-slider-out="${key}"]`)||inp.closest('.field')?.querySelector(`[data-slider-out="${key}"]`);if(out){const num=Number(inp.value);const shown=inp.dataset.convert==='cm'?Math.round(num):(key==='cct'||key==='beam'||key==='focal'?Math.round(num):num);out.textContent=key==='cct'?`${shown} K`:key==='beam'?`${shown}°`:key==='focal'?`${shown} mm`:['height','width','zHeight','elevation'].includes(key)?`${num.toFixed(key==='width'?1:2)} m`:inp.dataset.convert==='cm'?`${shown} cm`:`${Math.round(num)} %`}if(key==='focal'){const numVal=Math.round(obj.focal||50);const focalInput=document.getElementById('cameraFocalInput');if(focalInput&&document.activeElement!==focalInput)focalInput.value=String(numVal);inspectorFields.querySelectorAll('[data-focal-preset]').forEach(btn=>btn.classList.toggle('active',Number(btn.dataset.focalPreset)===numVal))}if(obj.kind==='camera')state.activePreviewCamera=obj.id;renderCanvas();renderQuickControls()}));
   const changeCameraModelBtn=document.getElementById('changeCameraModelBtn');if(changeCameraModelBtn)changeCameraModelBtn.onclick=()=>{const obj=selected();if(obj?.kind==='camera')openCameraChooser(obj.id)};
   inspectorFields.querySelectorAll('[data-focal-preset]').forEach(btn=>btn.onclick=()=>{const obj=selected();if(!obj||obj.kind!=='camera')return;obj.focal=clamp(Number(btn.dataset.focalPreset)||50,12,300);state.activePreviewCamera=obj.id;renderInspector();renderCanvas()});
   const changeLightModelBtn=document.getElementById('changeLightModelBtn');if(changeLightModelBtn)changeLightModelBtn.onclick=()=>{const obj=selected();if(obj?.kind==='light')openLightChooser(obj.id)};
