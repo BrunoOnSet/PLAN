@@ -16,6 +16,10 @@
     return /android/i.test(navigator.userAgent);
   }
 
+  function isIOSChrome(){
+    return isIOS() && /crios/i.test(navigator.userAgent);
+  }
+
   function makeDialog(){
     let dialog=document.getElementById('bosPlanInstallDialog');
     if(dialog)return dialog;
@@ -87,14 +91,24 @@
       const helpBody=dialog.querySelector('#bosPlanInstallHelpBody');
       const actionBtn=dialog.querySelector('.bos-install-actions button');
 
-      if(isIOS()){
-        if(helpText)helpText.textContent='Installation sur iPhone / iPad';
+      if(isIOSChrome()){
+        if(helpText)helpText.textContent='Installation sur iPhone / iPad · Chrome';
         if(helpBody)helpBody.innerHTML=`
-          <p><strong>1.</strong> Ouvrez PLAN dans <strong>Safari</strong>.</p>
-          <p><strong>2.</strong> Touchez le bouton <strong>Partager</strong> <span aria-hidden="true">↑</span>.</p>
-          <p><strong>3.</strong> Faites défiler puis choisissez <strong>Ajouter à l’écran d’accueil</strong>.</p>
-          <p><strong>4.</strong> Touchez <strong>Ajouter</strong> pour terminer.</p>
-          <p style="margin-top:10px"><strong>Si vous êtes dans Instagram, Gmail, Messenger ou un autre navigateur intégré :</strong> ouvrez d’abord cette page dans Safari.</p>`;
+          <p><strong>1.</strong> Restez dans <strong>Chrome</strong> : il n’est pas nécessaire d’ouvrir Safari.</p>
+          <p><strong>2.</strong> Touchez le bouton <strong>Partager</strong> <span aria-hidden="true">↑</span> à droite de la barre d’adresse.</p>
+          <p><strong>3.</strong> Choisissez <strong>Ajouter à l’écran d’accueil</strong>.</p>
+          <p><strong>4.</strong> Vérifiez le nom puis touchez <strong>Ajouter</strong>.</p>`;
+        if(actionBtn){
+          actionBtn.textContent='Compris';
+          actionBtn.onclick=()=>dialog.close();
+        }
+      }else if(isIOS()){
+        if(helpText)helpText.textContent='Installation sur iPhone / iPad · Safari';
+        if(helpBody)helpBody.innerHTML=`
+          <p><strong>1.</strong> Dans <strong>Safari</strong>, touchez le bouton <strong>Partager</strong> <span aria-hidden="true">↑</span>.</p>
+          <p><strong>2.</strong> Faites défiler puis choisissez <strong>Ajouter à l’écran d’accueil</strong>.</p>
+          <p><strong>3.</strong> Vérifiez le nom puis touchez <strong>Ajouter</strong>.</p>
+          <p style="margin-top:10px"><strong>Si cette page est ouverte depuis Instagram, Gmail, Messenger ou une autre application :</strong> ouvrez-la d’abord dans Safari ou Chrome.</p>`;
         if(actionBtn){
           actionBtn.textContent='Compris';
           actionBtn.onclick=()=>dialog.close();
