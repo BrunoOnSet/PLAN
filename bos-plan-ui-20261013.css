@@ -588,3 +588,25 @@ body.dark .stage-plan-size-readout{
   .light-height-label{gap:6px}
   .light-shower-btn{min-height:22px;padding:3px 7px;font-size:8px}
 }
+
+/* PLAN — Softbox + Grid et Fresnel. */
+.softbox-grid-line{
+  stroke:#66737E;
+  stroke-width:1.15;
+  opacity:.9;
+  pointer-events:none;
+}
+.fresnel-shape{
+  fill:rgba(224,229,233,.92);
+  stroke:#7D8993;
+  stroke-width:2;
+  stroke-linejoin:round;
+}
+.fresnel-lens{
+  stroke:#65727D;
+  stroke-width:2.2;
+  stroke-linecap:round;
+}
+body.dark .softbox-grid-line{stroke:#AEB8C0}
+body.dark .fresnel-shape{fill:rgba(205,212,218,.76);stroke:#9AA5AE}
+body.dark .fresnel-lens{stroke:#B5BEC5}
