@@ -206,3 +206,122 @@
   #stage.desktop-pan-ready{cursor:grab}
   #stage.desktop-pan-ready.desktop-panning{cursor:grabbing!important}
 }
+
+
+/* PLAN — réglages rapides contextuels : volontairement compacts. */
+.plan-quick-controls{
+  position:absolute;
+  z-index:13;
+  top:50px;
+  right:10px;
+  width:190px;
+  padding:11px 12px 12px;
+  border:1px solid var(--bos-line);
+  border-radius:14px;
+  background:color-mix(in srgb,var(--bos-panel) 94%,transparent);
+  color:var(--bos-ink);
+  box-shadow:0 8px 28px rgba(20,25,27,.09);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-sizing:border-box;
+  font-family:"Instrument Sans","Inter Tight",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.plan-quick-controls[hidden]{display:none!important}
+.quick-control-head{
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+  margin:0 0 9px;
+  padding:0 0 8px;
+  border-bottom:1px solid var(--bos-line);
+}
+.quick-control-head strong{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+  line-height:1.25;
+  font-weight:600;
+}
+.quick-control-head span{
+  font-size:8.5px;
+  line-height:1.2;
+  color:var(--bos-muted);
+  font-weight:400;
+}
+.quick-control-field,
+.quick-control-select{
+  display:block;
+  margin:0 0 9px;
+}
+.quick-control-field:last-child,
+.quick-control-select:last-child{margin-bottom:0}
+.quick-control-field>span{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:5px;
+}
+.quick-control-field em,
+.quick-control-select>span,
+.quick-control-static>span{
+  font-style:normal;
+  font-size:9px;
+  line-height:1.2;
+  color:var(--bos-muted);
+  font-weight:500;
+}
+.quick-control-field b,
+.quick-control-static strong{
+  font-size:9px;
+  line-height:1.2;
+  color:var(--bos-ink);
+  font-weight:600;
+}
+.quick-control-field input[type="range"]{
+  width:100%;
+  margin:0;
+  display:block;
+}
+.quick-control-select>span{
+  display:block;
+  margin-bottom:5px;
+}
+.quick-control-select select{
+  width:100%;
+  min-height:32px;
+  height:32px;
+  padding:0 28px 0 9px;
+  border:1px solid var(--bos-line);
+  border-radius:9px;
+  background:var(--bos-panel-soft);
+  color:var(--bos-ink);
+  font:500 9px/1.2 "Instrument Sans","Inter Tight",Inter,sans-serif;
+}
+.quick-control-static{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin:0;
+  padding-top:2px;
+}
+body.dark .plan-quick-controls{
+  background:color-mix(in srgb,var(--bos-panel) 94%,transparent);
+  box-shadow:0 8px 28px rgba(0,0,0,.20);
+}
+@media(max-width:650px){
+  .plan-quick-controls{
+    top:auto;
+    right:8px;
+    bottom:8px;
+    width:168px;
+    padding:9px 10px 10px;
+    border-radius:12px;
+  }
+  .quick-control-head{margin-bottom:7px;padding-bottom:6px}
+  .quick-control-field,.quick-control-select{margin-bottom:7px}
+  .quick-control-select select{min-height:30px;height:30px}
+}
