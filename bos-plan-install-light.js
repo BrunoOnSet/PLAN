@@ -12,6 +12,10 @@
     return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   }
 
+  function isAndroid(){
+    return /android/i.test(navigator.userAgent);
+  }
+
   function makeDialog(){
     let dialog=document.getElementById('bosPlanInstallDialog');
     if(dialog)return dialog;
@@ -28,7 +32,6 @@
       </div>`;
     document.body.appendChild(dialog);
     dialog.querySelector('.bos-install-close')?.addEventListener('click',()=>dialog.close());
-    dialog.querySelector('.bos-install-actions button')?.addEventListener('click',()=>dialog.close());
     return dialog;
   }
 
@@ -78,23 +81,66 @@
       installRow.hidden=installed;
     }
 
-    installBtn.addEventListener('click',async()=>{
-      if(deferredInstallPrompt){
-        deferredInstallPrompt.prompt();
-        try{await deferredInstallPrompt.userChoice}catch(_){ }
-        deferredInstallPrompt=null;
-        return;
-      }
-
+    installBtn.addEventListener('click',()=>{
       const dialog=makeDialog();
       const helpText=dialog.querySelector('#bosPlanInstallHelpText');
       const helpBody=dialog.querySelector('#bosPlanInstallHelpBody');
-      if(helpText)helpText.textContent=isIOS()?'Installation sur iPhone / iPad':'Installation depuis votre navigateur';
-      if(helpBody){
-        helpBody.innerHTML=isIOS()
-          ?'<p><strong>Safari :</strong> touchez <strong>Partager</strong>, puis <strong>Ajouter à l’écran d’accueil</strong>.</p>'
-          :'<p>Ouvrez le menu du navigateur puis choisissez <strong>Installer l’application</strong> ou <strong>Ajouter à l’écran d’accueil</strong>.</p>';
+      const actionBtn=dialog.querySelector('.bos-install-actions button');
+
+      if(isIOS()){
+        if(helpText)helpText.textContent='Installation sur iPhone / iPad';
+        if(helpBody)helpBody.innerHTML=`
+          <p><strong>1.</strong> Ouvrez PLAN dans <strong>Safari</strong>.</p>
+          <p><strong>2.</strong> Touchez le bouton <strong>Partager</strong> <span aria-hidden="true">↑</span>.</p>
+          <p><strong>3.</strong> Faites défiler puis choisissez <strong>Ajouter à l’écran d’accueil</strong>.</p>
+          <p><strong>4.</strong> Touchez <strong>Ajouter</strong> pour terminer.</p>
+          <p style="margin-top:10px"><strong>Si vous êtes dans Instagram, Gmail, Messenger ou un autre navigateur intégré :</strong> ouvrez d’abord cette page dans Safari.</p>`;
+        if(actionBtn){
+          actionBtn.textContent='Compris';
+          actionBtn.onclick=()=>dialog.close();
+        }
+      }else if(isAndroid()){
+        if(helpText)helpText.textContent='Installation sur Android';
+        if(helpBody)helpBody.innerHTML=`
+          <p><strong>1.</strong> Ouvrez PLAN dans <strong>Chrome</strong>.</p>
+          <p><strong>2.</strong> Touchez le menu <strong>⋮</strong> en haut à droite.</p>
+          <p><strong>3.</strong> Choisissez <strong>Installer l’application</strong> ou <strong>Ajouter à l’écran d’accueil</strong>.</p>
+          <p><strong>4.</strong> Confirmez avec <strong>Installer</strong>.</p>`;
+        if(actionBtn){
+          if(deferredInstallPrompt){
+            actionBtn.textContent='Installer maintenant';
+            actionBtn.onclick=async()=>{
+              dialog.close();
+              deferredInstallPrompt.prompt();
+              try{await deferredInstallPrompt.userChoice}catch(_){ }
+              deferredInstallPrompt=null;
+            };
+          }else{
+            actionBtn.textContent='Compris';
+            actionBtn.onclick=()=>dialog.close();
+          }
+        }
+      }else{
+        if(helpText)helpText.textContent='Installation depuis votre navigateur';
+        if(helpBody)helpBody.innerHTML=`
+          <p><strong>Chrome / Edge :</strong> ouvrez le menu du navigateur puis choisissez <strong>Installer l’application</strong>.</p>
+          <p>Si cette option n’apparaît pas, cherchez <strong>Ajouter à l’écran d’accueil</strong> dans le menu du navigateur.</p>`;
+        if(actionBtn){
+          if(deferredInstallPrompt){
+            actionBtn.textContent='Installer maintenant';
+            actionBtn.onclick=async()=>{
+              dialog.close();
+              deferredInstallPrompt.prompt();
+              try{await deferredInstallPrompt.userChoice}catch(_){ }
+              deferredInstallPrompt=null;
+            };
+          }else{
+            actionBtn.textContent='Compris';
+            actionBtn.onclick=()=>dialog.close();
+          }
+        }
       }
+
       dialog.showModal();
     });
 
