@@ -65,6 +65,8 @@ const equipmentPrintArea=document.getElementById('equipmentPrintArea');
 const importProjectInput=document.getElementById('importProjectInput');
 const stageWrap=document.getElementById('stageWrap');
 const zoomReadout=document.getElementById('zoomReadout');
+const zoomOutBtn=document.getElementById('zoomOutBtn');
+const zoomInBtn=document.getElementById('zoomInBtn');
 
 const CAMERA_DB_URL="https://raw.githubusercontent.com/BrunoSetTools/BOS-CAMERA-DB/main/cameras.json";
 const CAMERA_DB_CACHE_KEY="bos-camera-db-cache-v2";
@@ -302,6 +304,25 @@ function stagePointFromClient(clientX,clientY){
   const r=stage.getBoundingClientRect();
   if(!r.width||!r.height)return {x:stageViewport.x,y:stageViewport.y};
   return {x:stageViewport.x+(clientX-r.left)/r.width*stageViewport.w,y:stageViewport.y+(clientY-r.top)/r.height*stageViewport.h};
+}
+function zoomStage(factor,clientX=null,clientY=null){
+  const fullW=stageW(),fullH=stageH();
+  const newW=clamp(stageViewport.w/factor,fullW/MAX_VIEW_ZOOM,fullW);
+  const newH=newW*fullH/fullW;
+  const r=stage.getBoundingClientRect();
+  const hasPointer=Number.isFinite(clientX)&&Number.isFinite(clientY)&&r.width&&r.height;
+  const rx=hasPointer?clamp((clientX-r.left)/r.width,0,1):.5;
+  const ry=hasPointer?clamp((clientY-r.top)/r.height,0,1):.5;
+  const anchor=hasPointer
+    ?stagePointFromClient(clientX,clientY)
+    :{x:stageViewport.x+stageViewport.w/2,y:stageViewport.y+stageViewport.h/2};
+  stageViewport=clampViewport({
+    x:anchor.x-rx*newW,
+    y:anchor.y-ry*newH,
+    w:newW,
+    h:newH
+  });
+  applyStageViewport();
 }
 function viewportFromPinch(start,midX,midY,distance){
   const ratio=Math.max(.01,distance/start.distance);
@@ -1534,6 +1555,13 @@ toggleBeamsBtn.onclick=()=>{state.beamsVisible=state.beamsVisible===false;update
 if(gridOpacityRange){gridOpacityRange.oninput=()=>{state.gridOpacity=clamp(Number(gridOpacityRange.value)/100,0,1);updateGridOpacity();scheduleAutosave()};gridOpacityRange.onchange=()=>persistCurrent()}
 if(planLengthRange){planLengthRange.oninput=()=>{setPlanLength(Number(planLengthRange.value),{keepViewport:true});updatePlanBadge()};planLengthRange.onchange=()=>persistCurrent()}
 if(zoomReadout)zoomReadout.addEventListener('click',()=>{resetStageViewport();persistCurrent()})
+if(zoomOutBtn)zoomOutBtn.addEventListener('click',()=>zoomStage(.8))
+if(zoomInBtn)zoomInBtn.addEventListener('click',()=>zoomStage(1.25))
+if(stage)stage.addEventListener('wheel',e=>{
+  if(!(e.ctrlKey||e.metaKey))return;
+  e.preventDefault();
+  zoomStage(e.deltaY<0?1.12:(1/1.12),e.clientX,e.clientY);
+},{passive:false})
 
 const installAppBtn=document.getElementById('installAppBtn');
 const projectContactBtn=document.getElementById('projectContactBtn');
