@@ -644,6 +644,9 @@ function normalizeLightObject(o){
   o.modifier=o.modifier||'none';
   if(o.beamVisible===undefined)o.beamVisible=true;
   if(o.modifierSize===undefined)o.modifierSize=o.modifier==='softbox'?.9:(o.modifier?.startsWith('umbrella')?1.05:.9);
+  o.height=clamp(Number(o.height)||2,.2,6);
+  if(o.shower===undefined)o.shower=false;
+  else o.shower=!!o.shower;
   const capability=lightCapability(o);
   if(capability!=='color')o.colorMode='cct';
   else if(!['cct','hsi'].includes(o.colorMode))o.colorMode='cct';
@@ -728,7 +731,18 @@ function fixtureEmitterBase(o){
   return {type:'point',span:0,len:310};
 }
 function drawLightBeam(o){
-  const beam=displayBeamAngle(o),base=fixtureEmitterBase(o),len=base.len,half=Math.tan(rad(beam/2))*len,c=lightColor(o,.13),beamRot=o.rot+fixtureBeamOffset(o);
+  normalizeLightObject(o);
+  const beam=displayBeamAngle(o),c=lightColor(o,.13);
+
+  if(o.shower){
+    const showerAngle=Math.min(120,Math.max(4,beam));
+    const physicalRadius=Math.tan(rad(showerAngle/2))*Number(o.height||2)*SCALE;
+    const radius=clamp(physicalRadius,32,Math.min(stageW(),stageH())*.45);
+    beamsLayer.appendChild(svgEl('circle',{cx:o.x,cy:o.y,r:radius,class:'beam shower-beam',style:`fill:${c.fill};stroke:${c.stroke}`}));
+    return;
+  }
+
+  const base=fixtureEmitterBase(o),len=base.len,half=Math.tan(rad(beam/2))*len,beamRot=o.rot+fixtureBeamOffset(o);
   const points=base.type==='point'?`0,0 ${len},${-half} ${len},${half}`:`0,${-(base.span/2)} ${len},${-half} ${len},${half} 0,${base.span/2}`;
   beamsLayer.appendChild(svgEl('polygon',{points,class:'beam',style:`fill:${c.fill};stroke:${c.stroke}`,transform:`translate(${o.x} ${o.y}) rotate(${beamRot})`}));
 }
@@ -1011,7 +1025,7 @@ function drawObject(o){
     if(pos==='top'){ly=-hitH/2-18}else if(pos==='left'){lx=-hitW/2-12;ly=0;anchor='end'}else if(pos==='right'){lx=hitW/2+12;ly=0;anchor='start'}else if(pos==='bottom'){ly=hitH/2+24}
     const label=svgEl('g',{transform:`rotate(${-o.rot}) translate(${lx} ${ly})`}),t=svgEl('text',{class:'object-label','text-anchor':anchor});t.textContent=o.name;label.appendChild(t);
     if(objectInfoMode==='full'){
-      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
+      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}${o.shower?' · Douche':''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
       else if(o.kind==='camera'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${cameraModelShortName(o.cameraModel)} · ${Math.round(o.focal||50)} mm · H ${Number(o.height||1.55).toFixed(2)} m`;label.appendChild(st)}
       else if(o.kind==='accessory'||o.kind==='decor'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${(o.width||0).toFixed(1)} × ${(o.height||0).toFixed(1)} m${o.locked?' · verrouillé':''}`;label.appendChild(st)}
     }
@@ -1195,6 +1209,8 @@ function renderInspector(){
     if(o.kind==='accessory'||o.type==='window')html+=`<div class="field slider-field"><div class="slider-head"><label>Hauteur au sol</label><strong data-slider-out="elevation">${Number(o.elevation||0).toFixed(2)} m</strong></div><input data-k="elevation" type="range" min="0" max="5" step="0.05" value="${o.elevation}"></div>`;
   }
   if(o.kind==='light'){
+    normalizeLightObject(o);
+    html+=`<div class="field slider-field light-height-field"><div class="slider-head light-height-head"><div class="light-height-label"><label>Hauteur projecteur</label><button id="lightShowerBtn" class="light-shower-btn ${o.shower?'active':''}" type="button" aria-pressed="${String(!!o.shower)}">Douche</button></div><strong data-slider-out="height">${Number(o.height||2).toFixed(2)} m</strong></div><input data-k="height" type="range" min="0.2" max="6" step="0.05" value="${Number(o.height||2)}"></div>`;
     html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
     if(['softbox','umbrella-reflect','umbrella-diffusion'].includes(o.modifier)){
       const cm=Math.round((Number(o.modifierSize)||.9)*100),label=o.modifier.startsWith('umbrella')?'Diamètre parapluie':'Taille accessoire';
@@ -1223,6 +1239,7 @@ function renderInspector(){
   const changeCameraModelBtn=document.getElementById('changeCameraModelBtn');if(changeCameraModelBtn)changeCameraModelBtn.onclick=()=>{const obj=selected();if(obj?.kind==='camera')openCameraChooser(obj.id)};
   inspectorFields.querySelectorAll('[data-focal-preset]').forEach(btn=>btn.onclick=()=>{const obj=selected();if(!obj||obj.kind!=='camera')return;obj.focal=clamp(Number(btn.dataset.focalPreset)||50,12,300);state.activePreviewCamera=obj.id;renderInspector();renderCanvas()});
   const changeLightModelBtn=document.getElementById('changeLightModelBtn');if(changeLightModelBtn)changeLightModelBtn.onclick=()=>{const obj=selected();if(obj?.kind==='light')openLightChooser(obj.id)};
+  const lightShowerBtn=document.getElementById('lightShowerBtn');if(lightShowerBtn)lightShowerBtn.onclick=()=>{const obj=selected();if(!obj||obj.kind!=='light')return;obj.shower=!obj.shower;render()};
   inspectorFields.querySelectorAll('[data-choice] button').forEach(btn=>btn.onclick=()=>{const obj=selected();if(!obj)return;const key=btn.parentElement.dataset.choice;obj[key]=btn.dataset.value;if(key==='modifier'){if(obj.modifier==='softbox'&&!obj.modifierSize)obj.modifierSize=.9;if(obj.modifier?.startsWith('umbrella'))obj.modifierSize=Number(obj.modifierSize)||1.05}render()});
   const lock=document.getElementById('lockSelected');if(lock)lock.onchange=()=>{o.locked=lock.checked;render()};
 }
