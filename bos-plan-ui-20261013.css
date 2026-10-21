@@ -330,3 +330,22 @@ body.dark .plan-quick-controls{
   .quick-control-field,.quick-control-select{margin-bottom:7px}
   .quick-control-select select{min-height:30px;height:30px}
 }
+
+
+/* PLAN — Hyper Reflector / bol réflecteur. */
+.hyper-reflector-shape{
+  fill:rgba(224,229,233,.92);
+  stroke:#7D8993;
+  stroke-width:2;
+  stroke-linejoin:round;
+}
+.hyper-reflector-neck{
+  stroke:#7D8993;
+  stroke-width:2;
+  stroke-linecap:round;
+}
+body.dark .hyper-reflector-shape{
+  fill:rgba(205,212,218,.76);
+  stroke:#9AA5AE;
+}
+body.dark .hyper-reflector-neck{stroke:#9AA5AE}
