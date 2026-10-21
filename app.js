@@ -1141,13 +1141,19 @@ function renderQuickControls(){
       <span><em>Intensité</em><b id="quickLightIntensityValue">${Math.round(o.intensity||0)} %</b></span>
       <input id="quickLightIntensity" type="range" min="0" max="100" step="1" value="${Math.round(o.intensity||0)}">
     </label>
-    ${tempControl}`;
+    ${tempControl}
+    <label class="quick-control-field">
+      <span><em>Ouverture</em><b id="quickLightBeamValue">${Math.round(Number(o.beam)||55)}°</b></span>
+      <input id="quickLightBeam" type="range" min="4" max="${beamSliderMax(o)}" step="1" value="${Math.round(Number(o.beam)||55)}">
+    </label>`;
 
   const modifier=quickControls.querySelector('#quickLightModifier');
   const intensity=quickControls.querySelector('#quickLightIntensity');
   const intensityValue=quickControls.querySelector('#quickLightIntensityValue');
   const cct=quickControls.querySelector('#quickLightCct');
   const cctValue=quickControls.querySelector('#quickLightCctValue');
+  const beam=quickControls.querySelector('#quickLightBeam');
+  const beamValue=quickControls.querySelector('#quickLightBeamValue');
 
   modifier?.addEventListener('change',()=>{
     const obj=selected();
@@ -1174,6 +1180,15 @@ function renderQuickControls(){
     obj.cct=Number(cct.value);
     if(obj.colorMode==='hsi')obj.colorMode='cct';
     if(cctValue)cctValue.textContent=`${Math.round(obj.cct)} K`;
+    renderCanvas();
+    renderInspector();
+  });
+
+  beam?.addEventListener('input',()=>{
+    const obj=selected();
+    if(!obj||obj.id!==o.id)return;
+    obj.beam=Number(beam.value);
+    if(beamValue)beamValue.textContent=`${Math.round(obj.beam)}°`;
     renderCanvas();
     renderInspector();
   });
