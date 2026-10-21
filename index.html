@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261021-pan1" />
+  <link rel="stylesheet" href="styles.css?v=20261021-quick1" />
 </head>
 <body>
   <div class="app-shell">
@@ -177,6 +177,7 @@
               <button id="zoomReadout" type="button" class="stage-zoom-readout" title="Revenir à 100 %">100 %</button>
               <button id="zoomInBtn" type="button" class="stage-view-btn desktop-zoom-btn" title="Zoomer" aria-label="Zoomer">+</button>
             </div>
+            <div id="quickControls" class="plan-quick-controls" hidden aria-label="Réglages rapides"></div>
             <svg id="stage" viewBox="0 0 1000 620" aria-label="Plan vue du dessus">
               <defs>
                 <pattern id="smallGrid" width="25" height="25" patternUnits="userSpaceOnUse">
@@ -428,7 +429,7 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=20261021-pan1"></script>
+  <script src="app.js?v=20261021-quick1"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
