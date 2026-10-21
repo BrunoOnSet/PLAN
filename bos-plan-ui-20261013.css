@@ -180,3 +180,22 @@
   .inline-library-card.ui-collapsed{height:78px!important;min-height:78px!important;max-height:78px!important}
   .inspector-object-action{width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important}
 }
+
+
+/* Zoom PLAN — commandes visibles sur ordinateur uniquement.
+   Le mobile conserve le pinch existant sans changement. */
+.stage-view-controls .desktop-zoom-btn{
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:17px!important;
+  line-height:1!important;
+  font-weight:500!important;
+  cursor:pointer!important;
+}
+@media(max-width:900px){
+  .stage-view-controls .desktop-zoom-btn{display:none!important}
+}
