@@ -1777,17 +1777,21 @@ function savePlanToLibrary(opts={}){
 function saveCurrentPlanFlow(){
   loadLibrary();ensureStateDefaults();
   const candidateName=(topPlanNameInput?.value||planNameInput?.value||state.planName||defaultPlanName()).trim().replace(/\s+/g,' ')||defaultPlanName();
-  if(findPlanNameConflict(candidateName,state.planId))return warnPlanNameConflict(candidateName);
   state.planName=candidateName;
-  if(!state.planId)return savePlanToLibrary({mode:'new',name:candidateName});
-  const overwrite=confirm(`Le plan « ${state.planName} » existe déjà.
 
-OK = Écraser ancien
-Annuler = Créer une copie`);
-  if(overwrite)return savePlanToLibrary({mode:'overwrite'});
-  const copyName=prompt('Nom du plan', `${state.planName} copie`);
-  if(!copyName?.trim())return false;
-  return savePlanToLibrary({mode:'copy',name:copyName.trim()});
+  if(state.planId){
+    const currentRec=library.plans.find(p=>p.id===state.planId);
+    if(currentRec)return savePlanToLibrary({mode:'overwrite',name:candidateName,folderId:state.folderId});
+  }
+
+  const sameName=findPlanNameConflict(candidateName);
+  if(sameName){
+    state.planId=sameName.id;
+    state.folderId=sameName.folderId||state.folderId;
+    return savePlanToLibrary({mode:'overwrite',name:candidateName,folderId:state.folderId});
+  }
+
+  return savePlanToLibrary({mode:'new',name:candidateName,folderId:state.folderId});
 }
 function openLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec)return;resetStageViewport();state=deepClone(rec.state);state.planId=rec.id;state.planName=rec.name;state.folderId=rec.folderId;ensureStateDefaults();state.objects.forEach(normalizeSceneObject);migrateOpeningBindings();state.selected=null;if(!state.activePreviewCamera)state.activePreviewCamera=state.objects.find(o=>o.kind==='camera')?.id||null;persistCurrent();render();closeLibraryDialog();setMainTab('plan')}
 function duplicateLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec)return;const suggested=nextAvailableCopyName(rec.name);const copyName=prompt('Nom du plan',suggested);if(!copyName?.trim())return;const cleanName=copyName.trim().replace(/\s+/g,' ');if(findPlanNameConflict(cleanName))return warnPlanNameConflict(cleanName);const copy=deepClone(rec);copy.id=uid('plan');copy.name=cleanName;copy.updatedAt=Date.now();copy.folderId=rec.folderId;copy.state.planId=copy.id;copy.state.planName=copy.name;library.plans.push(copy);persistLibrary();renderLibraryList()}
