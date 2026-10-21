@@ -74,13 +74,12 @@ const quickControls=document.getElementById('quickControls');
 let quickControlsDrag=null;
 
 function clampQuickControlsPosition(left,top){
-  if(!stageWrap||!quickControls)return {left,top};
-  const wrap=stageWrap.getBoundingClientRect();
+  if(!quickControls)return {left,top};
   const card=quickControls.getBoundingClientRect();
   const pad=8;
   return {
-    left:clamp(left,pad,Math.max(pad,wrap.width-card.width-pad)),
-    top:clamp(top,pad,Math.max(pad,wrap.height-card.height-pad))
+    left:clamp(left,pad,Math.max(pad,window.innerWidth-card.width-pad)),
+    top:clamp(top,pad,Math.max(pad,window.innerHeight-card.height-pad))
   };
 }
 
@@ -90,7 +89,6 @@ function beginQuickControlsDrag(e){
   if(!handle||!quickControls.contains(handle))return;
   if(e.button!==undefined&&e.button!==0&&e.pointerType==='mouse')return;
 
-  const wrap=stageWrap.getBoundingClientRect();
   const card=quickControls.getBoundingClientRect();
   quickControlsDrag={
     pointerId:e.pointerId,
@@ -98,10 +96,13 @@ function beginQuickControlsDrag(e){
     dy:e.clientY-card.top
   };
 
+  if(quickControls.parentElement!==document.body)document.body.appendChild(quickControls);
+  quickControls.style.position='fixed';
   quickControls.style.right='auto';
   quickControls.style.bottom='auto';
-  quickControls.style.left=`${card.left-wrap.left}px`;
-  quickControls.style.top=`${card.top-wrap.top}px`;
+  quickControls.style.left=`${card.left}px`;
+  quickControls.style.top=`${card.top}px`;
+  quickControls.style.zIndex='1000';
   quickControls.classList.add('is-dragging');
   document.documentElement.classList.add('quick-controls-drag-active');
   try{quickControls.setPointerCapture?.(e.pointerId)}catch(_){}
@@ -111,10 +112,9 @@ function beginQuickControlsDrag(e){
 
 function moveQuickControlsDrag(e){
   if(!quickControlsDrag||quickControlsDrag.pointerId!==e.pointerId)return;
-  const wrap=stageWrap.getBoundingClientRect();
   const pos=clampQuickControlsPosition(
-    e.clientX-wrap.left-quickControlsDrag.dx,
-    e.clientY-wrap.top-quickControlsDrag.dy
+    e.clientX-quickControlsDrag.dx,
+    e.clientY-quickControlsDrag.dy
   );
   quickControls.style.left=`${pos.left}px`;
   quickControls.style.top=`${pos.top}px`;
