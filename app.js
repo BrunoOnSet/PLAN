@@ -846,18 +846,27 @@ function addLightModifier(g,o){
     g.appendChild(svgEl('line',{x1:x0,y1:-5,x2:x0,y2:5,class:'hyper-reflector-neck'}));
     return;
   }
-  if(o.modifier==='softbox'){
+  if(o.modifier==='fresnel'){
+    const x0=15,x1=28,x2=43,half=13;
+    g.appendChild(svgEl('path',{d:`M ${x0} -6 L ${x1} -${half} L ${x2} -${half*.72} L ${x2} ${half*.72} L ${x1} ${half} L ${x0} 6 Z`,class:'fresnel-shape'}));
+    g.appendChild(svgEl('line',{x1:x2-4,y1:-half*.55,x2:x2-4,y2:half*.55,class:'fresnel-lens'}));
+    return;
+  }
+  if(o.modifier==='softbox'||o.modifier==='softbox-grid'){
+    const withGrid=o.modifier==='softbox-grid';
     const linear=['ray','panel','panel-wide','nova','nova-narrow'].includes(o.form);
     if(linear){
       const w=Math.max(34,px*.32),h=Math.max(52,px*.9),x=22;
       g.appendChild(svgEl('rect',{x,y:-h/2,width:w,height:h,rx:Math.min(10,h*.1),class:'softbox-shape'}));
       g.appendChild(svgEl('line',{x1:18,y1:-h*.24,x2:x,y2:-h*.34,class:'softbox-strut'}));
       g.appendChild(svgEl('line',{x1:18,y1:h*.24,x2:x,y2:h*.34,class:'softbox-strut'}));
+      if(withGrid){[-.25,0,.25].forEach(k=>g.appendChild(svgEl('line',{x1:x,y1:k*h,x2:x+w,y2:k*h,class:'softbox-grid-line'})));g.appendChild(svgEl('line',{x1:x+w*.5,y1:-h/2,x2:x+w*.5,y2:h/2,class:'softbox-grid-line'}));}
     } else {
       const face=Math.max(42,px*.75),neck=18,half=face/2,x0=16,x1=x0+neck,x2=x1+face;
       g.appendChild(svgEl('polygon',{points:`${x0},${-half*.42} ${x1},${-half} ${x2},${-half} ${x2},${half} ${x1},${half} ${x0},${half*.42}`,class:'softbox-shape'}));
       g.appendChild(svgEl('line',{x1:x0,y1:-half*.34,x2:x1,y2:-half*.84,class:'softbox-strut'}));
       g.appendChild(svgEl('line',{x1:x0,y1:half*.34,x2:x1,y2:half*.84,class:'softbox-strut'}));
+      if(withGrid){[-.5,0,.5].forEach(k=>g.appendChild(svgEl('line',{x1:x1,y1:k*half,x2:x2,y2:k*half,class:'softbox-grid-line'})));g.appendChild(svgEl('line',{x1:x1+(x2-x1)*.5,y1:-half,x2:x1+(x2-x1)*.5,y2:half,class:'softbox-grid-line'}));}
     }
     return;
   }
@@ -1025,7 +1034,7 @@ function drawObject(o){
     if(pos==='top'){ly=-hitH/2-18}else if(pos==='left'){lx=-hitW/2-12;ly=0;anchor='end'}else if(pos==='right'){lx=hitW/2+12;ly=0;anchor='start'}else if(pos==='bottom'){ly=hitH/2+24}
     const label=svgEl('g',{transform:`rotate(${-o.rot}) translate(${lx} ${ly})`}),t=svgEl('text',{class:'object-label','text-anchor':anchor});t.textContent=o.name;label.appendChild(t);
     if(objectInfoMode==='full'){
-      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}${o.shower?' · Douche':''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
+      if(o.kind==='light'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});const modLabel=o.modifier==='hyper-reflector'?'Hyper Reflector':o.modifier==='softbox'?'Softbox':o.modifier==='softbox-grid'?'Softbox + Grid':o.modifier==='fresnel'?'Fresnel':o.modifier==='umbrella-reflect'?'Parapluie réflexion':o.modifier==='umbrella-diffusion'?'Parapluie diffusion':'';const base=`${o.intensity}% · ${lightColorText(o)}${modLabel?' · '+modLabel:''}${o.shower?' · Douche':''}`;st.textContent=state.labelsMode==='lightcrew'?`${base} · H ${Number(o.height||2).toFixed(1)} m`:base;label.appendChild(st)}
       else if(o.kind==='camera'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${cameraModelShortName(o.cameraModel)} · ${Math.round(o.focal||50)} mm · H ${Number(o.height||1.55).toFixed(2)} m`;label.appendChild(st)}
       else if(o.kind==='accessory'||o.kind==='decor'){const st=svgEl('text',{class:'object-sub','text-anchor':anchor,y:17});st.textContent=`${(o.width||0).toFixed(1)} × ${(o.height||0).toFixed(1)} m${o.locked?' · verrouillé':''}`;label.appendChild(st)}
     }
@@ -1075,7 +1084,7 @@ function selected(){return state.objects.find(o=>o.id===state.selected)}
 
 function quickModifierOptions(o){
   return supportsSoftbox(o)
-    ?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
+    ?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['softbox-grid','Softbox + Grid'],['fresnel','Fresnel'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]
     :[['none','Nu']];
 }
 function renderQuickControls(){
@@ -1159,7 +1168,7 @@ function renderQuickControls(){
     const obj=selected();
     if(!obj||obj.id!==o.id)return;
     obj.modifier=modifier.value;
-    if(obj.modifier==='softbox'&&!obj.modifierSize)obj.modifierSize=.9;
+    if((obj.modifier==='softbox'||obj.modifier==='softbox-grid')&&!obj.modifierSize)obj.modifierSize=.9;
     if(obj.modifier?.startsWith('umbrella'))obj.modifierSize=Number(obj.modifierSize)||1.05;
     renderCanvas();
     renderInspector();
@@ -1226,8 +1235,8 @@ function renderInspector(){
   if(o.kind==='light'){
     normalizeLightObject(o);
     html+=`<div class="field slider-field light-height-field"><div class="slider-head light-height-head"><div class="light-height-label"><label>Hauteur projecteur</label><button id="lightShowerBtn" class="light-shower-btn ${o.shower?'active':''}" type="button" aria-pressed="${String(!!o.shower)}">Douche</button></div><strong data-slider-out="height">${Number(o.height||2).toFixed(2)} m</strong></div><input data-k="height" type="range" min="0.2" max="6" step="0.05" value="${Number(o.height||2)}"></div>`;
-    html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
-    if(['softbox','umbrella-reflect','umbrella-diffusion'].includes(o.modifier)){
+    html+=`<div class="field"><label>Accessoire lumière</label>${toggleButtons('modifier',o.modifier||'none',supportsSoftbox(o)?[['none','Nu'],['hyper-reflector','Bol / Hyper Reflector'],['softbox','Softbox'],['softbox-grid','Softbox + Grid'],['fresnel','Fresnel'],['umbrella-reflect','Parapluie réflexion'],['umbrella-diffusion','Parapluie diffusion']]:[['none','Nu']])}</div>`;
+    if(['softbox','softbox-grid','umbrella-reflect','umbrella-diffusion'].includes(o.modifier)){
       const cm=Math.round((Number(o.modifierSize)||.9)*100),label=o.modifier.startsWith('umbrella')?'Diamètre parapluie':'Taille accessoire';
       html+=`<div class="field slider-field"><div class="slider-head"><label>${label}</label><strong data-slider-out="modifierSize">${cm} cm</strong></div><input data-k="modifierSize" data-convert="cm" type="range" min="30" max="300" step="5" value="${cm}"></div>`;
     }
@@ -1455,7 +1464,7 @@ function makeMonitorCard(cam,compact=false){
   const guides=svgNode('g',{class:'preview-guides'});guides.appendChild(svgNode('rect',{x:80,y:45,width:1440,height:810,class:'preview-safe'}));[1600/3,3200/3].forEach(x=>guides.appendChild(svgNode('line',{x1:x,y1:0,x2:x,y2:900,class:'preview-third'})));[300,600].forEach(y=>guides.appendChild(svgNode('line',{x1:0,y1:y,x2:1600,y2:y,class:'preview-third'})));svg.appendChild(guides);monitor.appendChild(svg);
   const label=document.createElement('div');label.className='preview-label';if(visibleSubjects.length){const main=visibleSubjects.sort((a,b)=>Math.abs((a.bbox.x0+a.bbox.x1)/2-800)-Math.abs((b.bbox.x0+b.bbox.x1)/2-800))[0];const framing=shotLabel(main);label.textContent=`${framing?framing+' · ':''}${visibleSubjects.length} sujet${visibleSubjects.length>1?'s':''} visible${visibleSubjects.length>1?'s':''}`}else label.textContent='Aucun sujet dans le cadre';monitor.appendChild(label);
   if(visibleWindows.length){const info=document.createElement('div');info.className='preview-scene-info';info.textContent=`Fenêtre${visibleWindows.length>1?'s':''} visible${visibleWindows.length>1?'s':''} : ${visibleWindows.map(o=>o.name).slice(0,2).join(' · ')}${visibleWindows.length>2?` +${visibleWindows.length-2}`:''}`;monitor.appendChild(info)}
-  if(technical.length){const alert=document.createElement('div');alert.className='preview-warning';const names=[...new Set(technical.map(o=>o.kind==='light'?(o.modifier==='softbox'?`${o.short||o.name} + softbox`:o.modifier==='umbrella-reflect'?`${o.short||o.name} + parapluie réflexion`:o.modifier==='umbrella-diffusion'?`${o.short||o.name} + parapluie diffusion`:(o.short||o.name)):o.name))];alert.textContent=`⚠ Dans le champ : ${names.slice(0,3).join(' · ')}${names.length>3?` +${names.length-3}`:''}`;monitor.appendChild(alert)}
+  if(technical.length){const alert=document.createElement('div');alert.className='preview-warning';const names=[...new Set(technical.map(o=>o.kind==='light'?(o.modifier==='softbox'?`${o.short||o.name} + softbox`:o.modifier==='softbox-grid'?`${o.short||o.name} + softbox + grid`:o.modifier==='fresnel'?`${o.short||o.name} + fresnel`:o.modifier==='umbrella-reflect'?`${o.short||o.name} + parapluie réflexion`:o.modifier==='umbrella-diffusion'?`${o.short||o.name} + parapluie diffusion`:(o.short||o.name)):o.name))];alert.textContent=`⚠ Dans le champ : ${names.slice(0,3).join(' · ')}${names.length>3?` +${names.length-3}`:''}`;monitor.appendChild(alert)}
   shell.appendChild(monitor);card.appendChild(shell);return card;
 }
 function renderPreview(){
@@ -1578,6 +1587,8 @@ function equipmentModifierText(o){
   const cm=Math.round((Number(o.modifierSize)||.9)*100);
   if(o.modifier==='hyper-reflector')return 'Bol / Hyper Reflector';
   if(o.modifier==='softbox')return `Softbox ${cm} cm`;
+  if(o.modifier==='softbox-grid')return `Softbox + Grid ${cm} cm`;
+  if(o.modifier==='fresnel')return 'Fresnel';
   if(o.modifier==='umbrella-reflect')return `Parapluie réflexion ${cm} cm`;
   if(o.modifier==='umbrella-diffusion')return `Parapluie diffusion ${cm} cm`;
   return '';
@@ -1737,7 +1748,16 @@ function openLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec)
 function duplicateLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec)return;const suggested=nextAvailableCopyName(rec.name);const copyName=prompt('Nom du plan',suggested);if(!copyName?.trim())return;const cleanName=copyName.trim().replace(/\s+/g,' ');if(findPlanNameConflict(cleanName))return warnPlanNameConflict(cleanName);const copy=deepClone(rec);copy.id=uid('plan');copy.name=cleanName;copy.updatedAt=Date.now();copy.folderId=rec.folderId;copy.state.planId=copy.id;copy.state.planName=copy.name;library.plans.push(copy);persistLibrary();renderLibraryList()}
 function deleteLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec||!confirm(`Supprimer « ${rec.name} » ?`))return;library.plans=library.plans.filter(p=>p.id!==id);if(state.planId===id)state.planId=null;persistLibrary();persistCurrent();renderLibraryList()}
 function newPlan(){persistCurrent();loadLibrary();const folder=state.folderId||folderSelect.value||library.folders[0].id;state.planId=null;state.planName='Plan sans nom';state.folderId=folder;state.objects=[];state.selected=null;state.activePreviewCamera=null;state.cameraModel='Sony FX3';state.focal=50;state.snap=.25;state.labelsMode='full';state.beamsVisible=true;state.gridOpacity=.5;state.planLength=10;state.planOptionsOpen=true;state.equipmentSheet=null;state.openingBindingVersion=2;resetStageViewport();render();renderLibraryList();setMainTab('plan');persistCurrent()}
-function newPlanFlow(){if(confirm('Sauvegarder le plan actuel ?')){const ok=saveCurrentPlanFlow();if(!ok)return;}newPlan();flash('Nouveau plan créé')}
+function newPlanFlow(){
+  loadLibrary();
+  ensureStateDefaults();
+  const currentName=(topPlanNameInput?.value||planNameInput?.value||state.planName||defaultPlanName()).trim().replace(/\s+/g,' ')||defaultPlanName();
+  state.planName=currentName;
+  const saved=savePlanToLibrary({mode:state.planId?'overwrite':'new',name:currentName,folderId:state.folderId});
+  if(!saved)return;
+  newPlan();
+  flash('Plan actuel sauvegardé · nouveau plan créé');
+}
 function duplicateCurrentPlan(){
   loadLibrary();ensureStateDefaults();
   const originalName=(topPlanNameInput?.value||state.planName||defaultPlanName()).trim().replace(/\s+/g,' ')||defaultPlanName();
