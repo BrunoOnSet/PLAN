@@ -1052,7 +1052,7 @@ stage.addEventListener('pointermove',e=>{
   if(drag.mode==='rotate'){
     o.rot=deg(Math.atan2(p.y-o.y,p.x-o.x))-(drag.rotateOffset||0);if(o.rot>180)o.rot-=360;if(o.rot<=-180)o.rot+=360;
   } else {
-    const targetX=clamp(snapValue(p.x-drag.dx),35,965),targetY=clamp(snapValue(p.y-drag.dy),35,585);
+    const targetX=clamp(snapValue(p.x-drag.dx),35,Math.max(35,stageW()-35)),targetY=clamp(snapValue(p.y-drag.dy),35,Math.max(35,stageH()-35));
     o.x=targetX;o.y=targetY;
   }renderCanvas();
 });
