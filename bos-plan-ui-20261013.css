@@ -317,18 +317,30 @@ body.dark .plan-quick-controls{
     display:block!important;
   }
   .plan-quick-controls{
-    top:42px;
-    right:8px;
+    top:8px;
+    left:8px;
+    right:auto;
     bottom:auto;
-    width:min(168px,calc(100% - 16px));
-    padding:9px 10px 10px;
+    width:min(176px,calc(100% - 16px));
+    max-height:calc(100% - 16px);
+    padding:8px 9px 9px;
     border-radius:12px;
     z-index:50;
     pointer-events:auto;
+    overflow:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
   }
-  .quick-control-head{margin-bottom:7px;padding-bottom:6px}
-  .quick-control-field,.quick-control-select{margin-bottom:7px}
-  .quick-control-select select{min-height:30px;height:30px}
+  .quick-control-head{
+    min-height:34px;
+    margin-bottom:6px;
+    padding-bottom:5px;
+    display:flex;
+    justify-content:center;
+  }
+  .quick-control-field,.quick-control-select{margin-bottom:6px}
+  .quick-control-select select{min-height:29px;height:29px}
+  .quick-control-field>span{margin-bottom:4px}
 }
 
 
@@ -354,9 +366,10 @@ body.dark .hyper-reflector-neck{stroke:#9AA5AE}
 /* PLAN — déplacement de la bulle de réglages rapides, souris + tactile. */
 .plan-quick-controls .quick-control-head{
   cursor:grab;
-  touch-action:none;
+  touch-action:none!important;
   user-select:none;
   -webkit-user-select:none;
+  -webkit-touch-callout:none;
 }
 .plan-quick-controls .quick-control-head::after{
   content:"⋮⋮";
@@ -380,4 +393,13 @@ body.dark .hyper-reflector-neck{stroke:#9AA5AE}
 }
 body.dark .plan-quick-controls.is-dragging{
   box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
+
+
+html.quick-controls-drag-active,
+html.quick-controls-drag-active body{
+  overscroll-behavior:none;
+}
+html.quick-controls-drag-active .plan-quick-controls{
+  touch-action:none!important;
 }
