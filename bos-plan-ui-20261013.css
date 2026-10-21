@@ -199,3 +199,10 @@
 @media(max-width:900px){
   .stage-view-controls .desktop-zoom-btn{display:none!important}
 }
+
+
+/* PLAN — déplacement du plan à la souris une fois zoomé. */
+@media(min-width:901px){
+  #stage.desktop-pan-ready{cursor:grab}
+  #stage.desktop-pan-ready.desktop-panning{cursor:grabbing!important}
+}
