@@ -321,10 +321,10 @@ body.dark .plan-quick-controls{
     left:8px;
     right:auto;
     bottom:auto;
-    width:min(176px,calc(100% - 16px));
+    width:min(158px,calc(100% - 16px));
     max-height:calc(100% - 16px);
-    padding:8px 9px 9px;
-    border-radius:12px;
+    padding:6px 7px 7px;
+    border-radius:10px;
     z-index:50;
     pointer-events:auto;
     overflow:auto;
@@ -332,15 +332,76 @@ body.dark .plan-quick-controls{
     -webkit-overflow-scrolling:touch;
   }
   .quick-control-head{
-    min-height:34px;
-    margin-bottom:6px;
-    padding-bottom:5px;
+    min-height:28px;
+    margin-bottom:4px;
+    padding:0 18px 4px 0;
+    gap:0;
     display:flex;
     justify-content:center;
   }
-  .quick-control-field,.quick-control-select{margin-bottom:6px}
-  .quick-control-select select{min-height:29px;height:29px}
-  .quick-control-field>span{margin-bottom:4px}
+  .quick-control-head strong{
+    font-size:9.5px;
+    line-height:1.08;
+  }
+  .quick-control-head span{
+    font-size:7.3px;
+    line-height:1.05;
+  }
+  .plan-quick-controls .quick-control-head::after{
+    top:7px;
+    right:5px;
+    font-size:9px;
+  }
+  .quick-control-field,.quick-control-select{
+    margin-bottom:4px;
+  }
+  .quick-control-field>span{
+    margin-bottom:2px;
+    gap:5px;
+  }
+  .quick-control-field em,
+  .quick-control-select>span,
+  .quick-control-static>span{
+    font-size:8px;
+    line-height:1.05;
+  }
+  .quick-control-field b,
+  .quick-control-static strong{
+    font-size:8px;
+    line-height:1.05;
+  }
+  .quick-control-select>span{
+    margin-bottom:2px;
+  }
+  .quick-control-select select{
+    min-height:25px;
+    height:25px;
+    padding:0 22px 0 7px;
+    border-radius:7px;
+    font-size:8px;
+    line-height:1;
+  }
+  .quick-control-field input[type="range"]{
+    height:14px;
+  }
+  .quick-control-field input[type="range"]::-webkit-slider-runnable-track{
+    height:3px;
+  }
+  .quick-control-field input[type="range"]::-webkit-slider-thumb{
+    width:13px;
+    height:13px;
+    margin-top:-5px;
+  }
+  .quick-control-field input[type="range"]::-moz-range-track{
+    height:3px;
+  }
+  .quick-control-field input[type="range"]::-moz-range-thumb{
+    width:13px;
+    height:13px;
+  }
+  .quick-control-static{
+    padding-top:0;
+  }
 }
 
 
