@@ -298,6 +298,7 @@ function applyStageViewport(){
   stageViewport=clampViewport(stageViewport);
   stage.setAttribute('viewBox',`${stageViewport.x} ${stageViewport.y} ${stageViewport.w} ${stageViewport.h}`);
   if(zoomReadout)zoomReadout.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;
+  stage.classList.toggle('desktop-pan-ready',stageViewport.w<stageW()-.5);
 }
 function resetStageViewport(){stageViewport={x:0,y:0,w:stageW(),h:stageH()};applyStageViewport()}
 function stagePointFromClient(clientX,clientY){
@@ -341,20 +342,33 @@ function beginPinchIfPossible(){
   return true;
 }
 function handleViewportPointerDown(e){
-  if(e.pointerType!=='touch')return;
-  activeTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(activeTouchPointers.size>=2){beginPinchIfPossible();e.preventDefault();return}
   const onObject=!!e.target.closest?.('.object');
-  if(!onObject)panGesture={pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,viewport:{...stageViewport}};
+
+  if(e.pointerType==='touch'){
+    activeTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(activeTouchPointers.size>=2){beginPinchIfPossible();e.preventDefault();return}
+    if(!onObject)panGesture={pointerId:e.pointerId,pointerType:'touch',startX:e.clientX,startY:e.clientY,viewport:{...stageViewport}};
+    return;
+  }
+
+  if(e.pointerType==='mouse'&&e.button===0&&!onObject&&stageViewport.w<stageW()-.5){
+    panGesture={pointerId:e.pointerId,pointerType:'mouse',startX:e.clientX,startY:e.clientY,viewport:{...stageViewport}};
+    stage.classList.add('desktop-panning');
+    try{stage.setPointerCapture?.(e.pointerId)}catch(_){}
+    e.preventDefault();
+  }
 }
 function handleViewportPointerMove(e){
-  if(e.pointerType!=='touch'||!activeTouchPointers.has(e.pointerId))return;
-  activeTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(activeTouchPointers.size>=2){
-    if(!pinchGesture)beginPinchIfPossible();
-    const pts=[...activeTouchPointers.values()].slice(0,2),a=pts[0],b=pts[1],mx=(a.x+b.x)/2,my=(a.y+b.y)/2,d=Math.hypot(a.x-b.x,a.y-b.y);
-    stageViewport=viewportFromPinch(pinchGesture,mx,my,d);applyStageViewport();e.preventDefault();return;
+  if(e.pointerType==='touch'){
+    if(!activeTouchPointers.has(e.pointerId))return;
+    activeTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(activeTouchPointers.size>=2){
+      if(!pinchGesture)beginPinchIfPossible();
+      const pts=[...activeTouchPointers.values()].slice(0,2),a=pts[0],b=pts[1],mx=(a.x+b.x)/2,my=(a.y+b.y)/2,d=Math.hypot(a.x-b.x,a.y-b.y);
+      stageViewport=viewportFromPinch(pinchGesture,mx,my,d);applyStageViewport();e.preventDefault();return;
+    }
   }
+
   if(panGesture&&panGesture.pointerId===e.pointerId){
     const r=stage.getBoundingClientRect(),dx=(e.clientX-panGesture.startX)/Math.max(1,r.width)*panGesture.viewport.w,dy=(e.clientY-panGesture.startY)/Math.max(1,r.height)*panGesture.viewport.h;
     stageViewport=clampViewport({x:panGesture.viewport.x-dx,y:panGesture.viewport.y-dy,w:panGesture.viewport.w,h:panGesture.viewport.h});
@@ -362,13 +376,21 @@ function handleViewportPointerMove(e){
   }
 }
 function handleViewportPointerEnd(e){
-  if(e.pointerType!=='touch')return;
-  activeTouchPointers.delete(e.pointerId);
-  if(activeTouchPointers.size<2)pinchGesture=null;
-  if(activeTouchPointers.size===1){
-    const [id,p]=[...activeTouchPointers.entries()][0];
-    panGesture={pointerId:id,startX:p.x,startY:p.y,viewport:{...stageViewport}};
-  }else if(activeTouchPointers.size===0)panGesture=null;
+  if(e.pointerType==='touch'){
+    activeTouchPointers.delete(e.pointerId);
+    if(activeTouchPointers.size<2)pinchGesture=null;
+    if(activeTouchPointers.size===1){
+      const [id,p]=[...activeTouchPointers.entries()][0];
+      panGesture={pointerId:id,pointerType:'touch',startX:p.x,startY:p.y,viewport:{...stageViewport}};
+    }else if(activeTouchPointers.size===0)panGesture=null;
+    return;
+  }
+
+  if(e.pointerType==='mouse'&&panGesture&&panGesture.pointerId===e.pointerId&&panGesture.pointerType==='mouse'){
+    try{stage.releasePointerCapture?.(e.pointerId)}catch(_){}
+    panGesture=null;
+    stage.classList.remove('desktop-panning');
+  }
 }
 stage.addEventListener('pointerdown',handleViewportPointerDown,{capture:true});
 stage.addEventListener('pointermove',handleViewportPointerMove,{capture:true});
