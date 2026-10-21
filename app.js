@@ -100,6 +100,7 @@ function beginQuickControlsDrag(e){
   quickControls.style.left=`${card.left-wrap.left}px`;
   quickControls.style.top=`${card.top-wrap.top}px`;
   quickControls.classList.add('is-dragging');
+  document.documentElement.classList.add('quick-controls-drag-active');
   try{quickControls.setPointerCapture?.(e.pointerId)}catch(_){}
   e.preventDefault();
   e.stopPropagation();
@@ -122,13 +123,14 @@ function endQuickControlsDrag(e){
   try{quickControls.releasePointerCapture?.(e.pointerId)}catch(_){}
   quickControlsDrag=null;
   quickControls.classList.remove('is-dragging');
+  document.documentElement.classList.remove('quick-controls-drag-active');
 }
 
 if(quickControls){
   quickControls.addEventListener('pointerdown',beginQuickControlsDrag);
-  quickControls.addEventListener('pointermove',moveQuickControlsDrag);
-  quickControls.addEventListener('pointerup',endQuickControlsDrag);
-  quickControls.addEventListener('pointercancel',endQuickControlsDrag);
+  window.addEventListener('pointermove',moveQuickControlsDrag,{passive:false});
+  window.addEventListener('pointerup',endQuickControlsDrag);
+  window.addEventListener('pointercancel',endQuickControlsDrag);
 }
 
 const CAMERA_DB_URL="https://raw.githubusercontent.com/BrunoSetTools/BOS-CAMERA-DB/main/cameras.json";
