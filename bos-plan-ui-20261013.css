@@ -313,13 +313,18 @@ body.dark .plan-quick-controls{
   box-shadow:0 8px 28px rgba(0,0,0,.20);
 }
 @media(max-width:650px){
+  .plan-quick-controls:not([hidden]){
+    display:block!important;
+  }
   .plan-quick-controls{
-    top:auto;
+    top:42px;
     right:8px;
-    bottom:8px;
-    width:168px;
+    bottom:auto;
+    width:min(168px,calc(100% - 16px));
     padding:9px 10px 10px;
     border-radius:12px;
+    z-index:50;
+    pointer-events:auto;
   }
   .quick-control-head{margin-bottom:7px;padding-bottom:6px}
   .quick-control-field,.quick-control-select{margin-bottom:7px}
