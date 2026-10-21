@@ -68,6 +68,68 @@ const zoomReadout=document.getElementById('zoomReadout');
 const zoomOutBtn=document.getElementById('zoomOutBtn');
 const zoomInBtn=document.getElementById('zoomInBtn');
 const quickControls=document.getElementById('quickControls');
+let quickControlsDrag=null;
+
+function clampQuickControlsPosition(left,top){
+  if(!stageWrap||!quickControls)return {left,top};
+  const wrap=stageWrap.getBoundingClientRect();
+  const card=quickControls.getBoundingClientRect();
+  const pad=8;
+  return {
+    left:clamp(left,pad,Math.max(pad,wrap.width-card.width-pad)),
+    top:clamp(top,pad,Math.max(pad,wrap.height-card.height-pad))
+  };
+}
+
+function beginQuickControlsDrag(e){
+  if(!quickControls||quickControls.hidden)return;
+  const handle=e.target.closest?.('.quick-control-head');
+  if(!handle||!quickControls.contains(handle))return;
+  if(e.button!==undefined&&e.button!==0&&e.pointerType==='mouse')return;
+
+  const wrap=stageWrap.getBoundingClientRect();
+  const card=quickControls.getBoundingClientRect();
+  quickControlsDrag={
+    pointerId:e.pointerId,
+    dx:e.clientX-card.left,
+    dy:e.clientY-card.top
+  };
+
+  quickControls.style.right='auto';
+  quickControls.style.bottom='auto';
+  quickControls.style.left=`${card.left-wrap.left}px`;
+  quickControls.style.top=`${card.top-wrap.top}px`;
+  quickControls.classList.add('is-dragging');
+  try{quickControls.setPointerCapture?.(e.pointerId)}catch(_){}
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function moveQuickControlsDrag(e){
+  if(!quickControlsDrag||quickControlsDrag.pointerId!==e.pointerId)return;
+  const wrap=stageWrap.getBoundingClientRect();
+  const pos=clampQuickControlsPosition(
+    e.clientX-wrap.left-quickControlsDrag.dx,
+    e.clientY-wrap.top-quickControlsDrag.dy
+  );
+  quickControls.style.left=`${pos.left}px`;
+  quickControls.style.top=`${pos.top}px`;
+  e.preventDefault();
+}
+
+function endQuickControlsDrag(e){
+  if(!quickControlsDrag||quickControlsDrag.pointerId!==e.pointerId)return;
+  try{quickControls.releasePointerCapture?.(e.pointerId)}catch(_){}
+  quickControlsDrag=null;
+  quickControls.classList.remove('is-dragging');
+}
+
+if(quickControls){
+  quickControls.addEventListener('pointerdown',beginQuickControlsDrag);
+  quickControls.addEventListener('pointermove',moveQuickControlsDrag);
+  quickControls.addEventListener('pointerup',endQuickControlsDrag);
+  quickControls.addEventListener('pointercancel',endQuickControlsDrag);
+}
 
 const CAMERA_DB_URL="https://raw.githubusercontent.com/BrunoSetTools/BOS-CAMERA-DB/main/cameras.json";
 const CAMERA_DB_CACHE_KEY="bos-camera-db-cache-v2";
@@ -1751,7 +1813,16 @@ function load(){
   }catch{seed()}
   ensureStateDefaults();if(!cameras[state.cameraModel])state.cameraModel='Sony FX3';state.focal=Number(state.focal)||50;updateStageGeometry();resetStageViewport();updatePlanBadge();render();
 }
-window.addEventListener('resize',renderPreview);setMainTab('plan');
+window.addEventListener('resize',()=>{
+  renderPreview();
+  if(quickControls&&!quickControls.hidden&&quickControls.style.left){
+    const left=parseFloat(quickControls.style.left)||0;
+    const top=parseFloat(quickControls.style.top)||0;
+    const pos=clampQuickControlsPosition(left,top);
+    quickControls.style.left=`${pos.left}px`;
+    quickControls.style.top=`${pos.top}px`;
+  }
+});setMainTab('plan');
 load();
 refreshCameraDb();
 refreshLightDb();
