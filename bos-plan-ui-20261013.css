@@ -349,3 +349,35 @@ body.dark .hyper-reflector-shape{
   stroke:#9AA5AE;
 }
 body.dark .hyper-reflector-neck{stroke:#9AA5AE}
+
+
+/* PLAN — déplacement de la bulle de réglages rapides, souris + tactile. */
+.plan-quick-controls .quick-control-head{
+  cursor:grab;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.plan-quick-controls .quick-control-head::after{
+  content:"⋮⋮";
+  position:absolute;
+  top:10px;
+  right:11px;
+  color:var(--bos-faint);
+  font-size:10px;
+  line-height:1;
+  letter-spacing:-2px;
+  opacity:.7;
+  pointer-events:none;
+}
+.plan-quick-controls .quick-control-head{
+  position:relative;
+  padding-right:22px;
+}
+.plan-quick-controls.is-dragging .quick-control-head{cursor:grabbing}
+.plan-quick-controls.is-dragging{
+  box-shadow:0 10px 30px rgba(20,25,27,.14);
+}
+body.dark .plan-quick-controls.is-dragging{
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
