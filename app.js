@@ -468,7 +468,7 @@ function handleViewportPointerDown(e){
     return;
   }
 
-  if(e.pointerType==='mouse'&&e.button===0&&!e.shiftKey&&!onObject&&stageViewport.w<stageW()-.5){
+  if(e.pointerType==='mouse'&&e.button===0&&e.altKey&&!onObject&&stageViewport.w<stageW()-.5){
     panGesture={pointerId:e.pointerId,pointerType:'mouse',startX:e.clientX,startY:e.clientY,viewport:{...stageViewport}};
     stage.classList.add('desktop-panning');
     try{stage.setPointerCapture?.(e.pointerId)}catch(_){}
@@ -1131,7 +1131,7 @@ function clearMultiSelection(){
   multiSelectedIds.clear();
 }
 function beginLasso(e){
-  if(e.pointerType!=='mouse'||e.button!==0||!e.shiftKey||e.target.closest?.('.object'))return false;
+  if(e.pointerType!=='mouse'||e.button!==0||e.altKey||e.target.closest?.('.object'))return false;
   const p=pointerToStage(e);
   clearMultiSelection();
   state.selected=null;
@@ -1178,7 +1178,7 @@ function endLasso(e){
 
 function endGesture(){if(!drag)return;try{stage.releasePointerCapture?.(drag.pointerId)}catch{}drag=null;render()}
 stage.addEventListener('pointerup',endGesture);stage.addEventListener('pointercancel',endGesture);
-stage.addEventListener('pointerdown',e=>{if(e.shiftKey||e.target.closest?.('.object'))return;if(state.selected!==null||multiSelectedIds.size){state.selected=null;clearMultiSelection();render()}});
+stage.addEventListener('pointerdown',e=>{if(e.target.closest?.('.object')||lassoDrag||e.altKey)return;if(state.selected!==null||multiSelectedIds.size){state.selected=null;clearMultiSelection();render()}});
 
 let inspectorCollapsed=false;
 function updateInspectorCollapse(){
