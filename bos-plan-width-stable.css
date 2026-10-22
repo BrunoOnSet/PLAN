@@ -239,14 +239,6 @@ main,
     gap:7px!important;
   }
 
-  .stage-head-side .legend{
-    order:1!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-end!important;
-    width:auto!important;
-  }
-
   .stage-actions-row{
     order:2!important;
   }
@@ -320,5 +312,40 @@ main,
   }
   #stageWrap>.stage-add-overlay{
     display:none!important;
+  }
+}
+
+
+/* PLAN — code couleur sous le plan sur tous les écrans. */
+.plan-legend-below{
+  width:auto!important;
+  margin:8px 15px 0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  flex-wrap:wrap!important;
+  color:var(--bos-faint)!important;
+  font-size:9px!important;
+  line-height:1.2!important;
+}
+
+.plan-legend-below span{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  font-weight:400!important;
+}
+
+.plan-legend-below .dot{
+  width:6px!important;
+  height:6px!important;
+  flex:0 0 6px!important;
+}
+
+@media (max-width:700px){
+  .plan-legend-below{
+    margin:8px 12px 0!important;
+    gap:8px!important;
   }
 }
