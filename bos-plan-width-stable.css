@@ -899,3 +899,10 @@ body.dark .export-selection-bar{background:rgba(23,27,29,.94)!important;border-c
 @media (min-width:701px){
   .stage-mobile-display-toggles{display:none!important}
 }
+
+
+/* PLAN — bouton Grille aligné sur Faisceau/Infos, à côté du zoom. */
+@media (max-width:700px){
+  .stage-mobile-display-toggles{margin-left:0!important;gap:2px!important}
+  .stage-mobile-toggle{padding-left:5px!important;padding-right:5px!important}
+}
