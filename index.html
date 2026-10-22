@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022-mobilecontrols2" />
+  <link rel="stylesheet" href="styles.css?v=20261022-infinitecanvas1" />
 </head>
 <body>
   <div class="app-shell">
@@ -143,12 +143,7 @@
             </div>
             <div class="beam-global-control beam-toggle-only">
               <button id="toggleBeamsBtn" class="beam-toggle active" type="button" aria-pressed="true">Faisceau ON</button>
-            </div>
-            <div class="grid-opacity-control plan-length-control">
-              <div class="grid-opacity-head"><span>Longueur du plan</span><output id="planLengthValue">10 m</output></div>
-              <input id="planLengthRange" type="range" min="4" max="30" step="0.5" value="10" aria-label="Longueur du plan" />
-            </div>
-          </div>
+            </div></div>
           <div class="toolbar-note">
             <strong id="appVersionBadge">V1.60</strong>
             <span id="currentPlanBadge">Plan sans titre · autosauvegarde</span>
@@ -170,11 +165,6 @@
                     <button class="stage-quick-btn stage-zoom-inline" id="stageZoomInlineBtn" type="button" title="Revenir à 100 %">100 %</button>
                     <button class="stage-quick-step" id="stageZoomInInlineBtn" type="button" aria-label="Zoomer">+</button>
                   </div>
-                  <div class="stage-inline-control" aria-label="Taille du plan">
-                    <button class="stage-quick-step" id="stageSizeMinusInlineBtn" type="button" aria-label="Réduire la longueur du plan">−</button>
-                    <span class="stage-quick-btn stage-size-inline" id="stageSizeInlineValue">10 m</span>
-                    <button class="stage-quick-step" id="stageSizePlusInlineBtn" type="button" aria-label="Agrandir la longueur du plan">+</button>
-                  </div>
                 </div>
                 <div class="stage-actions-right">
                   <div class="stage-tool-mode" aria-label="Mode d'interaction du plan">
@@ -192,11 +182,6 @@
                     <button class="stage-mobile-readout" id="stageZoomMobileBtn" type="button" title="Revenir à 100 %">100 %</button>
                     <button class="stage-mobile-step" id="stageZoomInMobileBtn" type="button" aria-label="Zoomer">+</button>
                   </div>
-                  <div class="stage-mobile-inline-control stage-mobile-size" aria-label="Taille du plan">
-                    <button class="stage-mobile-step" id="stageSizeMinusMobileBtn" type="button" aria-label="Réduire la longueur du plan">−</button>
-                    <span class="stage-mobile-readout" id="stageSizeMobileValue">10 m</span>
-                    <button class="stage-mobile-step" id="stageSizePlusMobileBtn" type="button" aria-label="Agrandir la longueur du plan">+</button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -204,6 +189,11 @@
           <div class="stage-wrap" id="stageWrap">
             <button class="add-main stage-add-btn stage-add-overlay" id="stageAddDesktopBtn"><span class="plus">+</span> Ajouter</button>
             <div id="quickControls" class="plan-quick-controls" hidden aria-label="Réglages rapides"></div>
+            <div id="exportSelectionBar" class="export-selection-bar" hidden>
+              <span id="exportSelectionSize">10 × 6,2 m</span>
+              <button type="button" class="ghost" id="cancelExportSelectionBtn">Annuler</button>
+              <button type="button" class="primary" id="confirmExportSelectionBtn">Exporter</button>
+            </div>
             <svg id="stage" viewBox="0 0 1000 620" aria-label="Plan vue du dessus">
               <defs>
                 <pattern id="smallGrid" width="25" height="25" patternUnits="userSpaceOnUse">
@@ -477,7 +467,7 @@
   </dialog>
 
   
-<script src="app.js?v=20261022-togglefix1"></script>
+<script src="app.js?v=20261022-infinitecanvas1"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
