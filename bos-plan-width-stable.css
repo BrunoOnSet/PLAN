@@ -298,3 +298,24 @@ main,
     display:none!important;
   }
 }
+
+
+/* PLAN — conserver Ajouter mobile, utiliser l'overlay uniquement sur ordinateur. */
+@media (min-width:701px){
+  .stage-actions-row>.stage-add-mobile{
+    display:none!important;
+  }
+  #stageWrap>.stage-add-overlay{
+    display:inline-flex!important;
+  }
+}
+
+@media (max-width:700px){
+  .stage-actions-row>.stage-add-mobile{
+    display:flex!important;
+    width:100%!important;
+  }
+  #stageWrap>.stage-add-overlay{
+    display:none!important;
+  }
+}
