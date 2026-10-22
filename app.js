@@ -2125,10 +2125,12 @@ if(equipmentProduction)equipmentProduction.oninput=()=>{ensureEquipmentSheet().p
 if(equipmentNotes)equipmentNotes.oninput=()=>{ensureEquipmentSheet().notes=equipmentNotes.value;scheduleAutosave()};
 if(document.getElementById('printEquipmentBtn'))document.getElementById('printEquipmentBtn').onclick=printEquipmentSheet;
 if(toggleSnapBtn)toggleSnapBtn.onclick=()=>{state.snap=Number(state.snap)>0?0:.25;updatePlanBadge();renderCanvas()};
-labelsModeSelect.onchange=()=>{state.labelsMode=labelsModeSelect.value;if(state.labelsMode!=='hidden')lastVisibleLabelsMode=state.labelsMode;updatePlanBadge();renderCanvas()};
-toggleBeamsBtn.onclick=()=>{state.beamsVisible=state.beamsVisible===false;updatePlanBadge();renderCanvas()};
-if(stageBeamsBtn)stageBeamsBtn.onclick=()=>{state.beamsVisible=state.beamsVisible===false;updatePlanBadge();renderCanvas()};
-if(stageInfosBtn)stageInfosBtn.onclick=()=>{
+function toggleGlobalBeams(){
+  state.beamsVisible=state.beamsVisible===false;
+  renderCanvas();
+  persistCurrent();
+}
+function toggleGlobalInfos(){
   const current=state.labelsMode||'full';
   if(current==='hidden'){
     state.labelsMode=lastVisibleLabelsMode||'full';
@@ -2137,9 +2139,24 @@ if(stageInfosBtn)stageInfosBtn.onclick=()=>{
     state.labelsMode='hidden';
   }
   if(labelsModeSelect)labelsModeSelect.value=state.labelsMode;
-  updatePlanBadge();
   renderCanvas();
-};
+  persistCurrent();
+}
+if(labelsModeSelect)labelsModeSelect.addEventListener('change',()=>{
+  state.labelsMode=labelsModeSelect.value;
+  if(state.labelsMode!=='hidden')lastVisibleLabelsMode=state.labelsMode;
+  renderCanvas();
+  persistCurrent();
+});
+if(toggleBeamsBtn)toggleBeamsBtn.addEventListener('click',toggleGlobalBeams);
+if(stageBeamsBtn)stageBeamsBtn.addEventListener('click',toggleGlobalBeams);
+if(stageInfosBtn)stageInfosBtn.addEventListener('click',toggleGlobalInfos);
+document.addEventListener('click',e=>{
+  const beamBtn=e.target.closest?.('[data-plan-toggle="beams"]');
+  if(beamBtn){e.preventDefault();toggleGlobalBeams();return}
+  const infoBtn=e.target.closest?.('[data-plan-toggle="infos"]');
+  if(infoBtn){e.preventDefault();toggleGlobalInfos()}
+});
 if(gridOpacityRange){gridOpacityRange.oninput=()=>{state.gridOpacity=clamp(Number(gridOpacityRange.value)/100,0,1);updateGridOpacity();scheduleAutosave()};gridOpacityRange.onchange=()=>persistCurrent()}
 if(planLengthRange){planLengthRange.oninput=()=>{setPlanLength(Number(planLengthRange.value),{keepViewport:true});updatePlanBadge()};planLengthRange.onchange=()=>persistCurrent()}
 function changePlanLengthBy(delta){
