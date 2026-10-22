@@ -790,3 +790,23 @@ body.dark .export-selection-bar{background:rgba(23,27,29,.94)!important;border-c
 .export-selection-label{fill:#fff!important;paint-order:stroke!important;stroke:rgba(0,0,0,.55)!important;stroke-width:3px!important;vector-effect:non-scaling-stroke!important;font-size:14px!important;font-weight:700!important;pointer-events:none!important}
 .stage-size-inline,.stage-mobile-size{display:none!important}
 @media(max-width:700px){.export-selection-bar{top:8px!important;right:8px!important;left:8px!important;justify-content:flex-end!important;gap:4px!important}.export-selection-bar>span{margin-right:auto!important}.export-selection-bar button{padding:0 7px!important}}
+
+
+/* PLAN — contrôle de zoom sans pourcentage : − loupe +. */
+.stage-zoom-icon{
+  width:14px!important;
+  height:14px!important;
+  display:block!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  pointer-events:none!important;
+}
+.stage-zoom-inline,
+.stage-mobile-readout#stageZoomMobileBtn{
+  min-width:32px!important;
+  width:32px!important;
+  padding:0!important;
+}
