@@ -75,7 +75,9 @@ main,
   .stage-card.stage-wide{
     width:min(1180px,calc(100vw - 48px))!important;
     max-width:min(1180px,calc(100vw - 48px))!important;
-    margin-left:50%!important;
+    position:relative!important;
+    left:50%!important;
+    margin-left:0!important;
     transform:translateX(-50%)!important;
   }
 }
