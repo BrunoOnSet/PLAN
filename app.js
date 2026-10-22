@@ -66,6 +66,9 @@ const importProjectInput=document.getElementById('importProjectInput');
 const stageWrap=document.getElementById('stageWrap');
 const stageCard=stageWrap?.closest('.stage-card');
 const stageWidthToggle=document.getElementById('stageWidthToggle');
+const stageHandModeBtn=document.getElementById('stageHandModeBtn');
+const stageLassoModeBtn=document.getElementById('stageLassoModeBtn');
+let stageInteractionMode='hand';
 const STAGE_WIDE_KEY='bos-plan-stage-wide-v1';
 const zoomReadout=document.getElementById('zoomReadout');
 const zoomOutBtn=document.getElementById('zoomOutBtn');
@@ -75,6 +78,24 @@ const planLengthPlusBtn=document.getElementById('planLengthPlusBtn');
 const planLengthQuickValue=document.getElementById('planLengthQuickValue');
 const quickControls=document.getElementById('quickControls');
 let quickControlsDrag=null;
+
+function setStageInteractionMode(mode){
+  stageInteractionMode=mode==='lasso'?'lasso':'hand';
+  if(stageHandModeBtn){
+    const on=stageInteractionMode==='hand';
+    stageHandModeBtn.classList.toggle('active',on);
+    stageHandModeBtn.setAttribute('aria-pressed',String(on));
+  }
+  if(stageLassoModeBtn){
+    const on=stageInteractionMode==='lasso';
+    stageLassoModeBtn.classList.toggle('active',on);
+    stageLassoModeBtn.setAttribute('aria-pressed',String(on));
+  }
+  stage?.classList.toggle('lasso-mode',stageInteractionMode==='lasso');
+  stage?.classList.toggle('hand-mode',stageInteractionMode==='hand');
+}
+stageHandModeBtn?.addEventListener('click',()=>setStageInteractionMode('hand'));
+stageLassoModeBtn?.addEventListener('click',()=>setStageInteractionMode('lasso'));
 
 function setStageWide(on){
   const wide=!!on&&window.innerWidth>=1000;
@@ -483,7 +504,7 @@ function handleViewportPointerDown(e){
     return;
   }
 
-  if(e.pointerType==='mouse'&&e.button===0&&!onObject&&stageViewport.w<stageW()-.5){
+  if(e.pointerType==='mouse'&&e.button===0&&!onObject&&stageInteractionMode==='hand'){
     panGesture={pointerId:e.pointerId,pointerType:'mouse',startX:e.clientX,startY:e.clientY,viewport:{...stageViewport}};
     stage.classList.add('desktop-panning');
     try{stage.setPointerCapture?.(e.pointerId)}catch(_){}
@@ -1162,7 +1183,7 @@ function clearMultiSelection(){
   multiSelectedIds.clear();
 }
 function beginLasso(e){
-  if(e.pointerType!=='mouse'||e.button!==0||e.target.closest?.('.object')||stageViewport.w<stageW()-.5)return false;
+  if(e.pointerType!=='mouse'||e.button!==0||e.target.closest?.('.object')||stageInteractionMode!=='lasso')return false;
   const p=pointerToStage(e);
   clearMultiSelection();
   state.selected=null;
@@ -1209,7 +1230,7 @@ function endLasso(e){
 
 function endGesture(){if(!drag)return;try{stage.releasePointerCapture?.(drag.pointerId)}catch{}drag=null;render()}
 stage.addEventListener('pointerup',endGesture);stage.addEventListener('pointercancel',endGesture);
-stage.addEventListener('pointerdown',e=>{if(e.target.closest?.('.object')||lassoDrag||panGesture)return;if(state.selected!==null||multiSelectedIds.size){state.selected=null;clearMultiSelection();render()}});
+stage.addEventListener('pointerdown',e=>{if(e.target.closest?.('.object')||lassoDrag||panGesture||stageInteractionMode==='lasso')return;if(state.selected!==null||multiSelectedIds.size){state.selected=null;clearMultiSelection();render()}});
 
 let inspectorCollapsed=false;
 function updateInspectorCollapse(){
@@ -2102,6 +2123,7 @@ function normalizeSceneObject(o){
 }
 function load(){
   const versionBadge=document.getElementById('appVersionBadge');if(versionBadge)versionBadge.textContent=APP_VERSION;
+  setStageInteractionMode('hand');
   let stageWideSaved=false;try{stageWideSaved=localStorage.getItem(STAGE_WIDE_KEY)==='1'}catch(_){}
   setStageWide(stageWideSaved);
   loadLibrary();loadFavoriteLights();loadCachedLightDb();
