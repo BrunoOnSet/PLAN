@@ -74,6 +74,8 @@ const stageHandModeBtn=document.getElementById('stageHandModeBtn');
 const stageLassoModeBtn=document.getElementById('stageLassoModeBtn');
 const stageBeamsBtn=document.getElementById('stageBeamsBtn');
 const stageInfosBtn=document.getElementById('stageInfosBtn');
+const stageGridBtn=document.getElementById('stageGridBtn');
+const stageGridMobileBtn=document.getElementById('stageGridMobileBtn');
 const stageZoomInlineBtn=document.getElementById('stageZoomInlineBtn');
 const stageSizeInlineValue=document.getElementById('stageSizeInlineValue');
 const stageZoomMobileBtn=document.getElementById('stageZoomMobileBtn');
@@ -375,7 +377,7 @@ const decorCatalog=[
 const CURRENT_KEY='bos-plan-feu-v06-current';
 const FAVORITES_KEY='bos-plan-feu-favorite-lights-v01';
 const LIB_KEY='bos-plan-feu-library-v06';
-let state={objects:[],selected:null,activePreviewCamera:null,cameraModel:'Sony FX3',focal:50,snap:.25,labelsMode:'full',beamsVisible:true,gridOpacity:.5,planLength:10,planId:null,planName:'Plan sans nom',folderId:'folder_general',planOptionsOpen:true,equipmentSheet:null};
+let state={objects:[],selected:null,activePreviewCamera:null,cameraModel:'Sony FX3',focal:50,snap:.25,labelsMode:'full',beamsVisible:true,gridOpacity:.4,gridVisible:true,planLength:10,planId:null,planName:'Plan sans nom',folderId:'folder_general',planOptionsOpen:true,equipmentSheet:null};
 let library={folders:[{id:'folder_general',name:'Plans'}],plans:[]};
 let drag=null;
 let multiSelectedIds=new Set();
@@ -648,7 +650,8 @@ function ensureStateDefaults(){
   state.snap=[0,.1,.25,.5,1].includes(Number(state.snap))?Number(state.snap):.25;
   if(!['full','names','lightcrew','direction','hidden'].includes(state.labelsMode))state.labelsMode='full';
   if(state.beamsVisible===undefined)state.beamsVisible=true;
-  state.gridOpacity=clamp(Number.isFinite(Number(state.gridOpacity))?Number(state.gridOpacity):.5,0,1);
+  if(state.gridVisible===undefined)state.gridVisible=Number(state.gridOpacity)!==0;
+  state.gridOpacity=.4;
   state.planName=state.planName||defaultPlanName();
   state.folderId=state.folderId||library.folders[0]?.id||'folder_general';
   if(state.planId===undefined)state.planId=null;
@@ -662,11 +665,8 @@ function loadLibrary(){
 }
 function persistLibrary(){localStorage.setItem(LIB_KEY,JSON.stringify(library))}
 function updateGridOpacity(){
-  let raw=Number(state.gridOpacity);
-  const v=Number.isFinite(raw)?clamp(raw,0,1):.5;
-  state.gridOpacity=v;
-  // Le curseur pilote maintenant à la fois l’opacité ET le contraste.
-  // À 100 %, la grille devient volontairement très lisible pour un usage de plan technique.
+  // Grille visible à intensité fixe 40 %, ou totalement masquée.
+  const v=state.gridVisible===false?0:.4;
   const dark=document.body.classList.contains('dark');
   const t=v;
   const smallA=v===0?0:(.10+t*.57), largeA=v===0?0:(.18+t*.72);
@@ -681,6 +681,7 @@ function updatePlanOptionsUI(){const open=state.planOptionsOpen!==false;if(planO
 function updatePlanBadge(){if(currentPlanBadge)currentPlanBadge.textContent=`${state.planName||defaultPlanName()} · autosauvegarde`;if(topPlanNameInput&&document.activeElement!==topPlanNameInput)topPlanNameInput.value=state.planName||defaultPlanName();if(planNameInput&&document.activeElement!==planNameInput)planNameInput.value=state.planName||defaultPlanName();if(labelsModeSelect)labelsModeSelect.value=state.labelsMode||'full';if(toggleSnapBtn){const on=Number(state.snap)>0;toggleSnapBtn.classList.toggle('active',on);toggleSnapBtn.textContent=on?'Aimant ON':'Aimant OFF';toggleSnapBtn.setAttribute('aria-pressed',String(on))}if(toggleBeamsBtn){const on=state.beamsVisible!==false;toggleBeamsBtn.classList.toggle('active',on);toggleBeamsBtn.textContent=on?'Faisceau ON':'Faisceau OFF';toggleBeamsBtn.setAttribute('aria-pressed',String(on))}
 if(stageBeamsBtn){const on=state.beamsVisible!==false;stageBeamsBtn.classList.toggle('active',on);stageBeamsBtn.textContent=on?'Faisceaux ON':'Faisceaux OFF';stageBeamsBtn.setAttribute('aria-pressed',String(on))}if(stageBeamsMobileBtn){const on=state.beamsVisible!==false;stageBeamsMobileBtn.classList.toggle('active',on);stageBeamsMobileBtn.textContent=on?'Faisceau ON':'Faisceau OFF';stageBeamsMobileBtn.setAttribute('aria-pressed',String(on))}
 if(stageInfosBtn){const on=(state.labelsMode||'full')!=='hidden';stageInfosBtn.classList.toggle('active',on);stageInfosBtn.textContent=on?'Infos ON':'Infos OFF';stageInfosBtn.setAttribute('aria-pressed',String(on))}if(stageInfosMobileBtn){const on=(state.labelsMode||'full')!=='hidden';stageInfosMobileBtn.classList.toggle('active',on);stageInfosMobileBtn.textContent=on?'Infos ON':'Infos OFF';stageInfosMobileBtn.setAttribute('aria-pressed',String(on))}
+for(const btn of [stageGridBtn,stageGridMobileBtn]){if(btn){const on=state.gridVisible!==false;btn.classList.toggle('active',on);btn.textContent=on?'Grille ON':'Grille OFF';btn.setAttribute('aria-pressed',String(on))}}
 document.querySelectorAll('[data-plan-toggle="beams"]').forEach(btn=>{const on=state.beamsVisible!==false;btn.classList.toggle('active',on);btn.textContent=on?'Faisceau ON':'Faisceau OFF';btn.setAttribute('aria-pressed',String(on))});
 document.querySelectorAll('[data-plan-toggle="infos"]').forEach(btn=>{const on=(state.labelsMode||'full')!=='hidden';btn.classList.toggle('active',on);btn.textContent=on?'Infos ON':'Infos OFF';btn.setAttribute('aria-pressed',String(on))});
 updateGridOpacity();if(planLengthRange)planLengthRange.value=String(Number(state.planLength||10));const planLengthText=`${Number(state.planLength||10).toFixed(Number(state.planLength)%1?1:0)} m`;if(planLengthValue)planLengthValue.textContent=planLengthText;if(stageSizeInlineValue)stageSizeInlineValue.textContent=planLengthText;if(stageSizeMobileValue)stageSizeMobileValue.textContent=planLengthText;updatePlanOptionsUI()}
@@ -2020,7 +2021,8 @@ function newPlan(name='Plan sans nom'){
   state.snap=.25;
   state.labelsMode='full';
   state.beamsVisible=true;
-  state.gridOpacity=.5;
+  state.gridOpacity=.4;
+  state.gridVisible=true;
   state.workspaceVersion=WORKSPACE_VERSION;
   state.planOptionsOpen=true;
   state.equipmentSheet=null;
@@ -2191,7 +2193,10 @@ if(labelsModeSelect)labelsModeSelect.addEventListener('change',()=>{
 if(toggleBeamsBtn)toggleBeamsBtn.addEventListener('click',toggleGlobalBeams);
 if(stageBeamsBtn)stageBeamsBtn.addEventListener('click',toggleGlobalBeams);
 if(stageInfosBtn)stageInfosBtn.addEventListener('click',toggleGlobalInfos);
+function toggleGlobalGrid(){state.gridVisible=state.gridVisible===false;updateGridOpacity();persistCurrent()}
 document.addEventListener('click',e=>{
+  const gridBtn=e.target.closest?.('[data-plan-toggle="grid"]');
+  if(gridBtn){e.preventDefault();toggleGlobalGrid();return}
   const beamBtn=e.target.closest?.('[data-plan-toggle="beams"]');
   if(beamBtn){e.preventDefault();toggleGlobalBeams();return}
   const infoBtn=e.target.closest?.('[data-plan-toggle="infos"]');
