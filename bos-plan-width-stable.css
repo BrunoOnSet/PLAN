@@ -861,3 +861,41 @@ body.dark .export-selection-bar{background:rgba(23,27,29,.94)!important;border-c
     display:none!important;
   }
 }
+
+
+/* PLAN — mobile : petits boutons Faisceau / Infos sur la ligne des contrôles. */
+.stage-mobile-display-toggles{display:none}
+@media (max-width:700px){
+  .stage-mobile-display-toggles{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:3px!important;
+    margin-left:3px!important;
+    flex:0 0 auto!important;
+  }
+  .stage-mobile-toggle{
+    height:32px!important;
+    min-height:32px!important;
+    padding:0 6px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:1px solid var(--bos-line)!important;
+    border-radius:9px!important;
+    background:var(--bos-panel-soft)!important;
+    color:var(--bos-muted)!important;
+    box-shadow:none!important;
+    font-size:8px!important;
+    font-weight:600!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  .stage-mobile-toggle.active{
+    color:var(--bos-accent)!important;
+    border-color:var(--bos-line-strong)!important;
+    background:var(--bos-accent-soft)!important;
+  }
+}
+@media (min-width:701px){
+  .stage-mobile-display-toggles{display:none!important}
+}
