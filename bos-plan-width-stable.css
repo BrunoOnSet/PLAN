@@ -485,3 +485,38 @@ main,
     pointer-events:auto!important;
   }
 }
+
+
+/* PLAN — zoom et taille intégrés à la ligne d'actions sur ordinateur. */
+@media (min-width:701px){
+  .stage-zoom-inline,
+  .stage-size-inline{
+    min-height:32px!important;
+    height:32px!important;
+    padding:0 10px!important;
+    border:1px solid var(--bos-line)!important;
+    border-radius:9px!important;
+    background:var(--bos-panel-soft)!important;
+    color:var(--bos-muted)!important;
+    font-size:9px!important;
+    font-weight:600!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+
+  .stage-size-inline{
+    cursor:default!important;
+  }
+
+  #stageWrap>.stage-view-controls,
+  #stageWrap>.stage-plan-size-controls{
+    display:none!important;
+  }
+}
+
+@media (max-width:700px){
+  .stage-zoom-inline,
+  .stage-size-inline{
+    display:none!important;
+  }
+}
