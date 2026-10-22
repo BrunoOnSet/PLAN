@@ -507,11 +507,6 @@ main,
   .stage-size-inline{
     cursor:default!important;
   }
-
-  #stageWrap>.stage-view-controls,
-  #stageWrap>.stage-plan-size-controls{
-    display:none!important;
-  }
 }
 
 @media (max-width:700px){
@@ -633,11 +628,6 @@ main,
     padding:0 7px!important;
     font-size:9px!important;
     white-space:nowrap!important;
-  }
-
-  #stageWrap>.stage-view-controls,
-  #stageWrap>.stage-plan-size-controls{
-    display:none!important;
   }
 }
 
