@@ -774,3 +774,19 @@ main,
     flex:0 0 auto!important;
   }
 }
+
+
+/* PLAN — grand espace de travail + sélection d'export PNG. */
+.export-selection-bar{position:absolute!important;top:10px!important;right:10px!important;z-index:40!important;display:flex!important;align-items:center!important;gap:6px!important;padding:6px!important;border:1px solid rgba(21,25,27,.14)!important;border-radius:11px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 5px 20px rgba(20,25,27,.12)!important;backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important}
+.export-selection-bar[hidden]{display:none!important}
+.export-selection-bar>span{padding:0 5px!important;color:var(--bos-muted)!important;font-size:9px!important;font-weight:600!important;white-space:nowrap!important}
+.export-selection-bar button{min-height:30px!important;height:30px!important;padding:0 9px!important;border-radius:8px!important;font-size:9px!important}
+body.dark .export-selection-bar{background:rgba(23,27,29,.94)!important;border-color:rgba(255,255,255,.12)!important}
+.export-selection-mode{cursor:default!important}
+.export-selection-shade{fill:rgba(14,20,24,.30)!important;pointer-events:none!important}
+.export-selection-frame{fill:rgba(255,255,255,.025)!important;stroke:#fff!important;stroke-width:3!important;vector-effect:non-scaling-stroke!important;stroke-dasharray:10 7!important;cursor:move!important;pointer-events:all!important}
+.export-selection-handle{fill:#fff!important;stroke:#1e6fe8!important;stroke-width:2!important;vector-effect:non-scaling-stroke!important;cursor:nwse-resize!important;pointer-events:all!important}
+.export-selection-handle[data-export-action="ne"],.export-selection-handle[data-export-action="sw"]{cursor:nesw-resize!important}
+.export-selection-label{fill:#fff!important;paint-order:stroke!important;stroke:rgba(0,0,0,.55)!important;stroke-width:3px!important;vector-effect:non-scaling-stroke!important;font-size:14px!important;font-weight:700!important;pointer-events:none!important}
+.stage-size-inline,.stage-mobile-size{display:none!important}
+@media(max-width:700px){.export-selection-bar{top:8px!important;right:8px!important;left:8px!important;justify-content:flex-end!important;gap:4px!important}.export-selection-bar>span{margin-right:auto!important}.export-selection-bar button{padding:0 7px!important}}
