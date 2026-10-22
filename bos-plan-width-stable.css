@@ -151,8 +151,27 @@ main,
 
   .stage-actions-row .stage-width-toggle,
   .stage-actions-row .stage-add-btn{
-    flex:0 0 auto;
-    white-space:nowrap;
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:0!important;
+    min-height:32px!important;
+    padding:0 9px!important;
+    white-space:nowrap!important;
+    border-radius:9px!important;
+    font-size:9px!important;
+    font-weight:600!important;
+  }
+
+  .stage-actions-row .stage-add-btn{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+  }
+
+  .stage-actions-row .stage-add-btn .plus{
+    font-size:12px!important;
+    line-height:1!important;
   }
 
   #stage.hand-mode{
