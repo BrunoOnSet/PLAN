@@ -82,6 +82,10 @@ let stageInteractionMode='hand';
 let lastVisibleLabelsMode='full';
 const STAGE_WIDE_KEY='bos-plan-stage-wide-v1';
 const quickControls=document.getElementById('quickControls');
+const exportSelectionBar=document.getElementById('exportSelectionBar');
+const exportSelectionSize=document.getElementById('exportSelectionSize');
+const cancelExportSelectionBtn=document.getElementById('cancelExportSelectionBtn');
+const confirmExportSelectionBtn=document.getElementById('confirmExportSelectionBtn');
 let quickControlsDrag=null;
 
 function setStageInteractionMode(mode){
@@ -375,18 +379,24 @@ let drag=null;
 let multiSelectedIds=new Set();
 let lassoDrag=null;
 
-// Navigation du plan : le canevas reste toujours ajusté au téléphone au chargement,
-// puis peut être déplacé et zoomé sans modifier les coordonnées réelles du plan.
-const STAGE_RATIO=.62, BASE_STAGE_W=1000, MAX_VIEW_ZOOM=4;
-function stageW(){return Math.max(400,Math.round((Number(state.planLength)||10)*SCALE))}
-function stageH(){return Math.round(stageW()*STAGE_RATIO)}
-let stageViewport={x:0,y:0,w:BASE_STAGE_W,h:Math.round(BASE_STAGE_W*STAGE_RATIO)};
+// Navigation du plan : grande surface de travail virtuelle.
+// 100 px = 1 m. La vue de référence reste 10 m de large = zoom 100 %.
+const STAGE_RATIO=.62, WORLD_W=10000, WORLD_H=6200, BASE_VIEW_W=1000, MIN_VIEW_W=250, MAX_VIEW_W=WORLD_W;
+const WORKSPACE_VERSION=2;
+function stageW(){return WORLD_W}
+function stageH(){return WORLD_H}
+function defaultStageViewport(){
+  const w=BASE_VIEW_W,h=w*STAGE_RATIO;
+  return {x:(WORLD_W-w)/2,y:(WORLD_H-h)/2,w,h};
+}
+let stageViewport=defaultStageViewport();
 const activeTouchPointers=new Map();
 let panGesture=null, pinchGesture=null;
+let exportMode=false, exportSelection=null, exportDrag=null;
+
 function clampViewport(v){
   const fullW=stageW(),fullH=stageH();
-  const minW=fullW/MAX_VIEW_ZOOM;
-  const w=clamp(Number(v.w)||fullW,minW,fullW),h=w*fullH/fullW;
+  const w=clamp(Number(v.w)||BASE_VIEW_W,MIN_VIEW_W,MAX_VIEW_W),h=w*fullH/fullW;
   const x=clamp(Number(v.x)||0,0,fullW-w),y=clamp(Number(v.y)||0,0,fullH-h);
   return {x,y,w,h};
 }
@@ -395,70 +405,23 @@ function updateStageGeometry(){
   const bg=stage.querySelector('.stage-bg'); if(bg){bg.setAttribute('width',String(w));bg.setAttribute('height',String(h))}
   const gridRect=stage.querySelector('rect[fill="url(#grid)"]'); if(gridRect){gridRect.setAttribute('width',String(w));gridRect.setAttribute('height',String(h))}
 }
-function planLengthAnchorSubject(){
-  return state.objects.find(o=>o.kind==='subject')||null;
-}
-function setPlanLength(length,{keepViewport=true}={}){
-  const prevW=stageW(),prevH=stageH();
-  const prevViewport={...stageViewport};
-  const anchor=planLengthAnchorSubject();
-  const anchorBefore=anchor?{x:anchor.x,y:anchor.y}:null;
-
-  state.planLength=clamp(Number(length)||10,4,30);
-  const nextW=stageW(),nextH=stageH();
-  if(nextW===prevW&&nextH===prevH)return;
-
-  let dx=(nextW-prevW)/2;
-  let dy=(nextH-prevH)/2;
-
-  if(anchorBefore){
-    dx=anchorBefore.x*(nextW/prevW-1);
-    dy=anchorBefore.y*(nextH/prevH-1);
-  }
-
-  state.objects.forEach(o=>{
-    o.x=Number(o.x||0)+dx;
-    o.y=Number(o.y||0)+dy;
-  });
-
-  if(keepViewport){
-    const viewW=prevViewport.w/prevW*nextW;
-    const viewH=viewW*nextH/nextW;
-
-    if(anchorBefore){
-      const rx=(anchorBefore.x-prevViewport.x)/Math.max(1,prevViewport.w);
-      const ry=(anchorBefore.y-prevViewport.y)/Math.max(1,prevViewport.h);
-      const anchorAfter={x:anchorBefore.x+dx,y:anchorBefore.y+dy};
-      stageViewport={
-        x:anchorAfter.x-rx*viewW,
-        y:anchorAfter.y-ry*viewH,
-        w:viewW,
-        h:viewH
-      };
-    }else{
-      stageViewport={
-        x:(prevViewport.x+prevViewport.w/2)+dx-viewW/2,
-        y:(prevViewport.y+prevViewport.h/2)+dy-viewH/2,
-        w:viewW,
-        h:viewH
-      };
-    }
-  }else{
-    stageViewport={x:0,y:0,w:nextW,h:nextH};
-  }
-
-  updateStageGeometry();
-  applyStageViewport();
-  renderCanvas();
-  scheduleAutosave();
+function migrateWorkspaceState(target=state){
+  if(!target||target.workspaceVersion===WORKSPACE_VERSION)return;
+  const legacyW=Math.max(400,Math.round((Number(target.planLength)||10)*SCALE));
+  const legacyH=Math.round(legacyW*STAGE_RATIO);
+  const dx=(WORLD_W-legacyW)/2,dy=(WORLD_H-legacyH)/2;
+  if(Array.isArray(target.objects))target.objects.forEach(o=>{o.x=(Number(o.x)||0)+dx;o.y=(Number(o.y)||0)+dy});
+  target.workspaceVersion=WORKSPACE_VERSION;
 }
 function applyStageViewport(){
   stageViewport=clampViewport(stageViewport);
   stage.setAttribute('viewBox',`${stageViewport.x} ${stageViewport.y} ${stageViewport.w} ${stageViewport.h}`);
-  if(stageZoomInlineBtn)stageZoomInlineBtn.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;if(stageZoomMobileBtn)stageZoomMobileBtn.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;
+  const zoom=Math.round(BASE_VIEW_W/stageViewport.w*100);
+  if(stageZoomInlineBtn)stageZoomInlineBtn.textContent=`${zoom} %`;
+  if(stageZoomMobileBtn)stageZoomMobileBtn.textContent=`${zoom} %`;
   stage.classList.toggle('desktop-pan-ready',stageViewport.w<stageW()-.5);
 }
-function resetStageViewport(){stageViewport={x:0,y:0,w:stageW(),h:stageH()};applyStageViewport()}
+function resetStageViewport(){stageViewport=defaultStageViewport();applyStageViewport()}
 function stagePointFromClient(clientX,clientY){
   const r=stage.getBoundingClientRect();
   if(!r.width||!r.height)return {x:stageViewport.x,y:stageViewport.y};
@@ -466,7 +429,7 @@ function stagePointFromClient(clientX,clientY){
 }
 function zoomStage(factor,clientX=null,clientY=null){
   const fullW=stageW(),fullH=stageH();
-  const newW=clamp(stageViewport.w/factor,fullW/MAX_VIEW_ZOOM,fullW);
+  const newW=clamp(stageViewport.w/factor,MIN_VIEW_W,MAX_VIEW_W);
   const newH=newW*fullH/fullW;
   const r=stage.getBoundingClientRect();
   const hasPointer=Number.isFinite(clientX)&&Number.isFinite(clientY)&&r.width&&r.height;
@@ -486,7 +449,7 @@ function zoomStage(factor,clientX=null,clientY=null){
 function viewportFromPinch(start,midX,midY,distance){
   const ratio=Math.max(.01,distance/start.distance);
   const fullW=stageW(),fullH=stageH();
-  const newW=clamp(start.viewport.w/ratio,fullW/MAX_VIEW_ZOOM,fullW),newH=newW*fullH/fullW;
+  const newW=clamp(start.viewport.w/ratio,MIN_VIEW_W,MAX_VIEW_W),newH=newW*fullH/fullW;
   const r=stage.getBoundingClientRect(),rx=clamp((midX-r.left)/Math.max(1,r.width),0,1),ry=clamp((midY-r.top)/Math.max(1,r.height),0,1);
   return clampViewport({x:start.anchor.x-rx*newW,y:start.anchor.y-ry*newH,w:newW,h:newH});
 }
@@ -500,6 +463,7 @@ function beginPinchIfPossible(){
   return true;
 }
 function handleViewportPointerDown(e){
+  if(exportMode){handleExportPointerDown(e);return}
   const onObject=!!e.target.closest?.('.object');
 
   if(!onObject && !(e.pointerType==='mouse' && stageInteractionMode==='lasso') && (state.selected!==null || multiSelectedIds.size)){
@@ -523,6 +487,7 @@ function handleViewportPointerDown(e){
   }
 }
 function handleViewportPointerMove(e){
+  if(exportMode){handleExportPointerMove(e);return}
   if(e.pointerType==='touch'){
     if(!activeTouchPointers.has(e.pointerId))return;
     activeTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -540,6 +505,7 @@ function handleViewportPointerMove(e){
   }
 }
 function handleViewportPointerEnd(e){
+  if(exportMode){handleExportPointerEnd(e);return}
   if(e.pointerType==='touch'){
     activeTouchPointers.delete(e.pointerId);
     if(activeTouchPointers.size<2)pinchGesture=null;
@@ -564,6 +530,74 @@ stage.addEventListener('pointerdown',e=>{beginLasso(e)},{capture:true});
 stage.addEventListener('pointermove',e=>{moveLasso(e)},{capture:true});
 stage.addEventListener('pointerup',e=>{endLasso(e)},{capture:true});
 stage.addEventListener('pointercancel',e=>{endLasso(e)},{capture:true});
+function exportSelectionText(sel){
+  const w=(sel.w/SCALE).toFixed(sel.w%SCALE?1:0).replace('.',',');
+  const h=(sel.h/SCALE).toFixed(sel.h%SCALE?1:0).replace('.',',');
+  return `${w} × ${h} m`;
+}
+function updateExportSelectionBar(){
+  if(exportSelectionSize&&exportSelection)exportSelectionSize.textContent=exportSelectionText(exportSelection);
+}
+function startExportSelection(){
+  exportMode=true;
+  state.selected=null;
+  multiSelectedIds.clear();
+  exportSelection={x:stageViewport.x,y:stageViewport.y,w:stageViewport.w,h:stageViewport.h};
+  if(exportSelectionBar)exportSelectionBar.hidden=false;
+  stage.classList.add('export-selection-mode');
+  renderCanvas();
+  updateExportSelectionBar();
+}
+function cancelExportSelection(){
+  exportMode=false;exportSelection=null;exportDrag=null;
+  if(exportSelectionBar)exportSelectionBar.hidden=true;
+  stage.classList.remove('export-selection-mode');
+  renderCanvas();
+}
+function handleExportPointerDown(e){
+  if(!exportSelection||e.button>0)return;
+  const action=e.target.closest?.('[data-export-action]')?.getAttribute('data-export-action');
+  if(!action)return;
+  const p=stagePointFromClient(e.clientX,e.clientY);
+  exportDrag={pointerId:e.pointerId,action,start:p,orig:{...exportSelection}};
+  try{stage.setPointerCapture?.(e.pointerId)}catch(_){}
+  e.preventDefault();e.stopPropagation();
+}
+function handleExportPointerMove(e){
+  if(!exportDrag||exportDrag.pointerId!==e.pointerId)return;
+  const p=stagePointFromClient(e.clientX,e.clientY),o=exportDrag.orig;
+  if(exportDrag.action==='move'){
+    exportSelection.x=clamp(o.x+(p.x-exportDrag.start.x),0,WORLD_W-o.w);
+    exportSelection.y=clamp(o.y+(p.y-exportDrag.start.y),0,WORLD_H-o.h);
+  }else{
+    let x0=o.x,y0=o.y,x1=o.x+o.w,y1=o.y+o.h;
+    if(exportDrag.action.includes('w'))x0=clamp(p.x,0,x1-100);
+    if(exportDrag.action.includes('e'))x1=clamp(p.x,x0+100,WORLD_W);
+    if(exportDrag.action.includes('n'))y0=clamp(p.y,0,y1-100);
+    if(exportDrag.action.includes('s'))y1=clamp(p.y,y0+100,WORLD_H);
+    exportSelection={x:x0,y:y0,w:x1-x0,h:y1-y0};
+  }
+  renderCanvas();updateExportSelectionBar();e.preventDefault();
+}
+function handleExportPointerEnd(e){
+  if(!exportDrag||exportDrag.pointerId!==e.pointerId)return;
+  try{stage.releasePointerCapture?.(e.pointerId)}catch(_){}
+  exportDrag=null;e.preventDefault();
+}
+function drawExportSelectionOverlay(){
+  if(!exportMode||!exportSelection)return;
+  const s=exportSelection,g=svgEl('g',{class:'export-selection-overlay'});
+  const outer=`M0 0 H${WORLD_W} V${WORLD_H} H0 Z M${s.x} ${s.y} H${s.x+s.w} V${s.y+s.h} H${s.x} Z`;
+  g.appendChild(svgEl('path',{d:outer,class:'export-selection-shade','fill-rule':'evenodd'}));
+  g.appendChild(svgEl('rect',{x:s.x,y:s.y,width:s.w,height:s.h,class:'export-selection-frame','data-export-action':'move'}));
+  const handleSize=Math.max(18,Math.min(34,stageViewport.w*.028));
+  [['nw',s.x,s.y],['ne',s.x+s.w,s.y],['sw',s.x,s.y+s.h],['se',s.x+s.w,s.y+s.h]].forEach(([a,x,y])=>{
+    g.appendChild(svgEl('rect',{x:x-handleSize/2,y:y-handleSize/2,width:handleSize,height:handleSize,rx:4,class:'export-selection-handle','data-export-action':a}));
+  });
+  const label=svgEl('text',{x:s.x+s.w/2,y:s.y+Math.max(26,stageViewport.w*.028),class:'export-selection-label','text-anchor':'middle'});
+  label.textContent=exportSelectionText(s);g.appendChild(label);
+  objectsLayer.appendChild(g);
+}
 let replaceLightId=null;
 let replaceCameraId=null;
 let cameraChooserBrand='Sony';
@@ -620,8 +654,7 @@ function ensureStateDefaults(){
   state.folderId=state.folderId||library.folders[0]?.id||'folder_general';
   if(state.planId===undefined)state.planId=null;
   if(state.planOptionsOpen===undefined)state.planOptionsOpen=true;
-  if(state.planLength===undefined)state.planLength=10;
-  state.planLength=clamp(Number(state.planLength)||10,4,30);
+  migrateWorkspaceState(state);
   ensureEquipmentSheet();
 }
 function loadLibrary(){
@@ -721,14 +754,15 @@ function normalizeLightObject(o){
 }
 function seed(){
   state.objects=[
-    {id:uid('cam'),kind:'camera',name:'Caméra A',x:stageW()/2,y:stageH()-115,rot:-90,height:1.55,cameraModel:'Sony FX3',focal:50,locked:false},
+    {id:uid('cam'),kind:'camera',name:'Caméra A',x:stageW()/2,y:stageH()/2+195,rot:-90,height:1.55,cameraModel:'Sony FX3',focal:50,locked:false},
     {id:uid('subj'),kind:'subject',name:'Sujet 1',x:stageW()/2,y:stageH()/2-10,rot:90,height:1.75,locked:false},
-    {id:uid('light'),kind:'light',name:'amaran Halo 200x',brand:'Amaran',family:'Halo',form:'halo',short:'H200',x:Math.max(140,stageW()/2-215),y:stageH()/2+20,rot:-15,beam:55,beamVisible:true,intensity:60,height:2.0,modifier:'none',modifierSize:.9,colorMode:'cct',cct:5600,hue:0,saturation:100,locked:false}
+    {id:uid('light'),kind:'light',name:'amaran Halo 200x',brand:'Amaran',family:'Halo',form:'halo',short:'H200',x:stageW()/2-215,y:stageH()/2+20,rot:-15,beam:55,beamVisible:true,intensity:60,height:2.0,modifier:'none',modifierSize:.9,colorMode:'cct',cct:5600,hue:0,saturation:100,locked:false}
   ];
   state.objects.forEach(o=>{o.labelVisible=true;o.labelPos='auto'});
   state.selected=state.objects[2].id;
   state.activePreviewCamera=state.objects[0].id;
   state.openingBindingVersion=2;
+  state.workspaceVersion=WORKSPACE_VERSION;
 }
 function normalizeCameraObject(o){
   if(!o||o.kind!=='camera')return o;
@@ -747,13 +781,14 @@ function renderCanvas(){
   if(state.beamsVisible!==false)state.objects.filter(o=>o.kind==='light'&&o.beamVisible!==false).forEach(drawLightBeam);
   state.objects.forEach(drawObject);
   drawPlanScaleOverlay();
+  drawExportSelectionOverlay();
   renderPreview();
   updatePlanBadge();
   scheduleAutosave();
 }
 function render(){renderCanvas();renderInspector();renderQuickControls()}
 function drawCameraFov(o){
-  const {sensor,focal}=cameraSettings(o),hfov=2*Math.atan(sensor.w/(2*focal)),len=stageH()*.74,half=Math.tan(hfov/2)*len;
+  const {sensor,focal}=cameraSettings(o),hfov=2*Math.atan(sensor.w/(2*focal)),len=460,half=Math.tan(hfov/2)*len;
   beamsLayer.appendChild(svgEl('polygon',{points:`0,0 ${len},${-half} ${len},${half}`,class:'camera-fov',transform:`translate(${o.x} ${o.y}) rotate(${o.rot})`}));
 }
 function kelvinToRgb(kelvin){
@@ -1692,13 +1727,13 @@ function renderPreview(){
 }
 
 function addSubject(){const n=state.objects.filter(o=>o.kind==='subject').length+1,o={id:uid('subj'),kind:'subject',name:`Sujet ${n}`,x:stageW()/2+40*(n-1),y:stageH()/2-10,rot:90,height:1.75,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
-function addCamera(cameraModel='Sony FX3'){const n=state.objects.filter(o=>o.kind==='camera').length+1,o={id:uid('cam'),kind:'camera',name:`Caméra ${String.fromCharCode(64+n)}`,x:stageW()/2+(n-1)*55,y:stageH()-100,rot:-90,height:1.55,cameraModel:cameras[cameraModel]?cameraModel:'Sony FX3',focal:50,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;state.activePreviewCamera=o.id;closeAddDialog();render()}
+function addCamera(cameraModel='Sony FX3'){const n=state.objects.filter(o=>o.kind==='camera').length+1,o={id:uid('cam'),kind:'camera',name:`Caméra ${String.fromCharCode(64+n)}`,x:stageW()/2+(n-1)*55,y:stageH()/2+210,rot:-90,height:1.55,cameraModel:cameras[cameraModel]?cameraModel:'Sony FX3',focal:50,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;state.activePreviewCamera=o.id;closeAddDialog();render()}
 function addLightFromPreset(p,replaceId=null){
   if(replaceId){const o=state.objects.find(x=>x.id===replaceId);if(o){const mod=o.modifier||'none';Object.assign(o,{name:p.name,brand:p.brand,family:p.family,form:p.form,short:p.short,beam:p.beam,aspect:p.aspect,length:p.length,modifier:supportsSoftbox({kind:'light',form:p.form})?mod:'none'});state.selected=o.id;closeAddDialog();render();return}}
-  const n=state.objects.filter(o=>o.kind==='light').length,o={id:uid('light'),kind:'light',name:p.name,brand:p.brand,family:p.family,form:p.form,short:p.short,x:245+(n%5)*72,y:235+(n%3)*75,rot:0,beam:p.beam,beamVisible:true,intensity:50,height:2,aspect:p.aspect,length:p.length,modifier:'none',modifierSize:.9,colorMode:'cct',cct:5600,hue:0,saturation:100,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render();
+  const n=state.objects.filter(o=>o.kind==='light').length,o={id:uid('light'),kind:'light',name:p.name,brand:p.brand,family:p.family,form:p.form,short:p.short,x:stageW()/2-255+(n%5)*72,y:stageH()/2-75+(n%3)*75,rot:0,beam:p.beam,beamVisible:true,intensity:50,height:2,aspect:p.aspect,length:p.length,modifier:'none',modifierSize:.9,colorMode:'cct',cct:5600,hue:0,saturation:100,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render();
 }
-function addAccessory(p){const n=state.objects.filter(o=>o.kind==='accessory').length,o={id:uid('acc'),kind:'accessory',type:p.type,name:p.name,short:p.short,x:Math.max(180,stageW()/2-140)+(n%4)*80,y:160+(n%3)*70,rot:0,width:p.width,height:p.height,zHeight:p.zHeight??p.height,elevation:p.type==='borniol'?.2:.35,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
-function addDecor(p){const n=state.objects.filter(o=>o.kind==='decor').length,zHeight=p.type==='wall'?2.5:p.type==='door'?2.04:p.type==='window'?1.2:.75,elevation=p.type==='window'?.9:0,o={id:uid('decor'),kind:'decor',type:p.type,name:p.name,x:Math.max(200,stageW()/2-70)+(n%4)*90,y:140+(n%3)*80,rot:0,width:p.width,height:p.height,zHeight,elevation,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
+function addAccessory(p){const n=state.objects.filter(o=>o.kind==='accessory').length,o={id:uid('acc'),kind:'accessory',type:p.type,name:p.name,short:p.short,x:stageW()/2-140+(n%4)*80,y:stageH()/2-150+(n%3)*70,rot:0,width:p.width,height:p.height,zHeight:p.zHeight??p.height,elevation:p.type==='borniol'?.2:.35,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
+function addDecor(p){const n=state.objects.filter(o=>o.kind==='decor').length,zHeight=p.type==='wall'?2.5:p.type==='door'?2.04:p.type==='window'?1.2:.75,elevation=p.type==='window'?.9:0,o={id:uid('decor'),kind:'decor',type:p.type,name:p.name,x:stageW()/2-70+(n%4)*90,y:stageH()/2-170+(n%3)*80,rot:0,width:p.width,height:p.height,zHeight,elevation,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
 
 function openAddDialog(){replaceLightId=null;replaceCameraId=null;showKinds();if(typeof addDialog.showModal==='function')addDialog.showModal();else addDialog.setAttribute('open','')}
 function closeAddDialog(){if(addDialog.open&&typeof addDialog.close==='function')addDialog.close();else addDialog.removeAttribute('open');replaceLightId=null;replaceCameraId=null}
@@ -1985,7 +2020,7 @@ function newPlan(name='Plan sans nom'){
   state.labelsMode='full';
   state.beamsVisible=true;
   state.gridOpacity=.5;
-  state.planLength=10;
+  state.workspaceVersion=WORKSPACE_VERSION;
   state.planOptionsOpen=true;
   state.equipmentSheet=null;
   state.openingBindingVersion=2;
@@ -2105,16 +2140,20 @@ function inlineSvgStyles(original,clone){
   const os=[original,...original.querySelectorAll('*')],cs=[clone,...clone.querySelectorAll('*')];
   os.forEach((node,i)=>{const target=cs[i];if(!target)return;const st=getComputedStyle(node);const css=props.map(p=>`${p}:${st.getPropertyValue(p)}`).join(';');target.setAttribute('style',`${target.getAttribute('style')||''};${css}`)});
 }
-function exportPng(){
-  const fullW=stageW(),fullH=stageH(),outW=1600,outH=Math.round(outW*fullH/fullW),titleH=86;
-  const clone=stage.cloneNode(true);clone.setAttribute('xmlns',NS);clone.setAttribute('width',String(outW));clone.setAttribute('height',String(outH));clone.setAttribute('viewBox',`0 0 ${fullW} ${fullH}`);
+function exportPng(selection=exportSelection){
+  const s=selection||stageViewport;
+  const outW=1600,outH=Math.max(320,Math.round(outW*s.h/s.w)),titleH=86;
+  const clone=stage.cloneNode(true);
+  clone.setAttribute('xmlns',NS);clone.setAttribute('width',String(outW));clone.setAttribute('height',String(outH));clone.setAttribute('viewBox',`${s.x} ${s.y} ${s.w} ${s.h}`);
   inlineSvgStyles(stage,clone);
-  clone.querySelectorAll('.rotation-gizmo,.selection-ring,.selection-box,.hit').forEach(n=>n.remove());
+  clone.querySelectorAll('.rotation-gizmo,.selection-ring,.selection-box,.hit,.export-selection-overlay,.scale-overlay-group').forEach(n=>n.remove());
   const source=new XMLSerializer().serializeToString(clone),blob=new Blob([source],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();
   img.onload=()=>{const c=document.createElement('canvas');c.width=outW;c.height=outH+titleH;const ctx=c.getContext('2d');ctx.fillStyle=getComputedStyle(document.querySelector('.stage-bg')).getPropertyValue('fill')||'#fbfcfe';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#121821';ctx.font='700 38px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(state.planName||defaultPlanName(),c.width/2,titleH/2);ctx.drawImage(img,0,titleH,outW,outH);URL.revokeObjectURL(url);c.toBlob(b=>{if(b)downloadBlob(b,`${safeName(state.planName||defaultPlanName())}_Plan_Feu.png`)},'image/png')};
   img.onerror=()=>{URL.revokeObjectURL(url);alert("L’export PNG n’a pas pu être généré sur ce navigateur.")};img.src=url;
 }
-if(exportBtn)exportBtn.onclick=()=>{toggleExportPopover(false);exportPng()};
+if(exportBtn)exportBtn.onclick=()=>{toggleExportPopover(false);startExportSelection()};
+if(cancelExportSelectionBtn)cancelExportSelectionBtn.onclick=cancelExportSelection;
+if(confirmExportSelectionBtn)confirmExportSelectionBtn.onclick=()=>{const s=exportSelection?{...exportSelection}:null;if(!s)return;cancelExportSelection();exportPng(s)};
 if(equipmentListBtn)equipmentListBtn.onclick=openEquipmentDialog;
 if(document.getElementById('closeEquipmentBtn'))document.getElementById('closeEquipmentBtn').onclick=closeEquipmentDialog;
 if(document.getElementById('closeEquipmentFooterBtn'))document.getElementById('closeEquipmentFooterBtn').onclick=closeEquipmentDialog;
