@@ -1218,7 +1218,7 @@ function renderQuickControls(){
   if(!quickControls)return;
   const o=selected();
 
-  if(!o || !(o.kind==='light' || (o.kind==='decor'&&o.type==='wall'))){
+  if(!o || !(o.kind==='light' || o.kind==='accessory' || o.kind==='decor')){
     quickControls.hidden=true;
     quickControls.innerHTML='';
     delete quickControls.dataset.objectId;
@@ -1228,24 +1228,41 @@ function renderQuickControls(){
   quickControls.hidden=false;
   quickControls.dataset.objectId=o.id;
 
-  if(o.kind==='decor'&&o.type==='wall'){
+  if(o.kind==='accessory'||o.kind==='decor'){
+    const title=o.name||kindLabel(o);
     quickControls.innerHTML=`
       <div class="quick-control-head">
-        <strong>Mur</strong>
-        <span>Réglage rapide</span>
+        <strong>${esc(title)}</strong>
+        <span>Réglages rapides</span>
       </div>
       <label class="quick-control-field">
-        <span><em>Longueur</em><b id="quickWallWidthValue">${Number(o.width||3).toFixed(1)} m</b></span>
-        <input id="quickWallWidth" type="range" min="0.1" max="20" step="0.1" value="${Number(o.width||3)}">
+        <span><em>Longueur</em><b id="quickObjectWidthValue">${Number(o.width||0).toFixed(1)} m</b></span>
+        <input id="quickObjectWidth" type="range" min="0.1" max="20" step="0.1" value="${Number(o.width||0)}">
+      </label>
+      <label class="quick-control-field">
+        <span><em>Épaisseur</em><b id="quickObjectThicknessValue">${Number(o.height||0).toFixed(2)} m</b></span>
+        <input id="quickObjectThickness" type="range" min="0.01" max="20" step="0.01" value="${Number(o.height||0)}">
       </label>`;
 
-    const widthInput=quickControls.querySelector('#quickWallWidth');
-    const widthValue=quickControls.querySelector('#quickWallWidthValue');
+    const widthInput=quickControls.querySelector('#quickObjectWidth');
+    const widthValue=quickControls.querySelector('#quickObjectWidthValue');
+    const thicknessInput=quickControls.querySelector('#quickObjectThickness');
+    const thicknessValue=quickControls.querySelector('#quickObjectThicknessValue');
+
     widthInput?.addEventListener('input',()=>{
       const obj=selected();
       if(!obj||obj.id!==o.id)return;
       obj.width=Number(widthInput.value);
       if(widthValue)widthValue.textContent=`${obj.width.toFixed(1)} m`;
+      renderCanvas();
+      renderInspector();
+    });
+
+    thicknessInput?.addEventListener('input',()=>{
+      const obj=selected();
+      if(!obj||obj.id!==o.id)return;
+      obj.height=Number(thicknessInput.value);
+      if(thicknessValue)thicknessValue.textContent=`${obj.height.toFixed(2)} m`;
       renderCanvas();
       renderInspector();
     });
@@ -1353,14 +1370,14 @@ function renderInspector(){
   }
   if(o.kind==='subject')html+=`<div class="field slider-field"><div class="slider-head"><label>Taille</label><strong data-slider-out="height">${Number(o.height||1.75).toFixed(2)} m</strong></div><input data-k="height" type="range" min="1" max="2.2" step="0.01" value="${o.height}"></div>`;
   else if(o.kind==='light')html+='';
-  else if(o.kind==='accessory'||o.kind==='decor')html+=`<div class="field slider-field"><div class="slider-head"><label>Largeur</label><strong data-slider-out="width">${Number(o.width||0).toFixed(1)} m</strong></div><input data-k="width" type="range" min="0.1" max="20" step="0.1" value="${o.width}"></div>`;
+  else if(o.kind==='accessory'||o.kind==='decor')html+=`<div class="field slider-field"><div class="slider-head"><label>Longueur</label><strong data-slider-out="width">${Number(o.width||0).toFixed(1)} m</strong></div><input data-k="width" type="range" min="0.1" max="20" step="0.1" value="${o.width}"></div>`;
   else if(o.kind!=='camera')html+=`<div class="field"><label>Distance sujet</label><div class="field-inline"><input disabled value="${nearestSubjectDistance(o).toFixed(2)}"><span class="unit">m</span></div></div>`;
   if(o.kind==='accessory'||o.kind==='decor'){
     const zDefault=o.kind==='accessory'?(o.height||1.2):(o.type==='wall'?2.5:o.type==='door'?2.04:o.type==='window'?1.2:o.type==='table'?.75:1);
     o.zHeight=Number(o.zHeight||zDefault);
     if(o.elevation===undefined)o.elevation=o.type==='window'?.9:(o.kind==='accessory'?.35:0);
-    const depthLabel=o.kind==='decor'&&['wall','door','window'].includes(o.type)?'Épaisseur':'Profondeur';
-    html+=`<div class="field slider-field"><div class="slider-head"><label>${depthLabel}</label><strong data-slider-out="height">${Number(o.height||0).toFixed(2)} m</strong></div><input data-k="height" type="range" min="0.05" max="20" step="0.05" value="${o.height}"></div>`;
+    const depthLabel='Épaisseur';
+    html+=`<div class="field slider-field"><div class="slider-head"><label>${depthLabel}</label><strong data-slider-out="height">${Number(o.height||0).toFixed(2)} m</strong></div><input data-k="height" type="range" min="0.01" max="20" step="0.01" value="${o.height}"></div>`;
     html+=`<div class="field slider-field"><div class="slider-head"><label>Hauteur réelle</label><strong data-slider-out="zHeight">${Number(o.zHeight||0).toFixed(2)} m</strong></div><input data-k="zHeight" type="range" min="0.05" max="10" step="0.05" value="${o.zHeight}"></div>`;
     if(o.kind==='accessory'||o.type==='window')html+=`<div class="field slider-field"><div class="slider-head"><label>Hauteur au sol</label><strong data-slider-out="elevation">${Number(o.elevation||0).toFixed(2)} m</strong></div><input data-k="elevation" type="range" min="0" max="5" step="0.05" value="${o.elevation}"></div>`;
   }
