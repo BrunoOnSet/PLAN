@@ -64,6 +64,9 @@ const equipmentAddCatalog=document.getElementById('equipmentAddCatalog');
 const equipmentPrintArea=document.getElementById('equipmentPrintArea');
 const importProjectInput=document.getElementById('importProjectInput');
 const stageWrap=document.getElementById('stageWrap');
+const stageCard=stageWrap?.closest('.stage-card');
+const stageWidthToggle=document.getElementById('stageWidthToggle');
+const STAGE_WIDE_KEY='bos-plan-stage-wide-v1';
 const zoomReadout=document.getElementById('zoomReadout');
 const zoomOutBtn=document.getElementById('zoomOutBtn');
 const zoomInBtn=document.getElementById('zoomInBtn');
@@ -72,6 +75,18 @@ const planLengthPlusBtn=document.getElementById('planLengthPlusBtn');
 const planLengthQuickValue=document.getElementById('planLengthQuickValue');
 const quickControls=document.getElementById('quickControls');
 let quickControlsDrag=null;
+
+function setStageWide(on){
+  const wide=!!on&&window.innerWidth>=1000;
+  stageCard?.classList.toggle('stage-wide',wide);
+  if(stageWidthToggle){
+    stageWidthToggle.setAttribute('aria-pressed',String(wide));
+    stageWidthToggle.textContent=wide?'Réduire':'Élargir';
+    stageWidthToggle.title=wide?'Revenir à la largeur normale':'Élargir le plan';
+  }
+  try{localStorage.setItem(STAGE_WIDE_KEY,wide?'1':'0')}catch(_){}
+}
+if(stageWidthToggle)stageWidthToggle.addEventListener('click',()=>setStageWide(!stageCard?.classList.contains('stage-wide')));
 
 function clampQuickControlsPosition(left,top){
   if(!quickControls)return {left,top};
@@ -2087,6 +2102,8 @@ function normalizeSceneObject(o){
 }
 function load(){
   const versionBadge=document.getElementById('appVersionBadge');if(versionBadge)versionBadge.textContent=APP_VERSION;
+  let stageWideSaved=false;try{stageWideSaved=localStorage.getItem(STAGE_WIDE_KEY)==='1'}catch(_){}
+  setStageWide(stageWideSaved);
   loadLibrary();loadFavoriteLights();loadCachedLightDb();
   try{
     const raw=localStorage.getItem(CURRENT_KEY)||localStorage.getItem('bos-plan-feu-v05')||localStorage.getItem('bos-plan-feu-v04')||localStorage.getItem('bos-plan-feu-v03')||localStorage.getItem('bos-plan-feu-v02')||localStorage.getItem('bos-plan-feu-v01');
@@ -2096,6 +2113,14 @@ function load(){
   ensureStateDefaults();if(!cameras[state.cameraModel])state.cameraModel='Sony FX3';state.focal=Number(state.focal)||50;updateStageGeometry();resetStageViewport();updatePlanBadge();render();
 }
 window.addEventListener('resize',()=>{
+  let stageWideSaved=false;try{stageWideSaved=localStorage.getItem(STAGE_WIDE_KEY)==='1'}catch(_){}
+  if(window.innerWidth<1000)stageCard?.classList.remove('stage-wide');
+  else if(stageWideSaved)stageCard?.classList.add('stage-wide');
+  if(stageWidthToggle){
+    const wide=!!stageCard?.classList.contains('stage-wide');
+    stageWidthToggle.setAttribute('aria-pressed',String(wide));
+    stageWidthToggle.textContent=wide?'Réduire':'Élargir';
+  }
   renderPreview();
   if(quickControls&&!quickControls.hidden&&quickControls.style.left){
     const left=parseFloat(quickControls.style.left)||0;
