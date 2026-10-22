@@ -810,3 +810,54 @@ body.dark .export-selection-bar{background:rgba(23,27,29,.94)!important;border-c
   width:32px!important;
   padding:0!important;
 }
+
+
+/* PLAN — mobile : Faisceau / Infos compacts sur la ligne Ajouter + Zoom. */
+.stage-mobile-toggle{
+  display:none;
+}
+
+@media (max-width:700px){
+  .stage-mobile-toggle{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:32px!important;
+    min-height:32px!important;
+    min-width:0!important;
+    padding:0 6px!important;
+    flex:0 1 auto!important;
+    border:1px solid var(--bos-line)!important;
+    border-radius:9px!important;
+    background:var(--bos-panel-soft)!important;
+    color:var(--bos-muted)!important;
+    box-shadow:none!important;
+    font-size:8px!important;
+    font-weight:600!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+
+  .stage-mobile-toggle.active{
+    color:var(--bos-accent)!important;
+    border-color:var(--bos-line-strong)!important;
+    background:var(--bos-accent-soft)!important;
+  }
+
+  .stage-actions-right{
+    gap:3px!important;
+  }
+
+  .stage-actions-right>.stage-add-mobile{
+    width:58px!important;
+    min-width:58px!important;
+    max-width:58px!important;
+    flex-basis:58px!important;
+  }
+}
+
+@media (min-width:701px){
+  .stage-mobile-toggle{
+    display:none!important;
+  }
+}
