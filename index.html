@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022-cleancontrols1" />
+  <link rel="stylesheet" href="styles.css?v=20261022-saveflow1" />
 </head>
 <body>
   <div class="app-shell">
@@ -431,6 +431,20 @@
 
   <div id="equipmentPrintArea" class="equipment-print-area" aria-hidden="true"></div>
 
+  <dialog id="newPlanDialog" class="new-plan-dialog">
+    <form method="dialog" class="new-plan-shell" id="newPlanForm">
+      <div class="new-plan-title">Nouveau plan</div>
+      <label class="new-plan-field">
+        <span>Nom du plan</span>
+        <input id="newPlanNameInput" type="text" autocomplete="off" placeholder="Nom du plan">
+      </label>
+      <div class="new-plan-actions">
+        <button type="button" class="ghost" id="cancelNewPlanBtn">Annuler</button>
+        <button type="submit" class="primary" id="confirmNewPlanBtn">Valider</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="libraryDialog" class="library-dialog">
     <div class="library-shell">
       <div class="dialog-head">
@@ -463,7 +477,7 @@
   </dialog>
 
   
-<script src="app.js?v=20261022-cleancontrols1"></script>
+<script src="app.js?v=20261022-saveflow1"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
