@@ -68,7 +68,10 @@ const stageCard=stageWrap?.closest('.stage-card');
 const stageWidthToggle=document.getElementById('stageWidthToggle');
 const stageHandModeBtn=document.getElementById('stageHandModeBtn');
 const stageLassoModeBtn=document.getElementById('stageLassoModeBtn');
+const stageBeamsBtn=document.getElementById('stageBeamsBtn');
+const stageInfosBtn=document.getElementById('stageInfosBtn');
 let stageInteractionMode='hand';
+let lastVisibleLabelsMode='full';
 const STAGE_WIDE_KEY='bos-plan-stage-wide-v1';
 const zoomReadout=document.getElementById('zoomReadout');
 const zoomOutBtn=document.getElementById('zoomOutBtn');
@@ -635,7 +638,10 @@ function updateGridOpacity(){
   if(gridOpacityValue)gridOpacityValue.textContent=`${Math.round(v*100)} %`;
 }
 function updatePlanOptionsUI(){const open=state.planOptionsOpen!==false;if(planOptionsBody)planOptionsBody.classList.toggle('hidden',!open);if(planOptionsToggle){planOptionsToggle.setAttribute('aria-expanded',String(open));if(planOptionsToggleText)planOptionsToggleText.textContent=open?'MASQUER':'OUVRIR';if(planOptionsToggleCaret)planOptionsToggleCaret.textContent=open?'⌃':'⌄';}}
-function updatePlanBadge(){if(currentPlanBadge)currentPlanBadge.textContent=`${state.planName||defaultPlanName()} · autosauvegarde`;if(topPlanNameInput&&document.activeElement!==topPlanNameInput)topPlanNameInput.value=state.planName||defaultPlanName();if(planNameInput&&document.activeElement!==planNameInput)planNameInput.value=state.planName||defaultPlanName();if(labelsModeSelect)labelsModeSelect.value=state.labelsMode||'full';if(toggleSnapBtn){const on=Number(state.snap)>0;toggleSnapBtn.classList.toggle('active',on);toggleSnapBtn.textContent=on?'Aimant ON':'Aimant OFF';toggleSnapBtn.setAttribute('aria-pressed',String(on))}if(toggleBeamsBtn){const on=state.beamsVisible!==false;toggleBeamsBtn.classList.toggle('active',on);toggleBeamsBtn.textContent=on?'Faisceau ON':'Faisceau OFF';toggleBeamsBtn.setAttribute('aria-pressed',String(on))}updateGridOpacity();if(planLengthRange)planLengthRange.value=String(Number(state.planLength||10));const planLengthText=`${Number(state.planLength||10).toFixed(Number(state.planLength)%1?1:0)} m`;if(planLengthValue)planLengthValue.textContent=planLengthText;if(planLengthQuickValue)planLengthQuickValue.textContent=planLengthText;if(planLengthMinusBtn)planLengthMinusBtn.disabled=Number(state.planLength||10)<=4;if(planLengthPlusBtn)planLengthPlusBtn.disabled=Number(state.planLength||10)>=30;updatePlanOptionsUI()}
+function updatePlanBadge(){if(currentPlanBadge)currentPlanBadge.textContent=`${state.planName||defaultPlanName()} · autosauvegarde`;if(topPlanNameInput&&document.activeElement!==topPlanNameInput)topPlanNameInput.value=state.planName||defaultPlanName();if(planNameInput&&document.activeElement!==planNameInput)planNameInput.value=state.planName||defaultPlanName();if(labelsModeSelect)labelsModeSelect.value=state.labelsMode||'full';if(toggleSnapBtn){const on=Number(state.snap)>0;toggleSnapBtn.classList.toggle('active',on);toggleSnapBtn.textContent=on?'Aimant ON':'Aimant OFF';toggleSnapBtn.setAttribute('aria-pressed',String(on))}if(toggleBeamsBtn){const on=state.beamsVisible!==false;toggleBeamsBtn.classList.toggle('active',on);toggleBeamsBtn.textContent=on?'Faisceau ON':'Faisceau OFF';toggleBeamsBtn.setAttribute('aria-pressed',String(on))}
+if(stageBeamsBtn){const on=state.beamsVisible!==false;stageBeamsBtn.classList.toggle('active',on);stageBeamsBtn.textContent=on?'Faisceaux ON':'Faisceaux OFF';stageBeamsBtn.setAttribute('aria-pressed',String(on))}
+if(stageInfosBtn){const on=(state.labelsMode||'full')!=='hidden';stageInfosBtn.classList.toggle('active',on);stageInfosBtn.textContent=on?'Infos ON':'Infos OFF';stageInfosBtn.setAttribute('aria-pressed',String(on))}
+updateGridOpacity();if(planLengthRange)planLengthRange.value=String(Number(state.planLength||10));const planLengthText=`${Number(state.planLength||10).toFixed(Number(state.planLength)%1?1:0)} m`;if(planLengthValue)planLengthValue.textContent=planLengthText;if(planLengthQuickValue)planLengthQuickValue.textContent=planLengthText;if(planLengthMinusBtn)planLengthMinusBtn.disabled=Number(state.planLength||10)<=4;if(planLengthPlusBtn)planLengthPlusBtn.disabled=Number(state.planLength||10)>=30;updatePlanOptionsUI()}
 function snapshotState(){const copy=deepClone(state);copy.selected=null;return copy}
 function persistCurrent(){
   try{
@@ -2060,8 +2066,21 @@ if(equipmentProduction)equipmentProduction.oninput=()=>{ensureEquipmentSheet().p
 if(equipmentNotes)equipmentNotes.oninput=()=>{ensureEquipmentSheet().notes=equipmentNotes.value;scheduleAutosave()};
 if(document.getElementById('printEquipmentBtn'))document.getElementById('printEquipmentBtn').onclick=printEquipmentSheet;
 if(toggleSnapBtn)toggleSnapBtn.onclick=()=>{state.snap=Number(state.snap)>0?0:.25;updatePlanBadge();renderCanvas()};
-labelsModeSelect.onchange=()=>{state.labelsMode=labelsModeSelect.value;renderCanvas()};
+labelsModeSelect.onchange=()=>{state.labelsMode=labelsModeSelect.value;if(state.labelsMode!=='hidden')lastVisibleLabelsMode=state.labelsMode;updatePlanBadge();renderCanvas()};
 toggleBeamsBtn.onclick=()=>{state.beamsVisible=state.beamsVisible===false;updatePlanBadge();renderCanvas()};
+if(stageBeamsBtn)stageBeamsBtn.onclick=()=>{state.beamsVisible=state.beamsVisible===false;updatePlanBadge();renderCanvas()};
+if(stageInfosBtn)stageInfosBtn.onclick=()=>{
+  const current=state.labelsMode||'full';
+  if(current==='hidden'){
+    state.labelsMode=lastVisibleLabelsMode||'full';
+  }else{
+    lastVisibleLabelsMode=current;
+    state.labelsMode='hidden';
+  }
+  if(labelsModeSelect)labelsModeSelect.value=state.labelsMode;
+  updatePlanBadge();
+  renderCanvas();
+};
 if(gridOpacityRange){gridOpacityRange.oninput=()=>{state.gridOpacity=clamp(Number(gridOpacityRange.value)/100,0,1);updateGridOpacity();scheduleAutosave()};gridOpacityRange.onchange=()=>persistCurrent()}
 if(planLengthRange){planLengthRange.oninput=()=>{setPlanLength(Number(planLengthRange.value),{keepViewport:true});updatePlanBadge()};planLengthRange.onchange=()=>persistCurrent()}
 function changePlanLengthBy(delta){
@@ -2126,6 +2145,7 @@ function normalizeSceneObject(o){
 function load(){
   const versionBadge=document.getElementById('appVersionBadge');if(versionBadge)versionBadge.textContent=APP_VERSION;
   setStageInteractionMode('hand');
+  if((state.labelsMode||'full')!=='hidden')lastVisibleLabelsMode=state.labelsMode||'full';
   let stageWideSaved=false;try{stageWideSaved=localStorage.getItem(STAGE_WIDE_KEY)==='1'}catch(_){}
   setStageWide(stageWideSaved);
   loadLibrary();loadFavoriteLights();loadCachedLightDb();
