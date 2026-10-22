@@ -312,11 +312,11 @@ async function refreshLightDb(){
 
 // Objets grip et décor disponibles dans Ajouter un élément.
 const accessoryCatalog=[
-  {type:'diffusion',name:'Cadre de diffusion',short:'DIFF',width:2,height:2},
+  {type:'diffusion',name:'Cadre de diffusion',short:'DIFF',width:2,height:.08,zHeight:2},
   {type:'borniol',name:'Borniol',short:'BOR',width:3,height:.08,zHeight:1.2},
   {type:'flag',name:'Drapeau',short:'DRAP',width:1.2,height:.05,zHeight:1.2},
-  {type:'negative',name:'Negative fill',short:'NEG',width:1.2,height:2},
-  {type:'reflector',name:'Réflecteur',short:'REF',width:1.2,height:2}
+  {type:'negative',name:'Negative fill',short:'NEG',width:1.2,height:.05,zHeight:2},
+  {type:'reflector',name:'Réflecteur',short:'REF',width:1.2,height:.08,zHeight:2}
 ];
 const decorCatalog=[
   {type:'wall',name:'Mur',short:'MUR',width:3,height:.15},
@@ -941,54 +941,66 @@ function addFixtureSymbol(g,o){
 }
 
 function drawAccessorySymbol(g,o){
-  const w=Math.max(50,(o.width||1.2)*55),h=Math.max(16,Math.min(82,(o.height||1.2)*32));
+  const w=Math.max(50,(o.width||1.2)*55);
+  const thickness=Math.max(2,Math.min(82,(Number(o.height)||.05)*55));
+
   if(o.type==='diffusion'){
-    const barH=Math.max(10,Math.min(16,h*0.28));
-    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:barH/2,class:'diffusion-bar'}));
+    const barH=thickness;
+    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:Math.min(3,barH/2),class:'diffusion-bar'}));
     g.appendChild(svgEl('line',{x1:-w/2+6,y1:0,x2:w/2-6,y2:0,class:'diffusion-bar-core'}));
-    for(let x=-w/2+10;x<w/2-10;x+=16)g.appendChild(svgEl('line',{x1:x,y1:-barH/2+1.5,x2:x+8,y2:barH/2-1.5,class:'diffusion-hatch'}));
-    g.appendChild(svgEl('line',{x1:-w/2,y1:-barH/2-4,x2:-w/2,y2:barH/2+4,class:'grip-cap'}));
-    g.appendChild(svgEl('line',{x1:w/2,y1:-barH/2-4,x2:w/2,y2:barH/2+4,class:'grip-cap'}));
-    return {w,h:Math.max(20,barH+10)};
-  } else if(o.type==='borniol'){
-    const barH=6;
-    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:2,class:'borniol-shape'}));
-    return {w,h:18};
-  } else if(o.type==='flag'){
-    const barH=4;
-    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:1.5,class:'flag-shape'}));
-    return {w,h:16};
-  } else if(o.type==='negative'){
-    g.appendChild(svgEl('rect',{x:-w/2,y:-h/2,width:w,height:h,rx:3,class:'negative-shape'}));
-    g.appendChild(svgEl('text',{x:0,y:4,'text-anchor':'middle',class:'negative-code'})).textContent='NEG';
-  } else {
-    const barH=Math.max(10,Math.min(16,h*0.28));
-    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:barH/2,class:'reflector-bar'}));
-    g.appendChild(svgEl('line',{x1:-w/2+10,y1:barH/2-1,x2:w/2-10,y2:-barH/2+1,class:'reflector-line'}));
-    g.appendChild(svgEl('line',{x1:-w/2,y1:-barH/2-4,x2:-w/2,y2:barH/2+4,class:'grip-cap'}));
-    g.appendChild(svgEl('line',{x1:w/2,y1:-barH/2-4,x2:w/2,y2:barH/2+4,class:'grip-cap'}));
-    return {w,h:Math.max(20,barH+10)};
+    for(let x=-w/2+10;x<w/2-10;x+=16)g.appendChild(svgEl('line',{x1:x,y1:-barH/2+1,x2:x+8,y2:barH/2-1,class:'diffusion-hatch'}));
+    return {w,h:Math.max(16,barH)};
   }
-  return {w,h};
+
+  if(o.type==='borniol'){
+    g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(2,thickness/2),class:'borniol-shape'}));
+    return {w,h:Math.max(16,thickness)};
+  }
+
+  if(o.type==='flag'){
+    g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(1.5,thickness/2),class:'flag-shape'}));
+    return {w,h:Math.max(16,thickness)};
+  }
+
+  if(o.type==='negative'){
+    g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(3,thickness/2),class:'negative-shape'}));
+    if(thickness>=12)g.appendChild(svgEl('text',{x:0,y:4,'text-anchor':'middle',class:'negative-code'})).textContent='NEG';
+    return {w,h:Math.max(16,thickness)};
+  }
+
+  const barH=thickness;
+  g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:Math.min(3,barH/2),class:'reflector-bar'}));
+  if(barH>=4)g.appendChild(svgEl('line',{x1:-w/2+10,y1:barH/2-1,x2:w/2-10,y2:-barH/2+1,class:'reflector-line'}));
+  return {w,h:Math.max(16,barH)};
 }
 function drawDecorSymbol(g,o){
-  const w=Math.max(45,(o.width||1)*55),h=Math.max(28,(o.height||.8)*48);
+  const w=Math.max(45,(o.width||1)*55);
+  const thickness=Math.max(2,Math.min(110,(Number(o.height)||.1)*55));
+
   if(o.type==='wall'){
-    g.appendChild(svgEl('line',{x1:-w/2,y1:0,x2:w/2,y2:0,class:'wall-line'}));
-    g.appendChild(svgEl('line',{x1:-w/2,y1:-5,x2:-w/2,y2:5,class:'wall-cap'}));g.appendChild(svgEl('line',{x1:w/2,y1:-5,x2:w/2,y2:5,class:'wall-cap'}));
-    return {w,h:20};
+    g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(1.5,thickness/2),class:'wall-shape',style:'fill:#4f4943;stroke:#4f4943;stroke-width:1'}));
+    return {w,h:Math.max(18,thickness)};
   }
+
   if(o.type==='door'){
-    g.appendChild(svgEl('line',{x1:-w/2,y1:0,x2:w/2,y2:0,class:'door-frame'}));
+    g.appendChild(svgEl('line',{x1:-w/2,y1:0,x2:w/2,y2:0,class:'door-frame',style:`stroke-width:${thickness}px`}));
     g.appendChild(svgEl('line',{x1:-w/2,y1:0,x2:-w/2,y2:-w,class:'door-leaf'}));
     g.appendChild(svgEl('path',{d:`M ${-w/2} ${-w} A ${w} ${w} 0 0 1 ${w/2} 0`,class:'door-arc'}));
     return {w,h:w+15};
   }
+
   if(o.type==='window'){
-    g.appendChild(svgEl('line',{x1:-w/2,y1:-5,x2:w/2,y2:-5,class:'window-line'}));g.appendChild(svgEl('line',{x1:-w/2,y1:5,x2:w/2,y2:5,class:'window-line'}));
-    g.appendChild(svgEl('line',{x1:0,y1:-8,x2:0,y2:8,class:'window-mullion'}));return {w,h:22};
+    const half=thickness/2;
+    g.appendChild(svgEl('line',{x1:-w/2,y1:-half,x2:w/2,y2:-half,class:'window-line'}));
+    g.appendChild(svgEl('line',{x1:-w/2,y1:half,x2:w/2,y2:half,class:'window-line'}));
+    g.appendChild(svgEl('line',{x1:0,y1:-half-3,x2:0,y2:half+3,class:'window-mullion'}));
+    return {w,h:Math.max(18,thickness+8)};
   }
-  g.appendChild(svgEl('rect',{x:-w/2,y:-h/2,width:w,height:h,rx:7,class:'table-shape'}));g.appendChild(svgEl('rect',{x:-w/2+6,y:-h/2+6,width:w-12,height:h-12,rx:5,class:'table-inner'}));return {w,h};
+
+  const h=Math.max(8,thickness);
+  g.appendChild(svgEl('rect',{x:-w/2,y:-h/2,width:w,height:h,rx:Math.min(7,h/2),class:'table-shape'}));
+  if(h>14)g.appendChild(svgEl('rect',{x:-w/2+6,y:-h/2+6,width:Math.max(4,w-12),height:Math.max(4,h-12),rx:Math.min(5,(h-12)/2),class:'table-inner'}));
+  return {w,h};
 }
 
 function modelDisplayName(o){
@@ -2066,7 +2078,7 @@ function normalizeSceneObject(o){
   if(o.kind==='light')normalizeLightObject(o);
   if(o.kind==='camera')normalizeCameraObject(o);
   if(o.kind==='decor'){if(o.zHeight===undefined)o.zHeight=o.type==='wall'?2.5:o.type==='door'?2.04:o.type==='window'?1.2:.75;if(o.elevation===undefined)o.elevation=o.type==='window'?.9:0}
-  if(o.kind==='accessory'){if(o.zHeight===undefined)o.zHeight=o.height||1.5;if(o.elevation===undefined)o.elevation=o.type==='borniol'?.2:.35;if(!o.short)o.short=o.type==='diffusion'?'DIFF':o.type==='negative'?'NEG':o.type==='reflector'?'REF':o.type==='flag'?'DRAP':'BOR'}
+  if(o.kind==='accessory'){if(o.zHeight===undefined)o.zHeight=o.height||1.5;if(['diffusion','negative','reflector'].includes(o.type)&&Number(o.height)>.5&&Math.abs(Number(o.height)-Number(o.zHeight||0))<.001)o.height=o.type==='negative'?.05:.08;if(o.elevation===undefined)o.elevation=o.type==='borniol'?.2:.35;if(!o.short)o.short=o.type==='diffusion'?'DIFF':o.type==='negative'?'NEG':o.type==='reflector'?'REF':o.type==='flag'?'DRAP':'BOR'}
   if(o.locked===undefined)o.locked=false;if(o.labelVisible===undefined)o.labelVisible=true;if(!o.labelPos)o.labelPos='auto';return o;
 }
 function load(){
