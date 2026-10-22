@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022-inlinezoom2" />
+  <link rel="stylesheet" href="styles.css?v=20261022-mobilecontrols1" />
 </head>
 <body>
   <div class="app-shell">
@@ -187,6 +187,16 @@
                   </div>
                   <button class="stage-width-toggle" id="stageWidthToggle" type="button" aria-pressed="false" title="Élargir le plan">Élargir</button>
                   <button class="add-main stage-add-btn stage-add-mobile" id="openAddBtn"><span class="plus">+</span> Ajouter</button>
+                  <div class="stage-mobile-inline-control stage-mobile-zoom" aria-label="Zoom du plan">
+                    <button class="stage-mobile-step" id="stageZoomOutMobileBtn" type="button" aria-label="Dézoomer">−</button>
+                    <button class="stage-mobile-readout" id="stageZoomMobileBtn" type="button" title="Revenir à 100 %">100 %</button>
+                    <button class="stage-mobile-step" id="stageZoomInMobileBtn" type="button" aria-label="Zoomer">+</button>
+                  </div>
+                  <div class="stage-mobile-inline-control stage-mobile-size" aria-label="Taille du plan">
+                    <button class="stage-mobile-step" id="stageSizeMinusMobileBtn" type="button" aria-label="Réduire la longueur du plan">−</button>
+                    <span class="stage-mobile-readout" id="stageSizeMobileValue">10 m</span>
+                    <button class="stage-mobile-step" id="stageSizePlusMobileBtn" type="button" aria-label="Agrandir la longueur du plan">+</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -469,9 +479,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   proxy('stageZoomInInlineBtn','zoomInBtn');
   proxy('stageSizeMinusInlineBtn','planLengthMinusBtn');
   proxy('stageSizePlusInlineBtn','planLengthPlusBtn');
+  proxy('stageZoomOutMobileBtn','zoomOutBtn');
+  proxy('stageZoomInMobileBtn','zoomInBtn');
+  proxy('stageSizeMinusMobileBtn','planLengthMinusBtn');
+  proxy('stageSizePlusMobileBtn','planLengthPlusBtn');
+  proxy('stageZoomMobileBtn','zoomReadout');
 });
 </script>
-<script src="app.js?v=20261022-inlinezoom2"></script>
+<script src="app.js?v=20261022-mobilecontrols1"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
