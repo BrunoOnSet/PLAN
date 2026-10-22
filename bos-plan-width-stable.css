@@ -50,7 +50,7 @@ main,
   display:none;
 }
 
-@media (min-width:1000px){
+@media (min-width:701px){
   .stage-width-toggle{
     display:inline-flex;
     align-items:center;
@@ -97,7 +97,7 @@ main,
   display:none;
 }
 
-@media (min-width:1000px){
+@media (min-width:701px){
   .stage-actions-row{
     display:flex;
     align-items:center;
@@ -182,5 +182,45 @@ main,
   }
   #stage.lasso-mode{
     cursor:crosshair;
+  }
+}
+
+
+@media (min-width:701px){
+  .stage-head-side{
+    align-items:flex-end!important;
+  }
+
+  .stage-actions-row{
+    width:auto!important;
+    max-width:100%!important;
+    align-self:flex-end!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:6px!important;
+    flex-wrap:nowrap!important;
+  }
+
+  .stage-actions-row>#stageHandModeBtn,
+  .stage-actions-row>#stageLassoModeBtn,
+  .stage-actions-row>#stageWidthToggle,
+  .stage-actions-row>#openAddBtn,
+  .stage-actions-row .stage-mode-btn,
+  .stage-actions-row .stage-width-toggle,
+  .stage-actions-row .stage-add-btn{
+    width:auto!important;
+    max-width:none!important;
+    min-width:0!important;
+    flex:0 0 auto!important;
+  }
+
+  .stage-actions-row>#openAddBtn{
+    display:inline-flex!important;
+    width:auto!important;
+    min-width:0!important;
+    padding-left:9px!important;
+    padding-right:9px!important;
   }
 }
