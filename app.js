@@ -502,6 +502,12 @@ function beginPinchIfPossible(){
 function handleViewportPointerDown(e){
   const onObject=!!e.target.closest?.('.object');
 
+  if(!onObject && !(e.pointerType==='mouse' && stageInteractionMode==='lasso') && (state.selected!==null || multiSelectedIds.size)){
+    state.selected=null;
+    clearMultiSelection();
+    render();
+  }
+
   if(e.pointerType==='touch'){
     activeTouchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(activeTouchPointers.size>=2){beginPinchIfPossible();e.preventDefault();return}
@@ -1238,7 +1244,7 @@ function endLasso(e){
 
 function endGesture(){if(!drag)return;try{stage.releasePointerCapture?.(drag.pointerId)}catch{}drag=null;render()}
 stage.addEventListener('pointerup',endGesture);stage.addEventListener('pointercancel',endGesture);
-stage.addEventListener('pointerdown',e=>{if(e.target.closest?.('.object')||lassoDrag||panGesture||stageInteractionMode==='lasso')return;if(state.selected!==null||multiSelectedIds.size){state.selected=null;clearMultiSelection();render()}});
+
 
 let inspectorCollapsed=false;
 function updateInspectorCollapse(){
