@@ -520,3 +520,37 @@ main,
     display:none!important;
   }
 }
+
+
+@media (min-width:701px){
+  .stage-inline-control{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:4px!important;
+  }
+
+  .stage-quick-step{
+    width:32px!important;
+    min-width:32px!important;
+    height:32px!important;
+    min-height:32px!important;
+    padding:0!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:1px solid var(--bos-line)!important;
+    border-radius:9px!important;
+    background:var(--bos-panel-soft)!important;
+    color:var(--bos-muted)!important;
+    box-shadow:none!important;
+    font-size:13px!important;
+    font-weight:600!important;
+    line-height:1!important;
+  }
+}
+
+@media (max-width:700px){
+  .stage-inline-control{
+    display:none!important;
+  }
+}
