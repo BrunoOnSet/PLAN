@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022-zoomicon1" />
+  <link rel="stylesheet" href="styles.css?v=20261022-mobiletoggles1" />
 </head>
 <body>
   <div class="app-shell">
@@ -182,6 +182,8 @@
                     <button class="stage-mobile-readout" id="stageZoomMobileBtn" type="button" title="Recentrer le zoom" aria-label="Recentrer le zoom"><svg class="stage-zoom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="M14.6 14.6 20 20"></path></svg></button>
                     <button class="stage-mobile-step" id="stageZoomInMobileBtn" type="button" aria-label="Zoomer">+</button>
                   </div>
+                  <button class="stage-mobile-toggle active" data-plan-toggle="beams" type="button" aria-pressed="true">Faisceau ON</button>
+                  <button class="stage-mobile-toggle active" data-plan-toggle="infos" type="button" aria-pressed="true">Infos ON</button>
                 </div>
               </div>
             </div>
@@ -467,7 +469,7 @@
   </dialog>
 
   
-<script src="app.js?v=20261022-zoomicon1"></script>
+<script src="app.js?v=20261022-mobiletoggles1"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
