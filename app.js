@@ -1713,6 +1713,8 @@ function openSimpleChooser(kind){
 }
 
 document.getElementById('openAddBtn').onclick=openAddDialog;
+const stageAddDesktopBtn=document.getElementById('stageAddDesktopBtn');
+if(stageAddDesktopBtn)stageAddDesktopBtn.onclick=openAddDialog;
 if(cameraModelChoice)cameraModelChoice.onchange=()=>{cameraChooserId=cameraModelChoice.value;const c=cameraPresets.find(x=>x.id===cameraChooserId);if(c)rememberCameraForBrand(c)};
 if(confirmCameraChoiceBtn)confirmCameraChoiceBtn.onclick=applyCameraChoice;
 if(planOptionsToggle)planOptionsToggle.onclick=()=>{state.planOptionsOpen=!(state.planOptionsOpen!==false);updatePlanOptionsUI();scheduleAutosave();persistCurrent()};document.getElementById('closeAddBtn').onclick=closeAddDialog;document.getElementById('backToKindsBtn').onclick=()=>{replaceLightId=null;showKinds()};document.getElementById('backCameraToKindsBtn').onclick=()=>{replaceCameraId=null;showKinds()};document.getElementById('backSimpleBtn').onclick=showKinds;
