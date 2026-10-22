@@ -43,3 +43,48 @@ main,
 @supports not (scrollbar-gutter:stable){
   html{overflow-y:scroll;}
 }
+
+
+/* PLAN — largeur étendue optionnelle sur ordinateur uniquement. */
+.stage-width-toggle{
+  display:none;
+}
+
+@media (min-width:1000px){
+  .stage-width-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:32px;
+    padding:0 10px;
+    border:1px solid var(--bos-line);
+    border-radius:9px;
+    background:var(--bos-panel-soft);
+    color:var(--bos-muted);
+    font-size:9px;
+    font-weight:600;
+    box-shadow:none;
+  }
+
+  .stage-width-toggle[aria-pressed="true"]{
+    color:var(--bos-accent);
+    border-color:var(--bos-line-strong);
+    background:var(--bos-accent-soft);
+  }
+
+  .stage-card.stage-wide{
+    width:min(1180px,calc(100vw - 48px))!important;
+    max-width:min(1180px,calc(100vw - 48px))!important;
+    margin-left:50%!important;
+    transform:translateX(-50%);
+  }
+}
+
+@media (max-width:999px){
+  .stage-card.stage-wide{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    transform:none!important;
+  }
+}
