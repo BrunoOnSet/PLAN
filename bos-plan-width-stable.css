@@ -708,3 +708,69 @@ main,
   border-radius:10px!important;
   font-size:10px!important;
 }
+
+
+/* Correctif mobile : garantir que Ajouter + zoom + taille tiennent sur une seule ligne. */
+@media (max-width:700px){
+  .stage-actions-row{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+  }
+
+  .stage-actions-right{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:4px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+
+  .stage-actions-right>.stage-add-mobile{
+    width:62px!important;
+    min-width:62px!important;
+    max-width:62px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    padding:0 6px!important;
+    font-size:9px!important;
+    flex:0 0 62px!important;
+  }
+
+  .stage-mobile-inline-control{
+    display:inline-flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    position:static!important;
+    align-items:center!important;
+    gap:2px!important;
+    flex:0 0 auto!important;
+    min-width:0!important;
+  }
+
+  .stage-mobile-step{
+    width:24px!important;
+    min-width:24px!important;
+    max-width:24px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    flex:0 0 24px!important;
+  }
+
+  .stage-mobile-readout{
+    min-width:38px!important;
+    max-width:42px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    padding:0 4px!important;
+    flex:0 0 auto!important;
+  }
+}
