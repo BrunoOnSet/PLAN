@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022-mobiletoggles2" />
+  <link rel="stylesheet" href="styles.css?v=20261022-gridtoggle1" />
 </head>
 <body>
   <div class="app-shell">
@@ -118,7 +118,7 @@
     <main>
       <div id="planView" class="main-view">
       <section class="toolbar card plan-options-card">
-        <div class="bos-section-heading"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant, faisceaux, infos et grille</p></div></div>
+        <div class="bos-section-heading"><span class="step">01</span><div class="heading-copy"><h2>OPTIONS DE PLAN</h2><p>Aimant et affichage des infos</p></div></div>
         <button class="plan-options-toggle" id="planOptionsToggle" type="button" aria-expanded="true" aria-controls="planOptionsBody">
           <span>Options de plan</span>
           <span class="plan-options-toggle-right"><em id="planOptionsToggleText">MASQUER</em><i id="planOptionsToggleCaret">⌃</i></span>
@@ -137,13 +137,7 @@
                 <option value="hidden">Masqué</option>
               </select>
             </label>
-            <div class="grid-opacity-control">
-              <div class="grid-opacity-head"><span>Opacité grille</span><output id="gridOpacityValue">50 %</output></div>
-              <input id="gridOpacityRange" type="range" min="0" max="100" step="5" value="50" aria-label="Opacité de la grille" />
-            </div>
-            <div class="beam-global-control beam-toggle-only">
-              <button id="toggleBeamsBtn" class="beam-toggle active" type="button" aria-pressed="true">Faisceau ON</button>
-            </div></div>
+          </div>
           <div class="toolbar-note">
             <strong id="appVersionBadge">V1.60</strong>
             <span id="currentPlanBadge">Plan sans titre · autosauvegarde</span>
@@ -165,6 +159,7 @@
                     <button class="stage-quick-btn stage-zoom-inline" id="stageZoomInlineBtn" type="button" title="Recentrer le zoom" aria-label="Recentrer le zoom"><svg class="stage-zoom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="M14.6 14.6 20 20"></path></svg></button>
                     <button class="stage-quick-step" id="stageZoomInInlineBtn" type="button" aria-label="Zoomer">+</button>
                   </div>
+                  <button class="stage-quick-btn active" id="stageGridBtn" data-plan-toggle="grid" type="button" aria-pressed="true">Grille ON</button>
                 </div>
                 <div class="stage-actions-right">
                   <div class="stage-tool-mode" aria-label="Mode d'interaction du plan">
@@ -183,6 +178,7 @@
                     <button class="stage-mobile-step" id="stageZoomInMobileBtn" type="button" aria-label="Zoomer">+</button>
                   </div>
                   <div class="stage-mobile-display-toggles" aria-label="Affichage du plan">
+                    <button class="stage-mobile-toggle active" id="stageGridMobileBtn" data-plan-toggle="grid" type="button" aria-pressed="true">Grille ON</button>
                     <button class="stage-mobile-toggle active" id="stageBeamsMobileBtn" data-plan-toggle="beams" type="button" aria-pressed="true">Faisceau ON</button>
                     <button class="stage-mobile-toggle active" id="stageInfosMobileBtn" data-plan-toggle="infos" type="button" aria-pressed="true">Infos ON</button>
                   </div>
@@ -471,7 +467,7 @@
   </dialog>
 
   
-<script src="app.js?v=20261022-mobiletoggles2"></script>
+<script src="app.js?v=20261022-gridtoggle1"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
