@@ -39,6 +39,10 @@ const planLengthRange=document.getElementById('planLengthRange');
 const planLengthValue=document.getElementById('planLengthValue');
 const currentPlanBadge=document.getElementById('currentPlanBadge');
 const libraryDialog=document.getElementById('libraryDialog');
+const newPlanDialog=document.getElementById('newPlanDialog');
+const newPlanForm=document.getElementById('newPlanForm');
+const newPlanNameInput=document.getElementById('newPlanNameInput');
+const cancelNewPlanBtn=document.getElementById('cancelNewPlanBtn');
 const planNameInput=document.getElementById('planNameInput');
 const topPlanNameInput=document.getElementById('topPlanNameInput');
 const folderSelect=document.getElementById('folderSelect');
@@ -1959,16 +1963,61 @@ function saveCurrentPlanFlow(){
 function openLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec)return;resetStageViewport();state=deepClone(rec.state);state.planId=rec.id;state.planName=rec.name;state.folderId=rec.folderId;ensureStateDefaults();state.objects.forEach(normalizeSceneObject);migrateOpeningBindings();state.selected=null;if(!state.activePreviewCamera)state.activePreviewCamera=state.objects.find(o=>o.kind==='camera')?.id||null;persistCurrent();render();closeLibraryDialog();setMainTab('plan')}
 function duplicateLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec)return;const suggested=nextAvailableCopyName(rec.name);const copyName=prompt('Nom du plan',suggested);if(!copyName?.trim())return;const cleanName=copyName.trim().replace(/\s+/g,' ');if(findPlanNameConflict(cleanName))return warnPlanNameConflict(cleanName);const copy=deepClone(rec);copy.id=uid('plan');copy.name=cleanName;copy.updatedAt=Date.now();copy.folderId=rec.folderId;copy.state.planId=copy.id;copy.state.planName=copy.name;library.plans.push(copy);persistLibrary();renderLibraryList()}
 function deleteLibraryPlan(id){const rec=library.plans.find(p=>p.id===id);if(!rec||!confirm(`Supprimer « ${rec.name} » ?`))return;library.plans=library.plans.filter(p=>p.id!==id);if(state.planId===id)state.planId=null;persistLibrary();persistCurrent();renderLibraryList()}
-function newPlan(){persistCurrent();loadLibrary();const folder=state.folderId||folderSelect.value||library.folders[0].id;state.planId=null;state.planName='Plan sans nom';state.folderId=folder;state.objects=[];state.selected=null;state.activePreviewCamera=null;state.cameraModel='Sony FX3';state.focal=50;state.snap=.25;state.labelsMode='full';state.beamsVisible=true;state.gridOpacity=.5;state.planLength=10;state.planOptionsOpen=true;state.equipmentSheet=null;state.openingBindingVersion=2;resetStageViewport();render();renderLibraryList();setMainTab('plan');persistCurrent()}
-function newPlanFlow(){
+function newPlan(name='Plan sans nom'){
+  persistCurrent();
+  loadLibrary();
+  const folder=state.folderId||folderSelect.value||library.folders[0].id;
+  state.planId=null;
+  state.planName=(name||'Plan sans nom').trim().replace(/\s+/g,' ')||'Plan sans nom';
+  state.folderId=folder;
+  state.objects=[];
+  state.selected=null;
+  state.activePreviewCamera=null;
+  state.cameraModel='Sony FX3';
+  state.focal=50;
+  state.snap=.25;
+  state.labelsMode='full';
+  state.beamsVisible=true;
+  state.gridOpacity=.5;
+  state.planLength=10;
+  state.planOptionsOpen=true;
+  state.equipmentSheet=null;
+  state.openingBindingVersion=2;
+  resetStageViewport();
+  render();
+  renderLibraryList();
+  setMainTab('plan');
+  persistCurrent();
+}
+function openNewPlanDialog(){
+  if(!newPlanDialog||!newPlanNameInput)return;
+  newPlanNameInput.value='';
+  if(typeof newPlanDialog.showModal==='function')newPlanDialog.showModal();
+  else newPlanDialog.setAttribute('open','');
+  setTimeout(()=>newPlanNameInput.focus(),0);
+}
+function closeNewPlanDialog(){
+  if(!newPlanDialog)return;
+  if(newPlanDialog.open&&typeof newPlanDialog.close==='function')newPlanDialog.close();
+  else newPlanDialog.removeAttribute('open');
+}
+function createNamedNewPlan(name){
   loadLibrary();
   ensureStateDefaults();
+  const newName=(name||'').trim().replace(/\s+/g,' ');
+  if(!newName)return false;
+  if(findPlanNameConflict(newName))return warnPlanNameConflict(newName);
   const currentName=(topPlanNameInput?.value||planNameInput?.value||state.planName||defaultPlanName()).trim().replace(/\s+/g,' ')||defaultPlanName();
   state.planName=currentName;
   const saved=savePlanToLibrary({mode:state.planId?'overwrite':'new',name:currentName,folderId:state.folderId});
-  if(!saved)return;
-  newPlan();
+  if(!saved)return false;
+  newPlan(newName);
+  closeNewPlanDialog();
   flash('Plan actuel sauvegardé · nouveau plan créé');
+  return true;
+}
+function newPlanFlow(){
+  openNewPlanDialog();
 }
 function duplicateCurrentPlan(){
   loadLibrary();ensureStateDefaults();
@@ -2019,6 +2068,12 @@ async function importProjectFile(file){
   }catch(e){console.warn(e);alert('Ce fichier ne semble pas être un projet PLAN valide.')}
 }
 
+if(cancelNewPlanBtn)cancelNewPlanBtn.onclick=closeNewPlanDialog;
+if(newPlanDialog)newPlanDialog.addEventListener('click',e=>{if(e.target===newPlanDialog)closeNewPlanDialog()});
+if(newPlanForm)newPlanForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  createNamedNewPlan(newPlanNameInput?.value||'');
+});
 if(planTabBtn)planTabBtn.onclick=()=>setMainTab('plan');
 if(plansTabBtn)plansTabBtn.onclick=()=>setMainTab('plans');
 document.getElementById('closeLibraryBtn').onclick=closeLibraryDialog;
