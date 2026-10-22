@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022-inlinezoom1" />
+  <link rel="stylesheet" href="styles.css?v=20261022-inlinezoom2" />
 </head>
 <body>
   <div class="app-shell">
@@ -165,8 +165,16 @@
                 <div class="stage-quick-left" aria-label="Affichage du plan">
                   <button class="stage-quick-btn active" id="stageBeamsBtn" type="button" aria-pressed="true">Faisceaux ON</button>
                   <button class="stage-quick-btn active" id="stageInfosBtn" type="button" aria-pressed="true">Infos ON</button>
-                  <button class="stage-quick-btn stage-zoom-inline" id="stageZoomInlineBtn" type="button" title="Revenir à 100 %">100 %</button>
-                  <span class="stage-quick-btn stage-size-inline" id="stageSizeInlineValue">10 m</span>
+                  <div class="stage-inline-control" aria-label="Zoom du plan">
+                    <button class="stage-quick-step" id="stageZoomOutInlineBtn" type="button" aria-label="Dézoomer">−</button>
+                    <button class="stage-quick-btn stage-zoom-inline" id="stageZoomInlineBtn" type="button" title="Revenir à 100 %">100 %</button>
+                    <button class="stage-quick-step" id="stageZoomInInlineBtn" type="button" aria-label="Zoomer">+</button>
+                  </div>
+                  <div class="stage-inline-control" aria-label="Taille du plan">
+                    <button class="stage-quick-step" id="stageSizeMinusInlineBtn" type="button" aria-label="Réduire la longueur du plan">−</button>
+                    <span class="stage-quick-btn stage-size-inline" id="stageSizeInlineValue">10 m</span>
+                    <button class="stage-quick-step" id="stageSizePlusInlineBtn" type="button" aria-label="Agrandir la longueur du plan">+</button>
+                  </div>
                 </div>
                 <div class="stage-actions-right">
                   <div class="stage-tool-mode" aria-label="Mode d'interaction du plan">
@@ -454,7 +462,16 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=20261022-inlinezoom1"></script>
+  <script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const proxy=(from,to)=>document.getElementById(from)?.addEventListener('click',()=>document.getElementById(to)?.click());
+  proxy('stageZoomOutInlineBtn','zoomOutBtn');
+  proxy('stageZoomInInlineBtn','zoomInBtn');
+  proxy('stageSizeMinusInlineBtn','planLengthMinusBtn');
+  proxy('stageSizePlusInlineBtn','planLengthPlusBtn');
+});
+</script>
+<script src="app.js?v=20261022-inlinezoom2"></script>
   <script src="bos-plan-ui-20261013.js?v=20261021-2"></script>
 </body>
 </html>
