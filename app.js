@@ -331,6 +331,8 @@ const LIB_KEY='bos-plan-feu-library-v06';
 let state={objects:[],selected:null,activePreviewCamera:null,cameraModel:'Sony FX3',focal:50,snap:.25,labelsMode:'full',beamsVisible:true,gridOpacity:.5,planLength:10,planId:null,planName:'Plan sans nom',folderId:'folder_general',planOptionsOpen:true,equipmentSheet:null};
 let library={folders:[{id:'folder_general',name:'Plans'}],plans:[]};
 let drag=null;
+let multiSelectedIds=new Set();
+let lassoDrag=null;
 
 // Navigation du plan : le canevas reste toujours ajusté au téléphone au chargement,
 // puis peut être déplacé et zoomé sans modifier les coordonnées réelles du plan.
@@ -466,7 +468,7 @@ function handleViewportPointerDown(e){
     return;
   }
 
-  if(e.pointerType==='mouse'&&e.button===0&&!onObject&&stageViewport.w<stageW()-.5){
+  if(e.pointerType==='mouse'&&e.button===0&&!e.shiftKey&&!onObject&&stageViewport.w<stageW()-.5){
     panGesture={pointerId:e.pointerId,pointerType:'mouse',startX:e.clientX,startY:e.clientY,viewport:{...stageViewport}};
     stage.classList.add('desktop-panning');
     try{stage.setPointerCapture?.(e.pointerId)}catch(_){}
@@ -511,6 +513,10 @@ stage.addEventListener('pointerdown',handleViewportPointerDown,{capture:true});
 stage.addEventListener('pointermove',handleViewportPointerMove,{capture:true});
 stage.addEventListener('pointerup',handleViewportPointerEnd,{capture:true});
 stage.addEventListener('pointercancel',handleViewportPointerEnd,{capture:true});
+stage.addEventListener('pointerdown',e=>{beginLasso(e)},{capture:true});
+stage.addEventListener('pointermove',e=>{moveLasso(e)},{capture:true});
+stage.addEventListener('pointerup',e=>{endLasso(e)},{capture:true});
+stage.addEventListener('pointercancel',e=>{endLasso(e)},{capture:true});
 let replaceLightId=null;
 let replaceCameraId=null;
 let cameraChooserBrand='Sony';
@@ -1029,7 +1035,7 @@ function beamSliderMax(o){
 }
 function drawObject(o){
   if(o.kind==='light')normalizeLightObject(o);
-  const g=svgEl('g',{class:`object ${state.selected===o.id?'selected':''} ${o.locked?'locked':''}`,transform:`translate(${o.x} ${o.y}) rotate(${o.rot})`,'data-id':o.id});
+  const isGroupSelected=multiSelectedIds.has(o.id);const g=svgEl('g',{class:`object ${(state.selected===o.id||isGroupSelected)?'selected':''} ${isGroupSelected?'multi-selected':''} ${o.locked?'locked':''}`,transform:`translate(${o.x} ${o.y}) rotate(${o.rot})`,'data-id':o.id});
   let hitW=96,hitH=96,labelY=50;
   if(o.kind==='camera'){
     g.appendChild(svgEl('circle',{r:36,class:'selection-ring'}));g.appendChild(svgEl('rect',{x:-21,y:-16,width:34,height:32,rx:7,class:'camera-body'}));g.appendChild(svgEl('polygon',{points:'13,-10 34,-17 34,17 13,10',class:'camera-lens'}));
@@ -1043,7 +1049,7 @@ function drawObject(o){
     const d=drawDecorSymbol(g,o);hitW=d.w+24;hitH=d.h+24;labelY=d.h/2+28;g.appendChild(svgEl('rect',{x:-hitW/2,y:-hitH/2,width:hitW,height:hitH,rx:8,class:'selection-box'}));
   }
   g.appendChild(svgEl('rect',{x:-hitW/2,y:-hitH/2,width:hitW,height:hitH,class:'hit'}));
-  if(state.selected===o.id){
+  if(state.selected===o.id&&!isGroupSelected){
     const toolsY=-hitH/2-25;
     const dup=svgEl('g',{class:'object-duplicate',transform:`translate(${-18} ${toolsY}) rotate(${-o.rot})`,'data-id':o.id});
     dup.appendChild(svgEl('circle',{cx:0,cy:0,r:13,class:'object-duplicate-bg'}));
@@ -1070,7 +1076,7 @@ function drawObject(o){
     }
     g.appendChild(label);
   }
-  if(state.selected===o.id&&!o.locked){
+  if(state.selected===o.id&&!isGroupSelected&&!o.locked){
     const beamOffset=o.kind==='light'?fixtureBeamOffset(o):0;const gizmo=svgEl('g',{class:'rotation-gizmo',transform:beamOffset?`rotate(${beamOffset})`:''});gizmo.appendChild(svgEl('line',{x1:40,y1:0,x2:65,y2:0,class:'rotation-stem'}));const handle=svgEl('circle',{cx:74,cy:0,r:12,class:'rotation-handle','data-id':o.id});gizmo.appendChild(handle);const arrow=svgEl('path',{d:'M 69 -4 A 6 6 0 1 1 69 4 M 69 4 L 66 1 M 69 4 L 72 1',class:'rotation-icon','data-id':o.id});gizmo.appendChild(arrow);const angle=svgEl('text',{x:74,y:-19,class:'rotation-angle','text-anchor':'middle'});let shownAngle=o.rot+beamOffset;while(shownAngle>180)shownAngle-=360;while(shownAngle<=-180)shownAngle+=360;angle.textContent=`${Math.round(shownAngle)}°`;gizmo.appendChild(angle);handle.addEventListener('pointerdown',startRotate);arrow.addEventListener('pointerdown',startRotate);gizmo.addEventListener('pointerdown',e=>e.stopPropagation());g.appendChild(gizmo);
   }
   g.addEventListener('pointerdown',startDrag);objectsLayer.appendChild(g);
@@ -1080,24 +1086,99 @@ function pointerToStage(e){const pt=stage.createSVGPoint();pt.x=e.clientX;pt.y=e
 function startDrag(e){
   if(e.pointerType==='touch'&&activeTouchPointers.size>1)return;
   e.preventDefault();e.stopPropagation();const id=e.currentTarget.dataset.id,o=state.objects.find(x=>x.id===id);if(!o)return;
-  if(state.selected!==id){state.selected=id;renderInspector();renderQuickControls()}
+  const inGroup=multiSelectedIds.has(id)&&multiSelectedIds.size>1;
+  if(!inGroup){
+    multiSelectedIds.clear();
+    if(state.selected!==id){state.selected=id;renderInspector();renderQuickControls()}
+  }
   if(o.kind==='camera'){state.activePreviewCamera=o.id;renderPreview()}
   if(o.locked){renderInspector();return}
-  const p=pointerToStage(e);drag={mode:'move',id,dx:p.x-o.x,dy:p.y-o.y,pointerId:e.pointerId};stage.setPointerCapture?.(e.pointerId);
+  const p=pointerToStage(e);
+  if(inGroup){
+    const origins={};
+    multiSelectedIds.forEach(sid=>{const item=state.objects.find(x=>x.id===sid);if(item&&!item.locked)origins[sid]={x:item.x,y:item.y}});
+    drag={mode:'group-move',id,pointerId:e.pointerId,startX:p.x,startY:p.y,origins};
+  }else{
+    drag={mode:'move',id,dx:p.x-o.x,dy:p.y-o.y,pointerId:e.pointerId};
+  }
+  stage.setPointerCapture?.(e.pointerId);
 }
 function startRotate(e){if(e.pointerType==='touch'&&activeTouchPointers.size>1)return;e.preventDefault();e.stopPropagation();const id=e.currentTarget.dataset.id||e.currentTarget.closest?.('[data-id]')?.dataset.id,o=state.objects.find(x=>x.id===id);if(!o||o.locked)return;state.selected=id;if(o.kind==='camera')state.activePreviewCamera=o.id;drag={mode:'rotate',id,pointerId:e.pointerId,rotateOffset:o.kind==='light'?fixtureBeamOffset(o):0};stage.setPointerCapture?.(e.pointerId)}
 stage.addEventListener('pointermove',e=>{
   if(!drag)return;const o=state.objects.find(x=>x.id===drag.id);if(!o)return;const p=pointerToStage(e);
   if(drag.mode==='rotate'){
     o.rot=deg(Math.atan2(p.y-o.y,p.x-o.x))-(drag.rotateOffset||0);if(o.rot>180)o.rot-=360;if(o.rot<=-180)o.rot+=360;
+  } else if(drag.mode==='group-move'){
+    const rawDx=p.x-drag.startX,rawDy=p.y-drag.startY;
+    const ids=Object.keys(drag.origins||{});
+    let dx=rawDx,dy=rawDy;
+    if(ids.length){
+      const first=drag.origins[ids[0]];
+      dx=snapValue(first.x+rawDx)-first.x;
+      dy=snapValue(first.y+rawDy)-first.y;
+      const xs=ids.map(id=>drag.origins[id].x),ys=ids.map(id=>drag.origins[id].y);
+      dx=clamp(dx,35-Math.min(...xs),stageW()-35-Math.max(...xs));
+      dy=clamp(dy,35-Math.min(...ys),stageH()-35-Math.max(...ys));
+    }
+    ids.forEach(id=>{const item=state.objects.find(x=>x.id===id);const origin=drag.origins[id];if(item&&origin){item.x=origin.x+dx;item.y=origin.y+dy}});
   } else {
     const targetX=clamp(snapValue(p.x-drag.dx),35,Math.max(35,stageW()-35)),targetY=clamp(snapValue(p.y-drag.dy),35,Math.max(35,stageH()-35));
     o.x=targetX;o.y=targetY;
   }renderCanvas();
 });
+function clearMultiSelection(){
+  if(!multiSelectedIds.size)return;
+  multiSelectedIds.clear();
+}
+function beginLasso(e){
+  if(e.pointerType!=='mouse'||e.button!==0||!e.shiftKey||e.target.closest?.('.object'))return false;
+  const p=pointerToStage(e);
+  clearMultiSelection();
+  state.selected=null;
+  renderInspector();
+  renderQuickControls();
+  const rect=svgEl('rect',{x:p.x,y:p.y,width:0,height:0,class:'lasso-selection'});
+  objectsLayer.appendChild(rect);
+  lassoDrag={pointerId:e.pointerId,startX:p.x,startY:p.y,rect};
+  try{stage.setPointerCapture?.(e.pointerId)}catch(_){}
+  e.preventDefault();
+  e.stopPropagation();
+  return true;
+}
+function moveLasso(e){
+  if(!lassoDrag||lassoDrag.pointerId!==e.pointerId)return;
+  const p=pointerToStage(e);
+  const x=Math.min(lassoDrag.startX,p.x),y=Math.min(lassoDrag.startY,p.y);
+  const w=Math.abs(p.x-lassoDrag.startX),h=Math.abs(p.y-lassoDrag.startY);
+  lassoDrag.rect?.setAttribute('x',x);
+  lassoDrag.rect?.setAttribute('y',y);
+  lassoDrag.rect?.setAttribute('width',w);
+  lassoDrag.rect?.setAttribute('height',h);
+  e.preventDefault();
+}
+function endLasso(e){
+  if(!lassoDrag||lassoDrag.pointerId!==e.pointerId)return false;
+  const p=pointerToStage(e);
+  const x0=Math.min(lassoDrag.startX,p.x),x1=Math.max(lassoDrag.startX,p.x);
+  const y0=Math.min(lassoDrag.startY,p.y),y1=Math.max(lassoDrag.startY,p.y);
+  multiSelectedIds=new Set(state.objects.filter(o=>o.x>=x0&&o.x<=x1&&o.y>=y0&&o.y<=y1).map(o=>o.id));
+  lassoDrag.rect?.remove();
+  try{stage.releasePointerCapture?.(e.pointerId)}catch(_){}
+  lassoDrag=null;
+  if(multiSelectedIds.size===1){
+    const [id]=multiSelectedIds;
+    multiSelectedIds.clear();
+    state.selected=id;
+  }else{
+    state.selected=null;
+  }
+  render();
+  return true;
+}
+
 function endGesture(){if(!drag)return;try{stage.releasePointerCapture?.(drag.pointerId)}catch{}drag=null;render()}
 stage.addEventListener('pointerup',endGesture);stage.addEventListener('pointercancel',endGesture);
-stage.addEventListener('pointerdown',e=>{if(e.target.closest?.('.object'))return;if(state.selected!==null){state.selected=null;render()}});
+stage.addEventListener('pointerdown',e=>{if(e.shiftKey||e.target.closest?.('.object'))return;if(state.selected!==null||multiSelectedIds.size){state.selected=null;clearMultiSelection();render()}});
 
 let inspectorCollapsed=false;
 function updateInspectorCollapse(){
