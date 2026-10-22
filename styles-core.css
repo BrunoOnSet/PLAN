@@ -641,3 +641,20 @@ body.dark .card-heading .heading-copy p,:root[data-theme='dark'] .card-heading .
   #inspectorBody,.camera-monitors,.inline-plan-library-list{padding:12px!important}
   .selection-model-row-header{padding:12px 12px 0!important}
 }
+
+
+/* Sélection multiple par lasso */
+.lasso-selection{
+  fill:rgba(66,126,255,.10);
+  stroke:#4f86ff;
+  stroke-width:1.5;
+  stroke-dasharray:6 4;
+  vector-effect:non-scaling-stroke;
+  pointer-events:none;
+}
+.object.multi-selected .selection-ring,
+.object.multi-selected .selection-box{
+  opacity:1;
+  stroke:#4f86ff;
+  stroke-dasharray:5 4;
+}
