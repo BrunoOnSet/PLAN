@@ -77,12 +77,6 @@ const stageSizeMobileValue=document.getElementById('stageSizeMobileValue');
 let stageInteractionMode='hand';
 let lastVisibleLabelsMode='full';
 const STAGE_WIDE_KEY='bos-plan-stage-wide-v1';
-const zoomReadout=document.getElementById('zoomReadout');
-const zoomOutBtn=document.getElementById('zoomOutBtn');
-const zoomInBtn=document.getElementById('zoomInBtn');
-const planLengthMinusBtn=document.getElementById('planLengthMinusBtn');
-const planLengthPlusBtn=document.getElementById('planLengthPlusBtn');
-const planLengthQuickValue=document.getElementById('planLengthQuickValue');
 const quickControls=document.getElementById('quickControls');
 let quickControlsDrag=null;
 
@@ -457,7 +451,7 @@ function setPlanLength(length,{keepViewport=true}={}){
 function applyStageViewport(){
   stageViewport=clampViewport(stageViewport);
   stage.setAttribute('viewBox',`${stageViewport.x} ${stageViewport.y} ${stageViewport.w} ${stageViewport.h}`);
-  if(zoomReadout)zoomReadout.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;if(stageZoomInlineBtn)stageZoomInlineBtn.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;if(stageZoomMobileBtn)stageZoomMobileBtn.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;
+  if(stageZoomInlineBtn)stageZoomInlineBtn.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;if(stageZoomMobileBtn)stageZoomMobileBtn.textContent=`${Math.round(stageW()/stageViewport.w*100)} %`;
   stage.classList.toggle('desktop-pan-ready',stageViewport.w<stageW()-.5);
 }
 function resetStageViewport(){stageViewport={x:0,y:0,w:stageW(),h:stageH()};applyStageViewport()}
@@ -645,7 +639,7 @@ function updatePlanOptionsUI(){const open=state.planOptionsOpen!==false;if(planO
 function updatePlanBadge(){if(currentPlanBadge)currentPlanBadge.textContent=`${state.planName||defaultPlanName()} · autosauvegarde`;if(topPlanNameInput&&document.activeElement!==topPlanNameInput)topPlanNameInput.value=state.planName||defaultPlanName();if(planNameInput&&document.activeElement!==planNameInput)planNameInput.value=state.planName||defaultPlanName();if(labelsModeSelect)labelsModeSelect.value=state.labelsMode||'full';if(toggleSnapBtn){const on=Number(state.snap)>0;toggleSnapBtn.classList.toggle('active',on);toggleSnapBtn.textContent=on?'Aimant ON':'Aimant OFF';toggleSnapBtn.setAttribute('aria-pressed',String(on))}if(toggleBeamsBtn){const on=state.beamsVisible!==false;toggleBeamsBtn.classList.toggle('active',on);toggleBeamsBtn.textContent=on?'Faisceau ON':'Faisceau OFF';toggleBeamsBtn.setAttribute('aria-pressed',String(on))}
 if(stageBeamsBtn){const on=state.beamsVisible!==false;stageBeamsBtn.classList.toggle('active',on);stageBeamsBtn.textContent=on?'Faisceaux ON':'Faisceaux OFF';stageBeamsBtn.setAttribute('aria-pressed',String(on))}
 if(stageInfosBtn){const on=(state.labelsMode||'full')!=='hidden';stageInfosBtn.classList.toggle('active',on);stageInfosBtn.textContent=on?'Infos ON':'Infos OFF';stageInfosBtn.setAttribute('aria-pressed',String(on))}
-updateGridOpacity();if(planLengthRange)planLengthRange.value=String(Number(state.planLength||10));const planLengthText=`${Number(state.planLength||10).toFixed(Number(state.planLength)%1?1:0)} m`;if(planLengthValue)planLengthValue.textContent=planLengthText;if(planLengthQuickValue)planLengthQuickValue.textContent=planLengthText;if(stageSizeInlineValue)stageSizeInlineValue.textContent=planLengthText;if(stageSizeMobileValue)stageSizeMobileValue.textContent=planLengthText;if(planLengthMinusBtn)planLengthMinusBtn.disabled=Number(state.planLength||10)<=4;if(planLengthPlusBtn)planLengthPlusBtn.disabled=Number(state.planLength||10)>=30;updatePlanOptionsUI()}
+updateGridOpacity();if(planLengthRange)planLengthRange.value=String(Number(state.planLength||10));const planLengthText=`${Number(state.planLength||10).toFixed(Number(state.planLength)%1?1:0)} m`;if(planLengthValue)planLengthValue.textContent=planLengthText;if(stageSizeInlineValue)stageSizeInlineValue.textContent=planLengthText;if(stageSizeMobileValue)stageSizeMobileValue.textContent=planLengthText;if(planLengthMinusBtn)planLengthMinusBtn.disabled=Number(state.planLength||10)<=4;if(planLengthPlusBtn)planLengthPlusBtn.disabled=Number(state.planLength||10)>=30;updatePlanOptionsUI()}
 function snapshotState(){const copy=deepClone(state);copy.selected=null;return copy}
 function persistCurrent(){
   try{
@@ -2094,12 +2088,16 @@ function changePlanLengthBy(delta){
   updatePlanBadge();
   persistCurrent();
 }
-if(planLengthMinusBtn)planLengthMinusBtn.addEventListener('click',()=>changePlanLengthBy(-.5))
-if(planLengthPlusBtn)planLengthPlusBtn.addEventListener('click',()=>changePlanLengthBy(.5))
-if(zoomReadout)zoomReadout.addEventListener('click',()=>{resetStageViewport();persistCurrent()})
 if(stageZoomInlineBtn)stageZoomInlineBtn.addEventListener('click',()=>{resetStageViewport();persistCurrent()})
-if(zoomOutBtn)zoomOutBtn.addEventListener('click',()=>zoomStage(.8))
-if(zoomInBtn)zoomInBtn.addEventListener('click',()=>zoomStage(1.25))
+document.getElementById('stageZoomOutInlineBtn')?.addEventListener('click',()=>zoomStage(.8))
+document.getElementById('stageZoomInInlineBtn')?.addEventListener('click',()=>zoomStage(1.25))
+document.getElementById('stageSizeMinusInlineBtn')?.addEventListener('click',()=>changePlanLengthBy(-.5))
+document.getElementById('stageSizePlusInlineBtn')?.addEventListener('click',()=>changePlanLengthBy(.5))
+stageZoomMobileBtn?.addEventListener('click',()=>{resetStageViewport();persistCurrent()})
+document.getElementById('stageZoomOutMobileBtn')?.addEventListener('click',()=>zoomStage(.8))
+document.getElementById('stageZoomInMobileBtn')?.addEventListener('click',()=>zoomStage(1.25))
+document.getElementById('stageSizeMinusMobileBtn')?.addEventListener('click',()=>changePlanLengthBy(-.5))
+document.getElementById('stageSizePlusMobileBtn')?.addEventListener('click',()=>changePlanLengthBy(.5))
 if(stage)stage.addEventListener('wheel',e=>{
   if(!(e.ctrlKey||e.metaKey))return;
   e.preventDefault();
