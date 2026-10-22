@@ -98,30 +98,39 @@ main,
 }
 
 @media (min-width:1000px){
+  .stage-actions-row{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:6px;
+    flex-wrap:nowrap;
+  }
+
   .stage-tool-mode{
     display:inline-flex;
     align-items:center;
-    gap:4px;
-    padding:3px;
-    border:1px solid var(--bos-line);
-    border-radius:10px;
-    background:var(--bos-panel-soft);
+    gap:6px;
+    padding:0;
+    border:0;
+    border-radius:0;
+    background:transparent;
   }
 
   .stage-mode-btn{
-    min-height:28px;
-    padding:0 8px;
+    min-height:32px;
+    padding:0 9px;
     display:inline-flex;
     align-items:center;
     justify-content:center;
     gap:5px;
-    border:0;
-    border-radius:7px;
-    background:transparent;
+    border:1px solid var(--bos-line);
+    border-radius:9px;
+    background:var(--bos-panel-soft);
     color:var(--bos-muted);
     box-shadow:none;
     font-size:9px;
     font-weight:600;
+    white-space:nowrap;
   }
 
   .stage-mode-btn span{
@@ -136,7 +145,14 @@ main,
   .stage-mode-btn.active{
     background:var(--bos-panel);
     color:var(--bos-accent);
+    border-color:var(--bos-line-strong);
     box-shadow:0 1px 5px rgba(15,22,25,.08);
+  }
+
+  .stage-actions-row .stage-width-toggle,
+  .stage-actions-row .stage-add-btn{
+    flex:0 0 auto;
+    white-space:nowrap;
   }
 
   #stage.hand-mode{
