@@ -313,7 +313,8 @@ async function refreshLightDb(){
 // Objets grip et décor disponibles dans Ajouter un élément.
 const accessoryCatalog=[
   {type:'diffusion',name:'Cadre de diffusion',short:'DIFF',width:2,height:2},
-  {type:'borniol',name:'Borniol',short:'BOR',width:3,height:1.2},
+  {type:'borniol',name:'Borniol',short:'BOR',width:3,height:.08,zHeight:1.2},
+  {type:'flag',name:'Drapeau',short:'DRAP',width:1.2,height:.05,zHeight:1.2},
   {type:'negative',name:'Negative fill',short:'NEG',width:1.2,height:2},
   {type:'reflector',name:'Réflecteur',short:'REF',width:1.2,height:2}
 ];
@@ -944,7 +945,13 @@ function drawAccessorySymbol(g,o){
     g.appendChild(svgEl('line',{x1:w/2,y1:-barH/2-4,x2:w/2,y2:barH/2+4,class:'grip-cap'}));
     return {w,h:Math.max(20,barH+10)};
   } else if(o.type==='borniol'){
-    g.appendChild(svgEl('rect',{x:-w/2,y:-h/2,width:w,height:h,rx:3,class:'borniol-shape'}));
+    const barH=6;
+    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:2,class:'borniol-shape'}));
+    return {w,h:18};
+  } else if(o.type==='flag'){
+    const barH=4;
+    g.appendChild(svgEl('rect',{x:-w/2,y:-barH/2,width:w,height:barH,rx:1.5,class:'flag-shape'}));
+    return {w,h:16};
   } else if(o.type==='negative'){
     g.appendChild(svgEl('rect',{x:-w/2,y:-h/2,width:w,height:h,rx:3,class:'negative-shape'}));
     g.appendChild(svgEl('text',{x:0,y:4,'text-anchor':'middle',class:'negative-code'})).textContent='NEG';
@@ -1526,7 +1533,7 @@ function addLightFromPreset(p,replaceId=null){
   if(replaceId){const o=state.objects.find(x=>x.id===replaceId);if(o){const mod=o.modifier||'none';Object.assign(o,{name:p.name,brand:p.brand,family:p.family,form:p.form,short:p.short,beam:p.beam,aspect:p.aspect,length:p.length,modifier:supportsSoftbox({kind:'light',form:p.form})?mod:'none'});state.selected=o.id;closeAddDialog();render();return}}
   const n=state.objects.filter(o=>o.kind==='light').length,o={id:uid('light'),kind:'light',name:p.name,brand:p.brand,family:p.family,form:p.form,short:p.short,x:245+(n%5)*72,y:235+(n%3)*75,rot:0,beam:p.beam,beamVisible:true,intensity:50,height:2,aspect:p.aspect,length:p.length,modifier:'none',modifierSize:.9,colorMode:'cct',cct:5600,hue:0,saturation:100,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render();
 }
-function addAccessory(p){const n=state.objects.filter(o=>o.kind==='accessory').length,o={id:uid('acc'),kind:'accessory',type:p.type,name:p.name,short:p.short,x:Math.max(180,stageW()/2-140)+(n%4)*80,y:160+(n%3)*70,rot:0,width:p.width,height:p.height,zHeight:p.height,elevation:p.type==='borniol'?.2:.35,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
+function addAccessory(p){const n=state.objects.filter(o=>o.kind==='accessory').length,o={id:uid('acc'),kind:'accessory',type:p.type,name:p.name,short:p.short,x:Math.max(180,stageW()/2-140)+(n%4)*80,y:160+(n%3)*70,rot:0,width:p.width,height:p.height,zHeight:p.zHeight??p.height,elevation:p.type==='borniol'?.2:.35,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
 function addDecor(p){const n=state.objects.filter(o=>o.kind==='decor').length,zHeight=p.type==='wall'?2.5:p.type==='door'?2.04:p.type==='window'?1.2:.75,elevation=p.type==='window'?.9:0,o={id:uid('decor'),kind:'decor',type:p.type,name:p.name,x:Math.max(200,stageW()/2-70)+(n%4)*90,y:140+(n%3)*80,rot:0,width:p.width,height:p.height,zHeight,elevation,locked:false,labelVisible:true,labelPos:'auto'};state.objects.push(o);state.selected=o.id;closeAddDialog();render()}
 
 function openAddDialog(){replaceLightId=null;replaceCameraId=null;showKinds();if(typeof addDialog.showModal==='function')addDialog.showModal();else addDialog.setAttribute('open','')}
@@ -1961,7 +1968,7 @@ function normalizeSceneObject(o){
   if(o.kind==='light')normalizeLightObject(o);
   if(o.kind==='camera')normalizeCameraObject(o);
   if(o.kind==='decor'){if(o.zHeight===undefined)o.zHeight=o.type==='wall'?2.5:o.type==='door'?2.04:o.type==='window'?1.2:.75;if(o.elevation===undefined)o.elevation=o.type==='window'?.9:0}
-  if(o.kind==='accessory'){if(o.zHeight===undefined)o.zHeight=o.height||1.5;if(o.elevation===undefined)o.elevation=o.type==='borniol'?.2:.35;if(!o.short)o.short=o.type==='diffusion'?'DIFF':o.type==='negative'?'NEG':o.type==='reflector'?'REF':'BOR'}
+  if(o.kind==='accessory'){if(o.zHeight===undefined)o.zHeight=o.height||1.5;if(o.elevation===undefined)o.elevation=o.type==='borniol'?.2:.35;if(!o.short)o.short=o.type==='diffusion'?'DIFF':o.type==='negative'?'NEG':o.type==='reflector'?'REF':o.type==='flag'?'DRAP':'BOR'}
   if(o.locked===undefined)o.locked=false;if(o.labelVisible===undefined)o.labelVisible=true;if(!o.labelPos)o.labelPos='auto';return o;
 }
 function load(){
