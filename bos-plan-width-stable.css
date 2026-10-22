@@ -636,3 +636,75 @@ main,
     display:none!important;
   }
 }
+
+
+/* Nouveau plan — boîte de nommage commune mobile / ordinateur. */
+.new-plan-dialog{
+  border:0!important;
+  padding:0!important;
+  background:transparent!important;
+  color:var(--bos-ink)!important;
+}
+
+.new-plan-dialog::backdrop{
+  background:rgba(5,10,18,.48)!important;
+  backdrop-filter:blur(3px)!important;
+}
+
+.new-plan-shell{
+  width:min(360px,calc(100vw - 32px))!important;
+  padding:16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:14px!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:16px!important;
+  background:var(--bos-panel)!important;
+  box-shadow:0 20px 60px rgba(0,0,0,.22)!important;
+}
+
+.new-plan-title{
+  font-size:14px!important;
+  font-weight:600!important;
+  color:var(--bos-ink)!important;
+}
+
+.new-plan-field{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  color:var(--bos-muted)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.05em!important;
+}
+
+.new-plan-field input{
+  width:100%!important;
+  min-height:40px!important;
+  padding:0 11px!important;
+  border:1px solid var(--bos-line)!important;
+  border-radius:11px!important;
+  background:var(--bos-panel-soft)!important;
+  color:var(--bos-ink)!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  text-transform:none!important;
+  letter-spacing:0!important;
+  box-sizing:border-box!important;
+}
+
+.new-plan-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+}
+
+.new-plan-actions button{
+  min-height:34px!important;
+  padding:0 12px!important;
+  border-radius:10px!important;
+  font-size:10px!important;
+}
