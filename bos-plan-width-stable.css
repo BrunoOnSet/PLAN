@@ -224,3 +224,77 @@ main,
     padding-right:9px!important;
   }
 }
+
+
+/* PLAN — organisation desktop : légende au-dessus, Ajouter dans le plan. */
+.stage-add-overlay{
+  display:none!important;
+}
+
+@media (min-width:701px){
+  .stage-head-side{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-end!important;
+    gap:7px!important;
+  }
+
+  .stage-head-side .legend{
+    order:1!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    width:auto!important;
+  }
+
+  .stage-actions-row{
+    order:2!important;
+  }
+
+  #stageWrap{
+    position:relative!important;
+  }
+
+  #stageWrap>.stage-add-overlay{
+    display:inline-flex!important;
+    position:absolute!important;
+    top:10px!important;
+    left:10px!important;
+    right:auto!important;
+    bottom:auto!important;
+    z-index:14!important;
+    width:auto!important;
+    min-width:0!important;
+    min-height:32px!important;
+    padding:0 9px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    border:1px solid rgba(21,25,27,.12)!important;
+    border-radius:9px!important;
+    background:rgba(255,255,255,.92)!important;
+    color:var(--bos-accent)!important;
+    box-shadow:0 2px 8px rgba(20,25,27,.06)!important;
+    backdrop-filter:blur(7px)!important;
+    -webkit-backdrop-filter:blur(7px)!important;
+    font-size:9px!important;
+    font-weight:600!important;
+    white-space:nowrap!important;
+  }
+
+  body.dark #stageWrap>.stage-add-overlay{
+    background:rgba(23,27,29,.90)!important;
+    border-color:rgba(255,255,255,.11)!important;
+  }
+
+  #stageWrap>.stage-add-overlay .plus{
+    font-size:12px!important;
+    line-height:1!important;
+  }
+}
+
+@media (max-width:700px){
+  #stageWrap>.stage-add-overlay{
+    display:none!important;
+  }
+}
