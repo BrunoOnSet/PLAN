@@ -90,3 +90,62 @@ main,
     transform:none!important;
   }
 }
+
+
+/* PLAN — modes d'interaction desktop : Main / Lasso. */
+.stage-tool-mode{
+  display:none;
+}
+
+@media (min-width:1000px){
+  .stage-tool-mode{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:3px;
+    border:1px solid var(--bos-line);
+    border-radius:10px;
+    background:var(--bos-panel-soft);
+  }
+
+  .stage-mode-btn{
+    min-height:28px;
+    padding:0 8px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    border:0;
+    border-radius:7px;
+    background:transparent;
+    color:var(--bos-muted);
+    box-shadow:none;
+    font-size:9px;
+    font-weight:600;
+  }
+
+  .stage-mode-btn span{
+    font-size:12px;
+    line-height:1;
+  }
+
+  .stage-mode-btn em{
+    font-style:normal;
+  }
+
+  .stage-mode-btn.active{
+    background:var(--bos-panel);
+    color:var(--bos-accent);
+    box-shadow:0 1px 5px rgba(15,22,25,.08);
+  }
+
+  #stage.hand-mode{
+    cursor:grab;
+  }
+  #stage.hand-mode:active{
+    cursor:grabbing;
+  }
+  #stage.lasso-mode{
+    cursor:crosshair;
+  }
+}
