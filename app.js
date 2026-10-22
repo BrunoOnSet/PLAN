@@ -954,7 +954,11 @@ function drawAccessorySymbol(g,o){
 
   if(o.type==='borniol'){
     g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(2,thickness/2),class:'borniol-shape'}));
-    return {w,h:Math.max(16,thickness)};
+    const edgeY=thickness/2;
+    for(let x=-w/2+5;x<w/2-2;x+=9){
+      g.appendChild(svgEl('line',{x1:x,y1:edgeY,x2:x+4,y2:edgeY+4,class:'borniol-fringe'}));
+    }
+    return {w,h:Math.max(20,thickness+8)};
   }
 
   if(o.type==='flag'){
@@ -978,7 +982,7 @@ function drawDecorSymbol(g,o){
   const thickness=Math.max(2,Math.min(110,(Number(o.height)||.1)*55));
 
   if(o.type==='wall'){
-    g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(1.5,thickness/2),class:'wall-shape',style:'fill:#4f4943;stroke:#4f4943;stroke-width:1'}));
+    g.appendChild(svgEl('rect',{x:-w/2,y:-thickness/2,width:w,height:thickness,rx:Math.min(1.5,thickness/2),class:'wall-shape'}));
     return {w,h:Math.max(18,thickness)};
   }
 
