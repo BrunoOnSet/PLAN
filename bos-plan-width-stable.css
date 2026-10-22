@@ -318,23 +318,30 @@ main,
 
 /* PLAN — code couleur sous le plan sur tous les écrans. */
 .plan-legend-below{
-  width:auto!important;
-  margin:8px 15px 0!important;
+  width:100%!important;
+  min-height:24px!important;
+  margin:8px 0 0!important;
+  padding:0 15px!important;
   display:flex!important;
   align-items:center!important;
-  justify-content:flex-start!important;
+  justify-content:center!important;
   gap:10px!important;
   flex-wrap:wrap!important;
+  box-sizing:border-box!important;
   color:var(--bos-faint)!important;
   font-size:9px!important;
   line-height:1.2!important;
+  text-align:center!important;
 }
 
 .plan-legend-below span{
+  min-height:18px!important;
   display:inline-flex!important;
   align-items:center!important;
+  justify-content:center!important;
   gap:4px!important;
   font-weight:400!important;
+  line-height:1!important;
 }
 
 .plan-legend-below .dot{
@@ -345,7 +352,8 @@ main,
 
 @media (max-width:700px){
   .plan-legend-below{
-    margin:8px 12px 0!important;
+    margin:8px 0 0!important;
+    padding:0 12px!important;
     gap:8px!important;
   }
 }
