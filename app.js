@@ -416,9 +416,6 @@ function migrateWorkspaceState(target=state){
 function applyStageViewport(){
   stageViewport=clampViewport(stageViewport);
   stage.setAttribute('viewBox',`${stageViewport.x} ${stageViewport.y} ${stageViewport.w} ${stageViewport.h}`);
-  const zoom=Math.round(BASE_VIEW_W/stageViewport.w*100);
-  if(stageZoomInlineBtn)stageZoomInlineBtn.textContent=`${zoom} %`;
-  if(stageZoomMobileBtn)stageZoomMobileBtn.textContent=`${zoom} %`;
   stage.classList.toggle('desktop-pan-ready',stageViewport.w<stageW()-.5);
 }
 function resetStageViewport(){stageViewport=defaultStageViewport();applyStageViewport()}
