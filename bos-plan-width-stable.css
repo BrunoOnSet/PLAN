@@ -304,6 +304,9 @@ main,
 @media (min-width:701px){
   .stage-actions-row>.stage-add-mobile{
     display:none!important;
+    visibility:hidden!important;
+    position:absolute!important;
+    pointer-events:none!important;
   }
   #stageWrap>.stage-add-overlay{
     display:inline-flex!important;
