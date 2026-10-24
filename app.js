@@ -2232,15 +2232,27 @@ const projectContactBtn=document.getElementById('projectContactBtn');
 const improveAppBtn=document.getElementById('improveAppBtn');
 let deferredInstallPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;
+  if(installAppBtn)installAppBtn.hidden=true;
+});
 if(installAppBtn)installAppBtn.addEventListener('click',async()=>{
   if(deferredInstallPrompt){
-    deferredInstallPrompt.prompt();
-    try{await deferredInstallPrompt.userChoice}catch(e){}
+    const promptEvent=deferredInstallPrompt;
     deferredInstallPrompt=null;
+    try{
+      promptEvent.prompt();
+      await promptEvent.userChoice;
+    }catch(e){
+      alert('Pour installer l’application, utilise le menu de ton navigateur puis « Ajouter à l’écran d’accueil » ou « Installer l’application ».');
+    }
   }else{
     alert('Pour installer l’application, utilise le menu de ton navigateur puis « Ajouter à l’écran d’accueil » ou « Installer l’application ».');
   }
 });
+if('serviceWorker' in navigator && window.isSecureContext){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{}));
+}
 const BOS_CONTACT_URL='https://www.brunoguillard.com/';
 if(projectContactBtn)projectContactBtn.addEventListener('click',()=>window.open(BOS_CONTACT_URL,'_blank','noopener'));
 if(improveAppBtn)improveAppBtn.addEventListener('click',()=>window.open(BOS_CONTACT_URL,'_blank','noopener'));
